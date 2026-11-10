@@ -271,9 +271,12 @@ section,.band{padding:var(--s7) 0}
 .li-btn{display:inline-flex;align-items:center;gap:6px;color:var(--link);font-size:15px;white-space:nowrap;flex-shrink:0}
 .li-btn svg{width:15px;height:15px}
 .li-card:hover .li-btn{text-decoration:underline}
-.cv-box{display:flex;align-items:center;justify-content:space-between;gap:var(--s2);flex-wrap:wrap;border-radius:var(--radius);padding:var(--s2) 20px;background:var(--card)}
-.cv-box p{font-weight:600}
-.cv-box small{display:block;font-weight:400;color:var(--muted);font-size:13px}
+.cv-box{display:flex;flex-direction:column;border-radius:var(--radius);padding:var(--s2) 20px;background:var(--card);scroll-margin-top:90px}
+.cv-title{font-weight:600;padding-bottom:var(--s1)}
+.cv-row{display:flex;align-items:center;justify-content:space-between;gap:var(--s2);flex-wrap:wrap;padding:12px 0;border-top:1px solid var(--line)}
+.cv-row b{display:block;font-weight:600;font-size:16px}
+.cv-row small{display:block;color:var(--muted);font-size:13px}
+.cv-btns{display:flex;gap:8px}
 
 footer{padding:var(--s4) 0 var(--s5);color:var(--muted);font-size:12px;letter-spacing:-.01em}
 footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:var(--s2)}
@@ -415,8 +418,8 @@ footer a:hover{text-decoration:underline}
         <div class="hero-cta load d4">
           <a class="btn btn-primary" href="#contacto"><span data-en="Contact me">Contactarme</span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a>
-          <a class="btn btn-ghost" href="https://arig0406-stack.github.io/cv/Alejandro-Irala-CV-ATS.pdf" download="Alejandro-Irala-CV-ATS.pdf">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg><span data-en="Download CV (ATS)">Descargar CV (ATS)</span></a>
+          <a class="btn btn-ghost" href="#cv">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg><span data-en="Download CV">Descargar CV</span></a>
         </div>
       </div>
       <div class="portrait load d5">
@@ -767,9 +770,21 @@ footer a:hover{text-decoration:underline}
               <div class="l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span data-en="Lambaré, Paraguay · Remote">Lambaré, Paraguay · Remoto</span></div>
             </div>
           </div>
-          <div class="cv-box no-print">
-            <p><span data-en="You can also download my CV here, in ATS format.">También podés descargar acá mi CV en formato ATS.</span><small data-en="PDF in Spanish · 2 pages">PDF · 2 páginas</small></p>
-            <a class="btn btn-primary" href="https://arig0406-stack.github.io/cv/Alejandro-Irala-CV-ATS.pdf" download="Alejandro-Irala-CV-ATS.pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg><span data-en="Download CV">Descargar CV</span></a>
+          <div class="cv-box no-print" id="cv">
+            <p class="cv-title" data-en="You can also download my CV here. Choose the version that best fits your search:">También podés descargar acá mi CV. Elegí la versión que mejor se ajuste a tu búsqueda:</p>
+            <div class="cv-row">
+              <div><b data-en="Processes, quality and continuous improvement">Procesos, calidad y mejora continua</b><small data-en="ATS format · PDF in Spanish · 2 pages">Formato ATS · PDF · 2 páginas</small></div>
+              <div class="cv-btns">
+                <a class="btn btn-primary mini" href="https://arig0406-stack.github.io/cv/Alejandro-Irala-CV-ATS.pdf" download="Alejandro-Irala-CV-ATS.pdf" data-en="Spanish">Español</a>
+              </div>
+            </div>
+            <div class="cv-row">
+              <div><b data-en="Brand, communication and content">Marca, comunicación y contenidos</b><small data-en="ATS format · PDF · 2 pages">Formato ATS · PDF · 2 páginas</small></div>
+              <div class="cv-btns">
+                <a class="btn btn-primary mini" href="https://arig0406-stack.github.io/cv/Alejandro-Irala-CV-Marca-Comunicacion-ES.pdf" download="Alejandro-Irala-CV-Marca-Comunicacion-ES.pdf" data-en="Spanish">Español</a>
+                <a class="btn btn-ghost mini" href="https://arig0406-stack.github.io/cv/Alejandro-Irala-CV-Brand-Communication-EN.pdf" download="Alejandro-Irala-CV-Brand-Communication-EN.pdf">English</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
