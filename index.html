@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alejandro Irala — Apoyo a tu gestión</title>
+<meta name="description" content="Alejandro Irala: asistencia administrativa, data entry, reportes en Power BI, automatización con Excel/VBA y mejora de procesos. Disponible para trabajo remoto y freelance desde Paraguay (UTC−3).">
+<meta name="author" content="Alejandro Raúl Irala Galeano">
+<meta name="theme-color" content="#0F4C81">
+<link rel="canonical" href="https://arig0406-stack.github.io/">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Alejandro Irala — Procesos, datos y apoyo a la gestión">
+<meta property="og:description" content="Asistencia administrativa, data entry, Power BI, automatización con Excel/VBA y mejora de procesos. Disponible para trabajo remoto.">
+<meta property="og:url" content="https://arig0406-stack.github.io/">
+<meta property="og:image" content="https://arig0406-stack.github.io/img/obelisco.jpg">
+<meta property="og:locale" content="es_PY">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230F4C81'/%3E%3Ctext x='32' y='44' font-family='Arial,sans-serif' font-size='34' font-weight='800' text-anchor='middle' fill='%23fff'%3EA%3C/text%3E%3C/svg%3E">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Alejandro Raúl Irala Galeano",
+  "jobTitle": "Analista de Procesos y Mejora Continua",
+  "url": "https://arig0406-stack.github.io/",
+  "email": "mailto:arig0406@gmail.com",
+  "address": {"@type": "PostalAddress", "addressLocality": "Lambaré", "addressCountry": "PY"},
+  "sameAs": ["https://www.linkedin.com/in/alejandro-irala-39aa6a193", "https://github.com/arig0406-stack"],
+  "knowsAbout": ["Excel", "Power BI", "VBA", "Power Query", "Power Automate", "Google Apps Script", "Mejora de procesos", "ISO 9001"]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+:root{
+  /* Paleta corporativa clara: blanco, gris azulado y azul institucional. Layout: página de servicios con una banda oscura central para el método de trabajo. */
+  --bg:#F6F8FB;
+  --surface:#FFFFFF;
+  --surface-2:#EEF2F7;
+  --line:#DCE3EC;
+  --text:#0E1A2B;
+  --muted:#4B5B70;
+  --primary:#0F4C81;
+  --primary-dark:#0A3A63;
+  --primary-soft:#E6EEF7;
+  --deep:#0E1A2B;
+  --ok:#1E8E4E;
+  --sans:"Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --radius:20px;
+  --wrap:1180px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--primary);outline-offset:3px;border-radius:6px}
+.wrap{width:min(var(--wrap), 100% - 40px);margin-inline:auto}
+.mono{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.eyebrow{display:flex;align-items:center;gap:12px;color:var(--primary);font-weight:500}
+.eyebrow::before{content:"";width:28px;height:2px;background:var(--primary)}
+h1,h2,h3{margin:0;text-wrap:balance}
+p{margin:0}
+.hl{color:var(--primary)}
+.skip{position:absolute;left:-9999px;top:8px;z-index:50;background:var(--primary);color:#fff;padding:10px 16px;border-radius:10px;text-decoration:none;font-weight:700}
+.skip:focus{left:12px}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:rgba(255,255,255,.86);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;height:68px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;font-weight:800;letter-spacing:-.01em}
+.brand-mark{width:36px;height:36px;border-radius:10px;background:var(--primary);color:#fff;display:grid;place-items:center;font-weight:800;font-size:15px;letter-spacing:.02em}
+.nav-links{display:flex;gap:28px;font-size:14.5px;color:var(--muted);font-weight:500}
+.nav-links a{text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--primary)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.lang{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface)}
+.lang button{border:0;background:none;font:500 12.5px var(--mono);letter-spacing:.06em;padding:0 11px;min-height:38px;cursor:pointer;color:var(--muted);transition:background .2s,color .2s}
+.lang button[aria-pressed="true"]{background:var(--primary);color:#fff}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 24px;border-radius:12px;font:700 15px/1 var(--sans);text-decoration:none;cursor:pointer;border:1px solid transparent;transition:transform .25s ease, background .25s ease, color .25s ease, border-color .25s ease, box-shadow .25s ease}
+.btn-primary{background:var(--primary);color:#fff;box-shadow:0 10px 24px -12px rgba(15,76,129,.7)}
+.btn-primary:hover{background:var(--primary-dark);transform:translateY(-2px)}
+.btn-ghost{border-color:var(--line);color:var(--text);background:var(--surface)}
+.btn-ghost:hover{border-color:var(--primary);color:var(--primary)}
+.btn svg{width:16px;height:16px}
+
+/* HERO */
+.hero{padding:64px 0 48px;position:relative}
+.hero::before{content:"";position:absolute;inset:0 0 auto 0;height:520px;background:linear-gradient(180deg,#EAF1F9 0%,rgba(246,248,251,0) 100%);z-index:-1}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:56px;align-items:center}
+.status{display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:8px 16px 8px 12px;font-size:14px;font-weight:600;box-shadow:0 6px 18px -12px rgba(14,26,43,.35)}
+.pulse{position:relative;width:10px;height:10px;border-radius:50%;background:var(--ok)}
+.pulse::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--ok);animation:ping 2s ease-out infinite}
+@keyframes ping{0%{transform:scale(1);opacity:.6}100%{transform:scale(2.8);opacity:0}}
+.headline{margin-top:18px;color:var(--muted);font-size:12.5px}
+.hero h1{font-weight:800;font-size:clamp(38px,5.6vw,72px);line-height:1.02;letter-spacing:-.035em;margin-top:24px}
+.hero-lead{margin-top:24px;max-width:58ch;color:var(--muted);font-size:18px}
+.hero-lead strong{color:var(--text);font-weight:700}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.tag{background:var(--primary-soft);color:var(--primary-dark);border-radius:8px;padding:7px 12px;font-size:14px;font-weight:600}
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.portrait{position:relative;justify-self:end;width:min(100%,420px)}
+.portrait-frame{position:relative;border-radius:24px;overflow:hidden;aspect-ratio:3/4;background:var(--surface-2);box-shadow:0 40px 70px -35px rgba(14,26,43,.55);border:6px solid var(--surface)}
+.portrait-frame img{width:100%;height:100%;object-fit:cover;object-position:50% 88%;transform:scale(1.03);transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+.portrait:hover .portrait-frame img{transform:scale(1.07)}
+.float{position:absolute;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 18px;box-shadow:0 22px 40px -22px rgba(14,26,43,.5);animation:bob 6s ease-in-out infinite}
+.float b{display:block;font-size:22px;font-weight:800;color:var(--primary);line-height:1.15}
+.float span{font-size:12.5px;color:var(--muted)}
+.float.f1{left:-46px;bottom:70px}
+.float.f2{right:-30px;top:40px;animation-delay:-3s}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+.load{animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.05s}.d2{animation-delay:.15s}.d3{animation-delay:.27s}.d4{animation-delay:.38s}.d5{animation-delay:.48s}
+@keyframes rise{from{opacity:.2;transform:translateY(22px)}to{opacity:1;transform:none}}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);overflow:hidden;box-shadow:0 20px 40px -32px rgba(14,26,43,.4)}
+.stat{padding:26px 24px;display:flex;flex-direction:column;gap:6px}
+.stat + .stat{border-left:1px solid var(--line)}
+.stat b{font-size:clamp(28px,3.4vw,40px);font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.05;color:var(--text)}
+.stat b em{font-style:normal;color:var(--primary)}
+.stat > span{color:var(--muted);font-size:14px}
+
+/* SECTIONS */
+section{padding:104px 0 0}
+.sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:end;margin-bottom:44px}
+.sec-head h2{font-size:clamp(30px,4vw,50px);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin-top:14px}
+.sec-head p{color:var(--muted);max-width:52ch}
+
+/* SERVICES */
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.card{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:28px 26px 30px;display:flex;flex-direction:column;gap:14px;overflow:hidden;transition:transform .35s ease, border-color .35s ease, box-shadow .35s ease}
+.card::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--primary);transition:width .6s cubic-bezier(.2,.7,.2,1)}
+.card:hover{transform:translateY(-6px);border-color:#BFD0E4;box-shadow:0 28px 50px -34px rgba(14,26,43,.55)}
+.card:hover::after{width:100%}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start}
+.card .code{color:var(--muted)}
+.icon{width:50px;height:50px;border-radius:14px;background:var(--primary-soft);display:grid;place-items:center;color:var(--primary);transition:background .35s, color .35s}
+.card:hover .icon{background:var(--primary);color:#fff}
+.icon svg{width:23px;height:23px}
+.card h3{font-size:20px;font-weight:700;letter-spacing:-.01em;line-height:1.25}
+.card p{color:var(--muted);font-size:15px}
+.card.wide{grid-column:1 / -1;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:24px}
+.card.wide .wide-text{display:flex;flex-direction:column;gap:8px}
+.card.wide p{max-width:72ch}
+
+/* PROJECTS */
+.card .stack{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:6px}
+.card .stack span{font:500 11.5px var(--mono);letter-spacing:.04em;color:var(--primary-dark);background:var(--primary-soft);border-radius:6px;padding:4px 8px}
+.card .more{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:14.5px;color:var(--primary);text-decoration:none}
+.card .more:hover{text-decoration:underline}
+.card .more svg{width:15px;height:15px}
+.card .note{font-size:13.5px;color:var(--muted);font-style:italic}
+
+/* METHOD (banda oscura) */
+.band{background:var(--deep);color:#F2F5F9;padding:96px 0;margin-top:104px}
+.band .sec-head h2{color:#FFFFFF}
+.band .sec-head p{color:#A9B6C8}
+.band .eyebrow{color:#8FB8E6}
+.band .eyebrow::before{background:#8FB8E6}
+.flow{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.track{position:absolute;left:10%;right:10%;top:31px;height:2px;background:#26364D}
+.track-fill{position:absolute;left:0;top:0;height:100%;width:0;background:#8FB8E6;transition:width .9s cubic-bezier(.65,0,.35,1)}
+.token{position:absolute;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#fff;box-shadow:0 0 0 6px rgba(143,184,230,.25),0 0 22px rgba(143,184,230,.8);left:0;transition:left .9s cubic-bezier(.65,0,.35,1)}
+.step{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;background:none;border:0;color:inherit;font:inherit;cursor:pointer;padding:0 4px}
+.node{width:64px;height:64px;border-radius:18px;background:var(--deep);border:1.5px solid #34465F;display:grid;place-items:center;font:500 14px var(--mono);color:#A9B6C8;transition:all .45s ease;position:relative;z-index:1}
+.step-name{font-weight:700;font-size:16px;color:#A9B6C8;transition:color .4s}
+.step.is-active .node{border-color:#fff;color:var(--deep);background:#fff;transform:scale(1.08)}
+.step.is-done .node{border-color:#8FB8E6;color:#8FB8E6}
+.step.is-active .step-name,.step.is-done .step-name{color:#fff}
+.detail{margin-top:36px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:28px;align-items:center;border:1px solid #26364D;border-radius:var(--radius);background:#132338;padding:26px 28px;min-height:120px}
+.detail-num{font-weight:800;font-size:64px;line-height:.9;color:#8FB8E6;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.detail h3{font-size:23px;font-weight:800;letter-spacing:-.02em;color:#fff}
+.detail p{color:#A9B6C8;margin-top:6px;max-width:60ch}
+.deliverable{border:1px dashed #3B5576;border-radius:14px;padding:12px 16px;text-align:left;min-width:210px}
+.deliverable .mono{color:#A9B6C8;font-size:11px}
+.deliverable div:last-child{font-weight:700;margin-top:4px;color:#fff}
+.swap{animation:swap .5s ease both}
+@keyframes swap{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* MODALIDAD */
+.modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.mode{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:26px;display:flex;gap:16px;align-items:flex-start}
+.mode .icon{flex-shrink:0;width:46px;height:46px}
+.mode h3{font-size:18px;font-weight:700}
+.mode p{color:var(--muted);font-size:15px;margin-top:4px}
+
+/* RESULTS */
+.results{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:16px}
+.result{border-radius:var(--radius);padding:30px 28px;display:flex;flex-direction:column;gap:12px;border:1px solid var(--line);background:var(--surface)}
+.result.feature{background:var(--primary);color:#fff;border-color:var(--primary)}
+.result.feature .mono{color:#CFE0F3}
+.result.feature p{color:#E3EDF8}
+.result .big{font-size:clamp(48px,6vw,72px);font-weight:800;letter-spacing:-.04em;line-height:.95;font-variant-numeric:tabular-nums}
+.result h3{font-size:22px;font-weight:800;letter-spacing:-.02em;line-height:1.2}
+.result p{color:var(--muted);font-size:15px}
+.result .mono{color:var(--primary)}
+
+/* TIMELINE */
+.timeline{position:relative;display:flex;flex-direction:column;gap:18px}
+.tl-line{position:absolute;left:191px;top:10px;bottom:10px;width:2px;background:var(--line)}
+.tl-line span{position:absolute;left:0;top:0;width:100%;height:0;background:var(--primary);transition:height .15s linear}
+.job{display:grid;grid-template-columns:160px minmax(0,1fr);gap:62px;align-items:start}
+.job-year{text-align:right;font-family:var(--mono);font-size:14px;color:var(--primary);font-weight:500;padding-top:26px}
+.job-body{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px 28px;transition:border-color .3s, transform .3s, box-shadow .3s}
+.job-body:hover{border-color:#BFD0E4;transform:translateX(4px);box-shadow:0 20px 40px -30px rgba(14,26,43,.5)}
+.job-body::before{content:"";position:absolute;left:-38px;top:28px;width:14px;height:14px;border-radius:50%;background:var(--surface);border:3px solid var(--primary)}
+.job h3{font-size:19px;font-weight:700;letter-spacing:-.01em}
+.job .org{color:var(--primary);font-size:14.5px;font-weight:600;margin-top:2px}
+.job ul{margin:14px 0 0;padding:0;list-style:none;display:grid;gap:8px}
+.job li{position:relative;padding-left:20px;color:var(--muted);font-size:15px}
+.job li::before{content:"";position:absolute;left:0;top:11px;width:8px;height:2px;background:var(--primary)}
+
+/* EDUCATION + TOOLS */
+.duo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:30px 28px}
+.panel h3{font-size:21px;font-weight:800;letter-spacing:-.02em;margin-bottom:20px}
+.edu{display:grid;gap:18px}
+.edu div b{display:block;font-weight:700}
+.edu div span{color:var(--muted);font-size:14.5px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);border-radius:8px;padding:8px 13px;font-size:14px;font-weight:600;background:var(--surface);transition:all .25s}
+.chip:hover{border-color:var(--primary);color:var(--primary)}
+.chip.strong{background:var(--primary-soft);border-color:#C9DAEC;color:var(--primary-dark)}
+
+.ticker{margin-top:16px;border-block:1px solid var(--line);overflow:hidden;padding:20px 0;mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+.ticker-track{display:flex;gap:44px;width:max-content;animation:marquee 40s linear infinite}
+.ticker-track span{font-weight:700;font-size:24px;letter-spacing:-.01em;color:#8494A8;white-space:nowrap;display:flex;align-items:center;gap:44px}
+.ticker-track span::after{content:"";width:7px;height:7px;background:var(--primary);border-radius:2px;transform:rotate(45deg)}
+@keyframes marquee{to{transform:translateX(-50%)}}
+
+/* CONTACT */
+.contact{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);border:1px solid var(--line);border-radius:28px;overflow:hidden;background:var(--surface);box-shadow:0 40px 70px -50px rgba(14,26,43,.6)}
+.contact-photo{position:relative;min-height:480px}
+.contact-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 38%}
+.contact-photo .ph-tag{position:absolute;left:18px;bottom:18px;right:18px;background:rgba(255,255,255,.94);border-radius:14px;padding:14px 16px;font-size:14px;font-weight:500;color:var(--text)}
+.contact-body{padding:46px 44px;display:flex;flex-direction:column;gap:20px}
+.contact-body h2{font-size:clamp(28px,3.6vw,44px);font-weight:800;letter-spacing:-.03em;line-height:1.08}
+.contact-body .lead{color:var(--muted)}
+.contact-body .lead b{color:var(--text)}
+.links{display:grid;gap:10px}
+.link-row{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line);border-radius:14px;padding:10px 12px 10px 16px;min-height:58px;background:var(--bg)}
+.link-row .l{display:flex;align-items:center;gap:12px;min-width:0}
+.link-row .l svg{width:18px;height:18px;color:var(--primary);flex-shrink:0}
+.link-row .l span,.link-row .l a{overflow-wrap:anywhere;font-weight:600;text-decoration:none}
+.link-row .l a:hover{color:var(--primary)}
+.li-card{display:flex;align-items:center;gap:16px;border:1px solid var(--line);border-radius:16px;padding:14px 16px;background:var(--surface);text-decoration:none;box-shadow:0 14px 30px -26px rgba(14,26,43,.6);transition:border-color .25s, transform .25s}
+.li-card:hover{border-color:var(--primary);transform:translateY(-2px)}
+.li-card img{width:72px;height:72px;border-radius:50%;object-fit:cover;object-position:50% 30%;border:3px solid var(--surface);box-shadow:0 0 0 1px var(--line);flex-shrink:0}
+.li-info{display:flex;flex-direction:column;min-width:0;flex:1}
+.li-info b{font-size:17px;font-weight:800;letter-spacing:-.01em}
+.li-head{font-size:14px;color:var(--text)}
+.li-meta{font-size:13px;color:var(--muted)}
+.li-btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--primary);color:var(--primary);border-radius:999px;padding:8px 14px;font-weight:700;font-size:13.5px;white-space:nowrap;flex-shrink:0}
+.li-btn svg{width:15px;height:15px}
+.li-card:hover .li-btn{background:var(--primary);color:#fff}
+.brand-photo{width:36px;height:36px;border-radius:50%;object-fit:cover;object-position:50% 30%;box-shadow:0 0 0 2px var(--primary-soft)}
+.cv-box{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;border:1px dashed #BFD0E4;border-radius:14px;padding:16px 18px;background:var(--primary-soft)}
+.cv-box p{font-weight:600;color:var(--primary-dark)}
+.cv-box small{display:block;font-weight:500;color:var(--muted);font-size:13px}
+.mini{min-height:40px;padding:0 14px;font-size:13.5px;border-radius:10px}
+
+footer{padding:80px 0 48px;color:var(--muted);font-size:13.5px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:24px}
+footer a{text-decoration:none;font-weight:600}
+footer a:hover{color:var(--primary)}
+
+.reveal{transition:transform .9s cubic-bezier(.2,.7,.2,1), opacity .9s ease}
+.reveal.pending{transform:translateY(28px);opacity:.35}
+
+@media (max-width:1020px){
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .modes{grid-template-columns:1fr}
+  .results{grid-template-columns:1fr 1fr}
+  .results .feature{grid-column:1 / -1}
+}
+@media (max-width:860px){
+  .nav-links{display:none}
+  .hero{padding-top:40px}
+  .hero-grid{grid-template-columns:1fr;gap:56px}
+  .portrait{justify-self:center;width:min(100%,360px)}
+  .float.f1{left:-10px}
+  .float.f2{right:-10px}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stat:nth-child(3){border-left:0}
+  .stat:nth-child(n+3){border-top:1px solid var(--line)}
+  .sec-head{grid-template-columns:1fr;gap:14px}
+  section{padding-top:80px}
+  .band{padding:72px 0;margin-top:80px}
+  .flow{grid-template-columns:1fr;gap:14px}
+  .track{left:31px;right:auto;top:32px;bottom:32px;width:2px;height:auto}
+  .track-fill{width:100% !important;height:0;transition:height .9s cubic-bezier(.65,0,.35,1)}
+  .token{left:50% !important;top:0;transition:top .9s cubic-bezier(.65,0,.35,1)}
+  .step{flex-direction:row;text-align:left;gap:18px}
+  .card.wide{grid-template-columns:1fr;gap:14px}
+  .card.wide .code{display:none}
+  .detail{grid-template-columns:1fr;gap:12px;padding:22px}
+  .detail-num{font-size:48px}
+  .deliverable{min-width:0}
+  .contact{grid-template-columns:1fr}
+  .contact-photo{min-height:380px}
+  .contact-body{padding:30px 22px}
+  .duo{grid-template-columns:1fr}
+  .tl-line{left:7px}
+  .job{grid-template-columns:1fr;gap:8px;padding-left:34px}
+  .job-year{text-align:left;padding-top:0}
+  .job-body::before{left:-34px;top:-24px}
+}
+@media (max-width:560px){
+  body{font-size:16px}
+  .cards,.results{grid-template-columns:1fr}
+  .stat{padding:20px 16px}
+  .float{padding:10px 14px}
+  .float b{font-size:19px}
+  .float.f1{bottom:40px}
+  .btn-nav{display:none}
+  .hero-cta .btn{flex:1 1 100%}
+  .li-card{flex-wrap:wrap}
+  .li-card img{width:60px;height:60px}
+  .li-info{flex:1 1 calc(100% - 80px)}
+  .li-btn{flex:1 1 100%;justify-content:center}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}
+  .reveal.pending{transform:none;opacity:1}
+}
+
+/* IMPRESIÓN / GUARDAR COMO PDF: versión tipo CV, sin adornos */
+@media print{
+  @page{margin:14mm}
+  *,*::before,*::after{animation:none !important;transition:none !important;box-shadow:none !important}
+  body{background:#fff;font-size:11pt;line-height:1.45}
+  .nav,.hero-cta,.float,.ticker,.band,#modalidad,.contact-photo,.no-print,.skip,.portrait,.card::after,.tl-line{display:none !important}
+  .reveal.pending{transform:none;opacity:1}
+  .hero{padding:0}
+  .hero::before{display:none}
+  .hero-grid{grid-template-columns:1fr}
+  .hero h1{font-size:24pt;margin-top:10px}
+  .hero-lead{font-size:11pt;max-width:none}
+  section{padding-top:18px;break-inside:auto}
+  .sec-head{grid-template-columns:1fr;gap:4px;margin-bottom:10px}
+  .sec-head h2{font-size:15pt}
+  .stats{margin-top:14px}
+  .stat{padding:10px 12px}
+  .stat b{font-size:16pt}
+  .cards,.results{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .card,.result,.panel,.job-body,.mode{padding:12px 14px;break-inside:avoid;border-color:#ccd}
+  .card .icon,.card-top{display:none}
+  .card h3,.result h3{font-size:11.5pt}
+  .card p,.result p,.job li{font-size:10pt}
+  .result.feature{background:#fff;color:var(--text);border-color:var(--primary)}
+  .result.feature p{color:var(--muted)}
+  .result.feature .mono{color:var(--primary)}
+  .result .big{font-size:26pt;color:var(--primary)}
+  .job{grid-template-columns:110px minmax(0,1fr);gap:16px;break-inside:avoid}
+  .job-year{padding-top:12px}
+  .job-body::before{display:none}
+  .duo{grid-template-columns:1fr 1fr}
+  .contact{grid-template-columns:1fr;border:0}
+  .contact-body{padding:0}
+  .contact-body h2{font-size:15pt}
+  .link-row{min-height:0;padding:6px 10px}
+  .link-row .btn{display:none}
+  footer{padding:20px 0 0}
+  a[href^="http"]{text-decoration:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#servicios" data-en="Skip to content">Saltar al contenido</a>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#inicio"><img class="brand-photo" src="img/linkedin.jpg" width="36" height="36" alt="">Alejandro Irala</a>
+    <nav class="nav-links" aria-label="Secciones">
+      <a href="#servicios" data-en="Services">Servicios</a>
+      <a href="#proyectos" data-en="Projects">Proyectos</a>
+      <a href="#trayectoria" data-en="Experience">Trayectoria</a>
+      <a href="#contacto" data-en="Contact">Contacto</a>
+    </nav>
+    <div class="nav-right">
+      <div class="lang" role="group" aria-label="Idioma / Language">
+        <button type="button" data-lang="es" aria-pressed="true">ES</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <a class="btn btn-primary btn-nav" href="#contacto" data-en="Let's talk">Hablemos</a>
+    </div>
+  </div>
+</header>
+
+<main id="inicio">
+  <div class="hero wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="status load d1"><span class="pulse" aria-hidden="true"></span><span data-en="Open to offers from Latin America and Spain">Abierto a propuestas de Latinoamérica y España</span></div>
+        <div class="headline mono load d1" data-en="Processes | Quality | Continuous Improvement | Projects">Procesos | Calidad | Mejora Continua | Proyectos</div>
+        <h1 class="load d2" data-en="I support your operations with a <span class='hl'>focus on results.</span>">Apoyo tu gestión con <span class="hl">foco en resultados.</span></h1>
+        <p class="hero-lead load d3" data-en="I'm <strong>Paraguayan</strong> and I'm really eager to work with you. I'm looking for <strong>remote or freelance opportunities</strong> to support your team: administrative assistance, data entry and <strong>collaboration tools built around what you need</strong>. A role where I can balance life and work, and bring real added value to your goals.">Soy <strong>paraguayo</strong> y tengo muchas ganas de colaborar contigo. Hoy busco oportunidades <strong>freelance o en modalidad remota</strong> para apoyar tu gestión: asistencia administrativa, data entry y <strong>herramientas de colaboración pensadas en lo que necesitás</strong>. Un trabajo donde pueda equilibrar mi vida y mi trabajo, y mostrar mi valor diferencial en tus necesidades.</p>
+        <div class="tags load d3">
+          <span class="tag" data-en="Administrative assistance">Asistencia administrativa</span>
+          <span class="tag">Data entry</span>
+          <span class="tag" data-en="Custom tools">Herramientas a medida</span>
+          <span class="tag" data-en="Processes">Procesos</span>
+          <span class="tag" data-en="Writing">Redacción</span>
+        </div>
+        <div class="hero-cta load d4">
+          <a class="btn btn-primary" href="#contacto"><span data-en="Contact me">Contactarme</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a>
+          <a class="btn btn-ghost" href="cv/Alejandro-Irala-CV-ATS.pdf" download="Alejandro-Irala-CV-ATS.pdf">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg><span data-en="Download CV (ATS)">Descargar CV (ATS)</span></a>
+        </div>
+      </div>
+      <div class="portrait load d5">
+        <div class="portrait-frame"><img src="img/obelisco.jpg" width="900" height="1951" alt="Alejandro Irala frente al Obelisco de Buenos Aires" data-en-alt="Alejandro Irala in front of the Obelisk in Buenos Aires"></div>
+        <div class="float f1"><b data-en="6+ years">6+ años</b><span data-en="of professional experience">de experiencia profesional</span></div>
+        <div class="float f2"><b data-en="Remote · Freelance">Remoto · Freelance</b><span data-en="from Paraguay (UTC−3)">desde Paraguay (UTC−3)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap reveal">
+    <div class="stats">
+      <div class="stat"><b><span data-count="6">6</span><em>+</em></b><span data-en="years of professional experience">años de experiencia profesional</span></div>
+      <div class="stat"><b><em>−</em><span data-count="30">30</span><em>%</em></b><span data-en="less time spent on reports, thanks to automation">de tiempo en reportes, gracias a la automatización</span></div>
+      <div class="stat"><b><span data-count="3">3</span></b><span data-en="organizations: insurance, financial services and records management">organizaciones: seguros, servicios financieros y gestión documental</span></div>
+      <div class="stat"><b>ISO <em>9001</em></b><span data-en="experience with quality management systems">experiencia en sistemas de gestión de calidad</span></div>
+    </div>
+  </div>
+
+  <section id="servicios">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div>
+          <div class="eyebrow mono" data-en="Services">Servicios</div>
+          <h2 data-en="How I can <span class='hl'>support your work</span>">Cómo puedo <span class="hl">apoyar tu trabajo</span></h2>
+        </div>
+        <p data-en="Tasks that take load off your team and leave you with organized information to make decisions. Fully remote, per project or ongoing.">Tareas que le sacan carga a tu equipo y te dejan información ordenada para decidir. Todo de forma remota, por proyecto o de manera continua.</p>
+      </div>
+      <div class="cards">
+        <article class="card reveal">
+          <div class="card-top"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 14h4"/><path d="M8 17h8"/></svg></div><span class="mono code">S-01</span></div>
+          <h3 data-en="Administrative assistance">Asistencia administrativa</h3>
+          <p data-en="Document management, follow-up on pending items, management reports and coordination across departments.">Gestión documental, seguimiento de pendientes, informes de gestión y coordinación con distintas áreas.</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-top"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/><path d="M4 11v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"/></svg></div><span class="mono code">S-02</span></div>
+          <h3 data-en="Data entry and data management">Data entry y gestión de datos</h3>
+          <p data-en="Loading, cleaning, validating and cross-checking information in Excel, with controls so the data can be trusted.">Carga, limpieza, validación y cruce de información en Excel, con controles para que los datos sean confiables.</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-top"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div><span class="mono code">S-03</span></div>
+          <h3 data-en="Custom collaboration tools">Herramientas de colaboración a medida</h3>
+          <p data-en="Automated spreadsheets, Power Automate flows and simple tools, designed around how your team works.">Planillas automatizadas, flujos con Power Automate y herramientas simples, pensadas en cómo trabaja tu equipo.</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-top"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></div><span class="mono code">S-04</span></div>
+          <h3 data-en="Reports and KPIs">Reportes e indicadores</h3>
+          <p data-en="Power BI dashboards, KPIs and executive reports to track your results without wasting time.">Dashboards en Power BI, KPIs y reportes ejecutivos para seguir tus resultados sin perder tiempo.</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-top"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/></svg></div><span class="mono code">S-05</span></div>
+          <h3 data-en="Processes and procedures">Procesos y procedimientos</h3>
+          <p data-en="I map and document AS-IS / TO-BE processes, and write clear procedures and work instructions.">Relevo y documento procesos AS-IS / TO-BE, y redacto procedimientos e instructivos claros.</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-top"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><span class="mono code">S-06</span></div>
+          <h3 data-en="Task and project tracking">Seguimiento de tareas y proyectos</h3>
+          <p data-en="Action plans, owners and deadlines under control, with progress visible to you and your team.">Planes de acción, responsables y fechas bajo control, con avances visibles para vos y tu equipo.</p>
+        </article>
+        <article class="card wide reveal">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
+          <div class="wide-text">
+            <h3 data-en="Writing and documentation">Redacción de textos y documentación</h3>
+            <p data-en="Writing is one of my strengths: reports, procedures, manuals, emails and content that are clear, well organized and adapted to whoever will read them. In Spanish.">Redactar es uno de mis puntos fuertes: informes, procedimientos, manuales, correos y contenidos claros, ordenados y adaptados a quien los va a leer.</p>
+          </div>
+          <span class="mono code">S-07</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <div class="band" id="como-trabajo">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div>
+          <div class="eyebrow mono" data-en="How I work">Cómo trabajo</div>
+          <h2 data-en="From your need to a concrete result">De tu necesidad a un resultado concreto</h2>
+        </div>
+        <p data-en="A simple, organized process designed for remote work. Tap each stage to see the details.">Un proceso simple y ordenado, pensado para trabajar a distancia. Tocá cada etapa para ver el detalle.</p>
+      </div>
+      <div class="reveal">
+        <div class="flow" id="flow">
+          <div class="track" aria-hidden="true"><div class="track-fill" id="trackFill"></div><div class="token" id="token"></div></div>
+          <button class="step" type="button" id="step-0"><span class="node">01</span><span class="step-name">Escucho</span></button>
+          <button class="step" type="button" id="step-1"><span class="node">02</span><span class="step-name">Organizo</span></button>
+          <button class="step" type="button" id="step-2"><span class="node">03</span><span class="step-name">Ejecuto</span></button>
+          <button class="step" type="button" id="step-3"><span class="node">04</span><span class="step-name">Entrego</span></button>
+          <button class="step" type="button" id="step-4"><span class="node">05</span><span class="step-name">Mejoro</span></button>
+        </div>
+        <div class="detail" id="detail" aria-live="polite">
+          <div class="detail-num" id="dNum">01</div>
+          <div>
+            <h3 id="dTitle">Escucho</h3>
+            <p id="dText">Una conversación breve para entender qué necesitás, cómo trabaja tu equipo y cuáles son tus tiempos.</p>
+          </div>
+          <div class="deliverable"><div class="mono" data-en="Outcome">Resultado</div><div id="dOut">Alcance acordado</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section id="modalidad">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div>
+          <div class="eyebrow mono" data-en="Work mode">Modalidad</div>
+          <h2 data-en="Let's work <span class='hl'>remotely</span>">Trabajemos <span class="hl">a distancia</span></h2>
+        </div>
+        <p data-en="I adapt to your tools and your way of working, with clear communication and on-time delivery.">Me adapto a tus herramientas y a tu forma de trabajar, con comunicación clara y entregas a tiempo.</p>
+      </div>
+      <div class="modes">
+        <div class="mode reveal">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+          <div><h3 data-en="Freelance, per project">Freelance por proyecto</h3><p data-en="One-off tasks or projects with a defined scope and delivery date.">Tareas puntuales o proyectos con alcance y fecha de entrega definidos.</p></div>
+        </div>
+        <div class="mode reveal">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg></div>
+          <div><h3 data-en="Ongoing remote role">Remoto continuo</h3><p data-en="Steady support for your team, integrated into your meetings and tools.">Apoyo estable a tu equipo, integrado a tus reuniones y herramientas.</p></div>
+        </div>
+        <div class="mode reveal">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+          <div><h3>Paraguay, UTC−3</h3><p data-en="Working hours compatible with all of Latin America, Spain and much of the United States.">Horario compatible con toda Latinoamérica, con España y con buena parte de Estados Unidos.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="resultados">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div>
+          <div class="eyebrow mono" data-en="Results">Resultados</div>
+          <h2 data-en="Experience that has <span class='hl'>already delivered</span>">Experiencia que <span class="hl">ya dio resultados</span></h2>
+        </div>
+        <p data-en="Some concrete examples of my work in the insurance sector.">Algunos ejemplos concretos de mi trabajo en el sector asegurador.</p>
+      </div>
+      <div class="results">
+        <article class="result feature reveal">
+          <div class="mono" data-en="Automation">Automatización</div>
+          <div class="big">−<span data-count="30">30</span>%</div>
+          <p data-en="Less time generating and consolidating reports, automated with Excel, VBA and AI tools.">Menos tiempo generando y consolidando reportes, automatizados con Excel, VBA y herramientas de inteligencia artificial.</p>
+        </article>
+        <article class="result reveal">
+          <div class="mono" data-en="Customer experience">Experiencia del cliente</div>
+          <h3 data-en="Voice of the Customer">Voz del Cliente</h3>
+          <p data-en="I implemented the tool used to track non-conformities and improvement opportunities.">Implementé la herramienta para dar seguimiento a no conformidades y oportunidades de mejora.</p>
+        </article>
+        <article class="result reveal">
+          <div class="mono" data-en="Strategy">Estrategia</div>
+          <h3 data-en="Corporate Balanced Scorecard">Balanced Scorecard corporativo</h3>
+          <p data-en="I built and maintained the strategic scorecard, with regular reviews alongside senior management.">Desarrollé y mantuve el tablero estratégico, con seguimiento junto a la alta dirección.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="proyectos">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div>
+          <div class="eyebrow mono" data-en="Projects">Proyectos</div>
+          <h2 data-en="Tools I <span class='hl'>built myself</span>">Herramientas que <span class="hl">construí</span></h2>
+        </div>
+        <p data-en="Beyond my roles, I design and build practical tools: from an online store to an internal management app.">Además de mi trabajo en relación de dependencia, diseño y armo herramientas prácticas: desde una tienda online hasta una app interna de gestión.</p>
+      </div>
+      <div class="cards">
+        <article class="card reveal">
+          <div class="card-top"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div><span class="mono code">P-01</span></div>
+          <h3 data-en="Ale Novedades — online store">Ale Novedades — tienda online</h3>
+          <p data-en="Web catalog where customers build their order and send it via WhatsApp. Orders are logged automatically in Google Sheets.">Catálogo web donde el cliente arma su pedido y lo envía por WhatsApp. Los pedidos quedan registrados automáticamente en Google Sheets.</p>
+          <div class="stack"><span>HTML/CSS/JS</span><span>Google Sheets</span><span>GitHub Pages</span></div>
+          <a class="more" href="https://arig0406-stack.github.io/alenovedadespy/" target="_blank" rel="noopener"><span data-en="View site">Ver sitio</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a>
+        </article>
+        <article class="card reveal">
+          <div class="card-top"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></div><span class="mono code">P-02</span></div>
+          <h3 data-en="Order management app">App de gestión de pedidos</h3>
+          <p data-en="Internal panel to track orders and manage the product catalog, built on Google Apps Script and connected to the store.">Panel interno para seguir pedidos y cargar productos del catálogo, hecho en Google Apps Script y conectado a la tienda.</p>
+          <div class="stack"><span>Apps Script</span><span>Google Sheets</span></div>
+          <span class="note" data-en="Private tool: demo available on request.">Herramienta privada: la muestro en una entrevista.</span>
+        </article>
+        <article class="card reveal">
+          <div class="card-top"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></svg></div><span class="mono code">P-03</span></div>
+          <h3 data-en="This website">Esta página</h3>
+          <p data-en="Bilingual, responsive and accessible, with no frameworks or dependencies. Includes a downloadable ATS-friendly CV.">Bilingüe, responsive y accesible, sin frameworks ni dependencias. Incluye la descarga de mi CV en formato ATS.</p>
+          <div class="stack"><span>HTML/CSS/JS</span><span>GitHub Pages</span></div>
+          <a class="more" href="https://github.com/arig0406-stack/arig0406-stack.github.io" target="_blank" rel="noopener"><span data-en="View code on GitHub">Ver código en GitHub</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="trayectoria">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div>
+          <div class="eyebrow mono" data-en="Experience">Trayectoria</div>
+          <h2 data-en="Over six years <span class='hl'>improving operations</span>">Más de seis años <span class="hl">mejorando la gestión</span></h2>
+        </div>
+        <p data-en="I started in operational roles and grew into leading digital transformation teams and continuous improvement areas.">Empecé en puestos operativos y crecí hasta liderar equipos de transformación digital y áreas de mejora continua.</p>
+      </div>
+      <div class="timeline" id="timeline">
+        <div class="tl-line" aria-hidden="true"><span id="tlFill"></span></div>
+        <div class="job reveal">
+          <div class="job-year">2025 — 2026</div>
+          <div class="job-body">
+            <h3 data-en="Process &amp; Continuous Improvement Analyst">Analista de Procesos y Mejora Continua</h3>
+            <div class="org">Interfisa Seguros S.A.</div>
+            <ul>
+              <li data-en="Process mapping and redesign with AS-IS and TO-BE diagrams.">Relevamiento y rediseño de procesos con diagramas AS-IS y TO-BE.</li>
+              <li data-en="Management and updating of policies, procedures and work instructions.">Gestión y actualización de políticas, procedimientos e instructivos.</li>
+              <li data-en="Risk matrices, KPIs and control tools.">Matrices de riesgo, indicadores y herramientas de control.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="job reveal">
+          <div class="job-year">2024 — 2025</div>
+          <div class="job-body">
+            <h3 data-en="Planning &amp; Continuous Improvement Analyst">Analista de Planificación y Mejora Continua</h3>
+            <div class="org">Fénix Seguros</div>
+            <ul>
+              <li data-en="Tracking of strategic projects and initiatives with senior management.">Seguimiento de proyectos e iniciativas estratégicas con la alta dirección.</li>
+              <li data-en="Corporate Balanced Scorecard and Power BI dashboards.">Balanced Scorecard corporativo y dashboards en Power BI.</li>
+              <li data-en="Report automation: 30% less time spent generating them.">Automatización de reportes: 30% menos tiempo de generación.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="job reveal">
+          <div class="job-year">2019 — 2024</div>
+          <div class="job-body">
+            <h3 data-en="Digital Transformation Team Lead">Líder de Equipo de Transformación Digital</h3>
+            <div class="org">Lockers Records Management S.A.</div>
+            <ul>
+              <li data-en="Grew from quality and records consulting assistant to team lead.">Crecí desde asistente de calidad y consultoría documental hasta liderar el equipo.</li>
+              <li data-en="Large-scale document digitization projects.">Proyectos de digitalización documental a gran escala.</li>
+              <li data-en="Excel tools to track and control operational performance.">Herramientas en Excel para seguimiento y control del desempeño operativo.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="formacion">
+    <div class="wrap">
+      <div class="duo">
+        <div class="panel reveal">
+          <h3 data-en="Education">Formación</h3>
+          <div class="edu">
+            <div><b data-en="Bachelor's Degree in Business Administration">Licenciatura en Administración de Empresas</b><span>Universidad Columbia del Paraguay · 2026</span></div>
+            <div><b data-en="Diploma in Strategic Management Control Systems">Diplomado en Sistemas de Control de Gestión Estratégica</b><span>Universidad Tecnológica Intercontinental · 2025</span></div>
+            <div><b data-en="Diploma in Business Organization and Methods">Diplomado en Organización y Métodos de Gestión Empresarial</b><span>SNPP · 2026</span></div>
+            <div><b data-en="Languages">Idiomas</b><span data-en="Spanish: native · English: basic (currently studying)">Español: nativo · Inglés: básico (en proceso)</span></div>
+          </div>
+        </div>
+        <div class="panel reveal">
+          <h3 data-en="Tools">Herramientas</h3>
+          <div class="chips">
+            <span class="chip strong" data-en="Advanced Excel">Excel avanzado</span><span class="chip strong">Power BI</span><span class="chip strong" data-en="VBA &amp; macros">VBA y macros</span><span class="chip strong">Power Query</span><span class="chip strong">Power Automate</span>
+            <span class="chip">Microsoft 365</span><span class="chip">SharePoint</span><span class="chip">Google Sheets</span><span class="chip">Google Apps Script</span><span class="chip">Bizagi</span><span class="chip">Visio</span><span class="chip">Lucidchart</span><span class="chip">Draw.io</span>
+            <span class="chip">HTML / CSS</span><span class="chip">GitHub</span><span class="chip">ChatGPT</span><span class="chip">Claude</span><span class="chip">Copilot</span><span class="chip">Gemini</span>
+          </div>
+        </div>
+      </div>
+      <div class="ticker" aria-hidden="true">
+        <div class="ticker-track">
+          <span data-en="Administrative assistance">Asistencia administrativa</span><span>Data entry</span><span data-en="Custom tools">Herramientas a medida</span><span data-en="Reports and KPIs">Reportes e indicadores</span><span data-en="Processes">Procesos</span><span data-en="Writing">Redacción</span><span data-en="Remote work">Trabajo remoto</span>
+          <span data-en="Administrative assistance">Asistencia administrativa</span><span>Data entry</span><span data-en="Custom tools">Herramientas a medida</span><span data-en="Reports and KPIs">Reportes e indicadores</span><span data-en="Processes">Procesos</span><span data-en="Writing">Redacción</span><span data-en="Remote work">Trabajo remoto</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contacto">
+    <div class="wrap">
+      <div class="contact reveal">
+        <div class="contact-photo">
+          <img src="img/resto.jpg" loading="lazy" alt="Alejandro Irala en una cena al aire libre" data-en-alt="Alejandro Irala at an outdoor dinner">
+          <div class="ph-tag" data-en="I work with focus, and I'm looking for an environment that also leaves room for personal life.">Trabajo con foco y busco un entorno donde también haya espacio para la vida personal.</div>
+        </div>
+        <div class="contact-body">
+          <div class="eyebrow mono" data-en="Let's talk">Hablemos</div>
+          <h2 data-en="Need support with your operations?">¿Necesitás apoyo en tu gestión?</h2>
+          <p class="lead" data-en="Let's go through it together: I want to understand your needs and how I can support you. I'm open to hearing offers from <b>all of Latin America and Spain</b>, for <b>freelance projects and remote roles</b>.">Hagamos juntos un recorrido: quiero entender tu necesidad y cómo puedo apoyarte. Estoy atento a escuchar propuestas de <b>toda Latinoamérica y también de España</b>, para <b>proyectos freelance y trabajo remoto</b>.</p>
+          <a class="li-card" href="https://www.linkedin.com/in/alejandro-irala-39aa6a193" target="_blank" rel="noopener">
+            <img src="img/linkedin.jpg" width="291" height="279" alt="Foto de perfil de Alejandro Irala en LinkedIn" data-en-alt="Alejandro Irala's LinkedIn profile photo">
+            <span class="li-info">
+              <b>Alejandro Irala</b>
+              <span class="li-head" data-en="Processes | Quality | Continuous Improvement | Projects">Procesos | Calidad | Mejora Continua | Proyectos</span>
+              <span class="li-meta" data-en="Paraguay · 2,237 followers · 500+ connections">Paraguay · 2.237 seguidores · más de 500 contactos</span>
+            </span>
+            <span class="li-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg><span data-en="View profile">Ver perfil</span></span>
+          </a>
+          <div class="links">
+            <div class="link-row">
+              <div class="l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg><a href="mailto:arig0406@gmail.com">arig0406@gmail.com</a></div>
+              <button class="btn btn-ghost mini" type="button" id="copyMail" data-en="Copy">Copiar</button>
+            </div>
+            <div class="link-row">
+              <div class="l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg><a href="https://github.com/arig0406-stack" target="_blank" rel="noopener">github.com/arig0406-stack</a></div>
+              <a class="btn btn-ghost mini" href="https://github.com/arig0406-stack" target="_blank" rel="noopener" data-en="Open">Abrir</a>
+            </div>
+            <div class="link-row">
+              <div class="l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span data-en="Lambaré, Paraguay · Remote">Lambaré, Paraguay · Remoto</span></div>
+            </div>
+          </div>
+          <div class="cv-box no-print">
+            <p><span data-en="You can also download my CV here, in ATS format.">También podés descargar acá mi CV en formato ATS.</span><small data-en="PDF in Spanish · 2 pages">PDF · 2 páginas</small></p>
+            <a class="btn btn-primary" href="cv/Alejandro-Irala-CV-ATS.pdf" download="Alejandro-Irala-CV-ATS.pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg><span data-en="Download CV">Descargar CV</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span data-en="Alejandro Raúl Irala Galeano · Operations, processes and data support">Alejandro Raúl Irala Galeano · Apoyo a la gestión, procesos y datos</span>
+    <span>Lambaré, Paraguay · 2026 · <a href="https://github.com/arig0406-stack/arig0406-stack.github.io" target="_blank" rel="noopener" data-en="Source code">Código fuente</a></span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- IDIOMA (ES / EN) ---------- */
+  var lang = 'es';
+  var META = {
+    es: {title: 'Alejandro Irala — Apoyo a tu gestión', desc: document.querySelector('meta[name=description]').getAttribute('content'), copy: 'Copiar', copied: 'Copiado', sel: 'Seleccioná el correo'},
+    en: {title: 'Alejandro Irala — Operations, processes and data support', desc: 'Alejandro Irala: administrative assistance, data entry, Power BI reporting, Excel/VBA automation and process improvement. Available for remote and freelance work from Paraguay (UTC−3).', copy: 'Copy', copied: 'Copied', sel: 'Select the email'}
+  };
+  var i18n = Array.prototype.slice.call(document.querySelectorAll('[data-en]'));
+  i18n.forEach(function(el){ el.setAttribute('data-es', el.innerHTML); });
+  var alts = Array.prototype.slice.call(document.querySelectorAll('[data-en-alt]'));
+  alts.forEach(function(el){ el.setAttribute('data-es-alt', el.getAttribute('alt')); });
+
+  function setLang(l, save){
+    lang = l === 'en' ? 'en' : 'es';
+    document.documentElement.lang = lang;
+    i18n.forEach(function(el){ el.innerHTML = el.getAttribute('data-' + lang); });
+    alts.forEach(function(el){ el.setAttribute('alt', el.getAttribute('data-' + lang + '-alt')); });
+    document.title = META[lang].title;
+    document.querySelector('meta[name=description]').setAttribute('content', META[lang].desc);
+    document.querySelectorAll('.lang button').forEach(function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-lang') === lang ? 'true' : 'false'); });
+    if (save) { try { localStorage.setItem('lang', lang); } catch (e) {} }
+    if (typeof renderSteps === 'function') renderSteps();
+  }
+  document.querySelectorAll('.lang button').forEach(function(b){
+    b.addEventListener('click', function(){
+      setLang(b.getAttribute('data-lang'), true);
+      try { var u = new URL(location.href); u.searchParams.set('lang', lang); history.replaceState(null, '', u); } catch (e) {}
+    });
+  });
+
+  /* ---------- APARICIÓN AL HACER SCROLL ---------- */
+  var reveals = Array.prototype.slice.call(document.querySelectorAll('.reveal'));
+  if ('IntersectionObserver' in window && !reduce) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if (e.isIntersecting) { e.target.classList.remove('pending'); io.unobserve(e.target); } });
+    }, {threshold: .12});
+    reveals.forEach(function(el, i){
+      if (el.getBoundingClientRect().top > window.innerHeight) {
+        el.classList.add('pending');
+        el.style.transitionDelay = ((i % 3) * 80) + 'ms';
+        io.observe(el);
+      }
+    });
+  }
+
+  /* ---------- CONTADORES ---------- */
+  function countUp(el){
+    var end = parseInt(el.getAttribute('data-count'), 10), t0 = null, dur = 1400;
+    function tick(t){
+      if (!t0) t0 = t;
+      var p = Math.min((t - t0) / dur, 1);
+      el.textContent = Math.round(end * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+  if ('IntersectionObserver' in window && !reduce) {
+    var co = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if (e.isIntersecting) { countUp(e.target); co.unobserve(e.target); } });
+    }, {threshold: .6});
+    document.querySelectorAll('[data-count]').forEach(function(c){ co.observe(c); });
+  }
+
+  /* ---------- MÉTODO DE TRABAJO ---------- */
+  var steps = {
+    es: [
+      {t:'Escucho', d:'Una conversación breve para entender qué necesitás, cómo trabaja tu equipo y cuáles son tus tiempos.', o:'Alcance acordado'},
+      {t:'Organizo', d:'Ordeno la información, defino prioridades y armo un plan con fechas claras.', o:'Plan de trabajo'},
+      {t:'Ejecuto', d:'Trabajo de forma remota y comparto avances para que siempre sepas en qué punto estamos.', o:'Avances periódicos'},
+      {t:'Entrego', d:'Te entrego el resultado listo para usar, con la documentación necesaria para tu equipo.', o:'Entrega documentada'},
+      {t:'Mejoro', d:'Ajusto según tu feedback y propongo mejoras para que el trabajo siga dando resultados.', o:'Ajustes y mejoras'}
+    ],
+    en: [
+      {t:'Listen', d:'A short conversation to understand what you need, how your team works and what your timelines are.', o:'Agreed scope'},
+      {t:'Organize', d:'I sort the information, set priorities and build a plan with clear dates.', o:'Work plan'},
+      {t:'Execute', d:'I work remotely and share progress so you always know where things stand.', o:'Regular updates'},
+      {t:'Deliver', d:'You get a ready-to-use result, with the documentation your team needs.', o:'Documented delivery'},
+      {t:'Improve', d:'I adjust based on your feedback and suggest improvements so the work keeps paying off.', o:'Adjustments and improvements'}
+    ]
+  };
+  var N = steps.es.length;
+  var btns = steps.es.map(function(_, i){ return document.getElementById('step-' + i); });
+  var fill = document.getElementById('trackFill'), token = document.getElementById('token'), detail = document.getElementById('detail');
+  var dNum = document.getElementById('dNum'), dTitle = document.getElementById('dTitle'), dText = document.getElementById('dText'), dOut = document.getElementById('dOut');
+  var active = 0, timer = null, mq = window.matchMedia('(max-width: 860px)');
+
+  function renderSteps(){
+    btns.forEach(function(b, k){ b.querySelector('.step-name').textContent = steps[lang][k].t; });
+    dTitle.textContent = steps[lang][active].t; dText.textContent = steps[lang][active].d; dOut.textContent = steps[lang][active].o;
+  }
+  window.renderSteps = renderSteps;
+  function setActive(i){
+    active = i;
+    btns.forEach(function(b, k){
+      b.classList.toggle('is-active', k === i);
+      b.classList.toggle('is-done', k < i);
+      b.setAttribute('aria-pressed', k === i ? 'true' : 'false');
+    });
+    var pct = (i / (N - 1)) * 100;
+    if (mq.matches) { fill.style.height = pct + '%'; fill.style.width = ''; token.style.top = pct + '%'; token.style.left = ''; }
+    else { fill.style.width = pct + '%'; fill.style.height = ''; token.style.left = pct + '%'; token.style.top = ''; }
+    dNum.textContent = String(i + 1).padStart(2, '0');
+    renderSteps();
+    detail.classList.remove('swap'); void detail.offsetWidth; detail.classList.add('swap');
+  }
+  function stop(){ if (timer) { clearInterval(timer); timer = null; } }
+  function play(){ stop(); if (reduce) return; timer = setInterval(function(){ setActive((active + 1) % N); }, 2800); }
+  btns.forEach(function(b, i){ b.addEventListener('click', function(){ setActive(i); stop(); setTimeout(play, 7000); }); });
+  var flow = document.getElementById('flow');
+  flow.addEventListener('mouseenter', stop);
+  flow.addEventListener('mouseleave', play);
+  if (mq.addEventListener) mq.addEventListener('change', function(){ setActive(active); });
+
+  /* ---------- LÍNEA DE TIEMPO ---------- */
+  var tl = document.getElementById('timeline'), tlFill = document.getElementById('tlFill');
+  function onScroll(){
+    var r = tl.getBoundingClientRect();
+    var p = (window.innerHeight * .7 - r.top) / r.height;
+    tlFill.style.height = (Math.max(0, Math.min(1, p)) * 100) + '%';
+  }
+  window.addEventListener('scroll', onScroll, {passive: true});
+  onScroll();
+
+  /* ---------- COPIAR CORREO ---------- */
+  var copyBtn = document.getElementById('copyMail');
+  copyBtn.addEventListener('click', function(){
+    try {
+      navigator.clipboard.writeText('arig0406@gmail.com').then(function(){
+        copyBtn.textContent = META[lang].copied; setTimeout(function(){ copyBtn.textContent = META[lang].copy; }, 1800);
+      }, function(){ copyBtn.textContent = META[lang].sel; });
+    } catch (e) { copyBtn.textContent = META[lang].sel; }
+  });
+
+  /* ---------- IMPRESIÓN: mostrar todo el contenido ---------- */
+  window.addEventListener('beforeprint', function(){ document.querySelectorAll('.reveal.pending').forEach(function(el){ el.classList.remove('pending'); }); });
+
+  /* ---------- IDIOMA INICIAL: ?lang= > elegido antes > idioma del navegador ---------- */
+  var initial = 'es';
+  try {
+    var q = new URLSearchParams(location.search).get('lang');
+    var saved = localStorage.getItem('lang');
+    if (q === 'en' || q === 'es') initial = q;
+    else if (saved === 'en' || saved === 'es') initial = saved;
+    else if ((navigator.language || '').toLowerCase().indexOf('en') === 0) initial = 'en';
+  } catch (e) {}
+  setLang(initial, false);
+  setActive(0); play();
+})();
+</script>
+</body>
+</html>
