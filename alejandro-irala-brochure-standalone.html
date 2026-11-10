@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Alejandro Irala — Apoyo a tu gestión</title>
-<meta name="description" content="Alejandro Irala: asistencia administrativa, data entry, reportes en Power BI, automatización con Excel/VBA y mejora de procesos. Disponible para trabajo remoto y freelance desde Paraguay (UTC−3).">
+<meta name="description" content="Alejandro Irala: asistencia personal y administrativa, contenido, reclutamiento, procesos, gestión documental e indicadores. Disponible para trabajo remoto y freelance desde Paraguay (UTC−3).">
 <meta name="author" content="Alejandro Raúl Irala Galeano">
 <meta name="theme-color" content="#0F4C81">
 <link rel="canonical" href="https://arig0406-stack.github.io/">
 <meta property="og:type" content="profile">
 <meta property="og:title" content="Alejandro Irala — Procesos, datos y apoyo a la gestión">
-<meta property="og:description" content="Asistencia administrativa, data entry, Power BI, automatización con Excel/VBA y mejora de procesos. Disponible para trabajo remoto.">
+<meta property="og:description" content="Asistencia personal y administrativa, contenido, reclutamiento, procesos e indicadores. Disponible para trabajo remoto desde Paraguay.">
 <meta property="og:url" content="https://arig0406-stack.github.io/">
 <meta property="og:image" content="https://arig0406-stack.github.io/img/obelisco.jpg">
 <meta property="og:locale" content="es_PY">
@@ -145,9 +145,30 @@ section{padding:104px 0 0}
 .icon svg{width:23px;height:23px}
 .card h3{font-size:20px;font-weight:700;letter-spacing:-.01em;line-height:1.25}
 .card p{color:var(--muted);font-size:15px}
-.card.wide{grid-column:1 / -1;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:24px}
-.card.wide .wide-text{display:flex;flex-direction:column;gap:8px}
-.card.wide p{max-width:72ch}
+
+/* SERVICIOS POR ÁREA */
+.svc-num{font-size:13px;color:var(--primary);font-weight:500;letter-spacing:.06em}
+.svc-start{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:24px;align-items:center;border:1px dashed #BFD0E4;border-radius:var(--radius);background:var(--primary-soft);padding:24px 28px;margin-bottom:16px}
+.svc-start > .svc-num{width:56px;height:56px;border-radius:16px;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:15px}
+.svc-start h3{font-size:20px;font-weight:800;letter-spacing:-.01em}
+.svc-start p{color:var(--muted);font-size:15.5px;margin-top:4px;max-width:70ch}
+.svc-list{display:grid;gap:16px;counter-reset:svc}
+.svc{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:36px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:28px;position:relative;overflow:hidden;transition:border-color .35s ease, box-shadow .35s ease}
+.svc::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--primary);transform:scaleY(0);transform-origin:top;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.svc:hover{border-color:#BFD0E4;box-shadow:0 28px 50px -38px rgba(14,26,43,.55)}
+.svc:hover::before{transform:scaleY(1)}
+.svc:hover .icon{background:var(--primary);color:#fff}
+.svc-head{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.svc-top{display:flex;align-items:center;gap:14px}
+.svc-head h3{font-size:21px;font-weight:800;letter-spacing:-.02em;line-height:1.2}
+.svc-head p{color:var(--muted);font-size:15px}
+.badge{display:inline-flex;align-items:center;gap:8px;font-size:11px;color:var(--ok);background:#E8F5EE;border:1px solid #BFE3CD;border-radius:999px;padding:5px 10px}
+.badge::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ok)}
+.svc-items{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 24px;align-content:start}
+.svc-items li{position:relative;padding-left:20px;display:flex;flex-direction:column;gap:2px}
+.svc-items li::before{content:"";position:absolute;left:0;top:11px;width:8px;height:2px;background:var(--primary)}
+.svc-items b{font-size:15.5px;font-weight:700}
+.svc-items span{color:var(--muted);font-size:14.5px;line-height:1.5}
 
 /* PROJECTS */
 .card .stack{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:6px}
@@ -297,8 +318,9 @@ footer a:hover{color:var(--primary)}
   .track-fill{width:100% !important;height:0;transition:height .9s cubic-bezier(.65,0,.35,1)}
   .token{left:50% !important;top:0;transition:top .9s cubic-bezier(.65,0,.35,1)}
   .step{flex-direction:row;text-align:left;gap:18px}
-  .card.wide{grid-template-columns:1fr;gap:14px}
-  .card.wide .code{display:none}
+  .svc{grid-template-columns:1fr;gap:20px;padding:24px 22px}
+  .svc-start{grid-template-columns:1fr;gap:14px;padding:22px}
+  .svc-start .btn{justify-self:start}
   .detail{grid-template-columns:1fr;gap:12px;padding:22px}
   .detail-num{font-size:48px}
   .deliverable{min-width:0}
@@ -314,6 +336,7 @@ footer a:hover{color:var(--primary)}
 @media (max-width:560px){
   body{font-size:16px}
   .cards,.results{grid-template-columns:1fr}
+  .svc-items{grid-template-columns:1fr}
   .stat{padding:20px 16px}
   .float{padding:10px 14px}
   .float b{font-size:19px}
@@ -351,6 +374,9 @@ footer a:hover{color:var(--primary)}
   .cards,.results{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
   .card,.result,.panel,.job-body,.mode{padding:12px 14px;break-inside:avoid;border-color:#ccd}
   .card .icon,.card-top{display:none}
+  .svc-start,.svc .icon{display:none}
+  .svc{grid-template-columns:200px minmax(0,1fr);gap:16px;padding:12px 14px;break-inside:avoid;border-color:#ccd}
+  .svc-items span{font-size:9.5pt}
   .card h3,.result h3{font-size:11.5pt}
   .card p,.result p,.job li{font-size:10pt}
   .result.feature{background:#fff;color:var(--text);border-color:var(--primary)}
@@ -400,13 +426,13 @@ footer a:hover{color:var(--primary)}
         <div class="status load d1"><span class="pulse" aria-hidden="true"></span><span data-en="Open to offers from Latin America and Spain">Abierto a propuestas de Latinoamérica y España</span></div>
         <div class="headline mono load d1" data-en="Processes | Quality | Continuous Improvement | Projects">Procesos | Calidad | Mejora Continua | Proyectos</div>
         <h1 class="load d2" data-en="I support your operations with a <span class='hl'>focus on results.</span>">Apoyo tu gestión con <span class="hl">foco en resultados.</span></h1>
-        <p class="hero-lead load d3" data-en="I'm <strong>Paraguayan</strong> and I'm really eager to work with you. I'm looking for <strong>remote or freelance opportunities</strong> to support your team: administrative assistance, data entry and <strong>collaboration tools built around what you need</strong>. A role where I can balance life and work, and bring real added value to your goals.">Soy <strong>paraguayo</strong> y tengo muchas ganas de colaborar contigo. Hoy busco oportunidades <strong>freelance o en modalidad remota</strong> para apoyar tu gestión: asistencia administrativa, data entry y <strong>herramientas de colaboración pensadas en lo que necesitás</strong>. Un trabajo donde pueda equilibrar mi vida y mi trabajo, y mostrar mi valor diferencial en tus necesidades.</p>
+        <p class="hero-lead load d3" data-en="I'm <strong>Paraguayan</strong> and I'm really eager to work with you. I'm looking for <strong>remote or freelance opportunities</strong> to support you: personal and administrative assistance, content, recruitment, processes and KPIs, always <strong>built around what you need</strong>. A role where I can balance life and work, and bring real added value to your goals.">Soy <strong>paraguayo</strong> y tengo muchas ganas de colaborar contigo. Hoy busco oportunidades <strong>freelance o en modalidad remota</strong> para apoyarte: asistencia personal y administrativa, contenido, reclutamiento, procesos e indicadores, siempre <strong>pensado en lo que necesitás</strong>. Un trabajo donde pueda equilibrar mi vida y mi trabajo, y mostrar mi valor diferencial en tus necesidades.</p>
         <div class="tags load d3">
-          <span class="tag" data-en="Administrative assistance">Asistencia administrativa</span>
-          <span class="tag">Data entry</span>
-          <span class="tag" data-en="Custom tools">Herramientas a medida</span>
+          <span class="tag" data-en="Assistance">Asistencia</span>
+          <span class="tag" data-en="Content">Contenido</span>
+          <span class="tag" data-en="Recruitment">Reclutamiento</span>
           <span class="tag" data-en="Processes">Procesos</span>
-          <span class="tag" data-en="Writing">Redacción</span>
+          <span class="tag" data-en="KPIs">Indicadores</span>
         </div>
         <div class="hero-cta load d4">
           <a class="btn btn-primary" href="#contacto"><span data-en="Contact me">Contactarme</span>
@@ -437,48 +463,93 @@ footer a:hover{color:var(--primary)}
       <div class="sec-head reveal">
         <div>
           <div class="eyebrow mono" data-en="Services">Servicios</div>
-          <h2 data-en="How I can <span class='hl'>support your work</span>">Cómo puedo <span class="hl">apoyar tu trabajo</span></h2>
+          <h2 data-en="What I can <span class='hl'>do for you</span>">Lo que puedo <span class="hl">hacer por vos</span></h2>
         </div>
-        <p data-en="Tasks that take load off your team and leave you with organized information to make decisions. Fully remote, per project or ongoing.">Tareas que le sacan carga a tu equipo y te dejan información ordenada para decidir. Todo de forma remota, por proyecto o de manera continua.</p>
+        <p data-en="I've organized my services into five areas, from day-to-day support to specialized work. But they all start in the same place: understanding what you need.">Ordené mis servicios en cinco áreas, desde el día a día hasta lo más especializado. Pero todas empiezan por el mismo lugar: entender qué necesitás.</p>
       </div>
-      <div class="cards">
-        <article class="card reveal">
-          <div class="card-top"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 14h4"/><path d="M8 17h8"/></svg></div><span class="mono code">S-01</span></div>
-          <h3 data-en="Administrative assistance">Asistencia administrativa</h3>
-          <p data-en="Document management, follow-up on pending items, management reports and coordination across departments.">Gestión documental, seguimiento de pendientes, informes de gestión y coordinación con distintas áreas.</p>
-        </article>
-        <article class="card reveal">
-          <div class="card-top"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/><path d="M4 11v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"/></svg></div><span class="mono code">S-02</span></div>
-          <h3 data-en="Data entry and data management">Data entry y gestión de datos</h3>
-          <p data-en="Loading, cleaning, validating and cross-checking information in Excel, with controls so the data can be trusted.">Carga, limpieza, validación y cruce de información en Excel, con controles para que los datos sean confiables.</p>
-        </article>
-        <article class="card reveal">
-          <div class="card-top"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div><span class="mono code">S-03</span></div>
-          <h3 data-en="Custom collaboration tools">Herramientas de colaboración a medida</h3>
-          <p data-en="Automated spreadsheets, Power Automate flows and simple tools, designed around how your team works.">Planillas automatizadas, flujos con Power Automate y herramientas simples, pensadas en cómo trabaja tu equipo.</p>
-        </article>
-        <article class="card reveal">
-          <div class="card-top"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></div><span class="mono code">S-04</span></div>
-          <h3 data-en="Reports and KPIs">Reportes e indicadores</h3>
-          <p data-en="Power BI dashboards, KPIs and executive reports to track your results without wasting time.">Dashboards en Power BI, KPIs y reportes ejecutivos para seguir tus resultados sin perder tiempo.</p>
-        </article>
-        <article class="card reveal">
-          <div class="card-top"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/></svg></div><span class="mono code">S-05</span></div>
-          <h3 data-en="Processes and procedures">Procesos y procedimientos</h3>
-          <p data-en="I map and document AS-IS / TO-BE processes, and write clear procedures and work instructions.">Relevo y documento procesos AS-IS / TO-BE, y redacto procedimientos e instructivos claros.</p>
-        </article>
-        <article class="card reveal">
-          <div class="card-top"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><span class="mono code">S-06</span></div>
-          <h3 data-en="Task and project tracking">Seguimiento de tareas y proyectos</h3>
-          <p data-en="Action plans, owners and deadlines under control, with progress visible to you and your team.">Planes de acción, responsables y fechas bajo control, con avances visibles para vos y tu equipo.</p>
-        </article>
-        <article class="card wide reveal">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
-          <div class="wide-text">
-            <h3 data-en="Writing and documentation">Redacción de textos y documentación</h3>
-            <p data-en="Writing is one of my strengths: reports, procedures, manuals, emails and content that are clear, well organized and adapted to whoever will read them. In Spanish.">Redactar es uno de mis puntos fuertes: informes, procedimientos, manuales, correos y contenidos claros, ordenados y adaptados a quien los va a leer.</p>
+
+      <div class="svc-start reveal">
+        <div class="svc-num mono">00</div>
+        <div>
+          <h3 data-en="First, I understand what you need">Primero, entiendo qué necesitás</h3>
+          <p data-en="Before proposing anything, we talk: what takes up your time, what you want to achieve and how you work. From there we decide together which service fits and where to start.">Antes de proponerte nada, conversamos: qué te quita tiempo, qué querés lograr y cómo trabajás. A partir de ahí vemos juntos qué servicio encaja y por dónde arrancar.</p>
+        </div>
+        <a class="btn btn-primary" href="#contacto"><span data-en="Tell me what you need">Contame qué necesitás</span></a>
+      </div>
+
+      <div class="svc-list">
+        <article class="svc reveal">
+          <div class="svc-head">
+            <div class="svc-top"><span class="svc-num mono">01</span><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/></svg></div></div>
+            <h3 data-en="Personal and administrative assistance">Asistencia personal y administrativa</h3>
+            <p data-en="I take the day-to-day off your plate so you can focus on what matters.">Me ocupo del día a día para que vos te enfoques en lo importante.</p>
           </div>
-          <span class="mono code">S-07</span>
+          <ul class="svc-items">
+            <li><b data-en="Calendar and meetings">Agenda y reuniones</b><span data-en="I schedule and coordinate meetings and keep your calendar organized.">Programo y coordino reuniones, y mantengo tu agenda ordenada.</span></li>
+            <li><b data-en="Email">Correos</b><span data-en="I answer and organize your inbox.">Respondo y organizo tu bandeja de entrada.</span></li>
+            <li><b data-en="Reminders">Recordatorios</b><span data-en="Deadlines, payments and pending tasks, so nothing slips through.">Vencimientos, pagos y pendientes, para que nada se te pase.</span></li>
+            <li><b data-en="Personal spreadsheets and expenses">Planillas personales y gastos</b><span data-en="Spreadsheets tailored to you, and help managing your expenses.">Planillas a tu medida y ayuda para administrar tus gastos.</span></li>
+            <li><b data-en="Administrative support and data entry">Apoyo administrativo y data entry</b><span data-en="Loading, organizing and validating information, plus follow-up on pending items.">Carga, orden y validación de información, y seguimiento de pendientes.</span></li>
+          </ul>
+        </article>
+
+        <article class="svc reveal">
+          <div class="svc-head">
+            <div class="svc-top"><span class="svc-num mono">02</span><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 8-6 4 6 4V8Z"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></div></div>
+            <h3 data-en="Content and communication">Contenido y comunicación</h3>
+            <p data-en="I turn your ideas into content that's clear, consistent and ready to publish.">Convierto tus ideas en contenido claro, ordenado y listo para publicar.</p>
+          </div>
+          <ul class="svc-items">
+            <li><b data-en="Content plan">Plan de contenido</b><span data-en="What to publish, when and on which channel.">Qué publicar, cuándo y en qué canal.</span></li>
+            <li><b data-en="Videos from your ideas">Videos a partir de tus ideas</b><span data-en="You tell me the idea; I turn it into a ready-to-share video.">Me contás la idea y la convierto en un video listo para compartir.</span></li>
+            <li><b data-en="Brochures and presentations">Brochures y presentaciones</b><span data-en="Materials that present your business clearly and professionally.">Materiales que presentan tu negocio de forma clara y profesional.</span></li>
+            <li><b data-en="Website content review">Control de contenido web</b><span data-en="I check that your site is up to date, clear and error-free.">Reviso que tu página esté actualizada, clara y sin errores.</span></li>
+            <li><b data-en="Writing (in Spanish)">Redacción de textos</b><span data-en="Emails, posts, manuals and reports, adapted to whoever will read them.">Correos, publicaciones, manuales e informes, adaptados a quien los lee.</span></li>
+          </ul>
+        </article>
+
+        <article class="svc reveal">
+          <div class="svc-head">
+            <div class="svc-top"><span class="svc-num mono">03</span><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6"/><path d="M22 11h-6"/></svg></div></div>
+            <h3 data-en="Recruitment support">Apoyo en reclutamiento</h3>
+            <p data-en="I help you find and onboard the right people, without losing time.">Te ayudo a encontrar e incorporar a las personas indicadas, sin perder tiempo.</p>
+          </div>
+          <ul class="svc-items">
+            <li><b data-en="Job postings">Publicación de búsquedas</b><span data-en="Clear job descriptions published on the right channels.">Descripciones claras del puesto, publicadas en los canales adecuados.</span></li>
+            <li><b data-en="CV screening">Filtrado de CV</b><span data-en="I review applications and send you a shortlist.">Reviso postulaciones y te paso una lista corta de candidatos.</span></li>
+            <li><b data-en="Interview coordination">Coordinación de entrevistas</b><span data-en="Scheduling, reminders and candidate follow-up.">Agenda, recordatorios y seguimiento de cada candidato.</span></li>
+            <li><b data-en="Onboarding">Incorporación</b><span data-en="Support with training and onboarding new team members.">Acompañamiento en la capacitación e inducción de nuevos colaboradores.</span></li>
+          </ul>
+        </article>
+
+        <article class="svc reveal">
+          <div class="svc-head">
+            <div class="svc-top"><span class="svc-num mono">04</span><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/></svg></div></div>
+            <h3 data-en="Processes and document management">Procesos y gestión documental</h3>
+            <p data-en="Order and clarity in how your business works.">Orden y claridad en cómo funciona tu negocio.</p>
+            <span class="badge mono" data-en="Proven experience">Experiencia comprobada</span>
+          </div>
+          <ul class="svc-items">
+            <li><b data-en="Process design and documentation">Desarrollo y documentación de procesos</b><span data-en="I map how things work today (AS-IS) and how they should work (TO-BE).">Relevo cómo se trabaja hoy (AS-IS) y cómo debería funcionar (TO-BE).</span></li>
+            <li><b data-en="Process control">Control de procesos</b><span data-en="I spot deviations and propose concrete improvements.">Detecto desvíos y propongo mejoras concretas.</span></li>
+            <li><b data-en="Procedures and manuals">Procedimientos y manuales</b><span data-en="Clear, easy-to-follow instructions for your team.">Instructivos claros y fáciles de seguir para tu equipo.</span></li>
+            <li><b data-en="Document management">Gestión documental</b><span data-en="I organize, digitize and keep your documentation in order.">Organizo, digitalizo y mantengo tu documentación en orden.</span></li>
+          </ul>
+        </article>
+
+        <article class="svc reveal">
+          <div class="svc-head">
+            <div class="svc-top"><span class="svc-num mono">05</span><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></div></div>
+            <h3 data-en="Data and KPIs">Datos e indicadores</h3>
+            <p data-en="Information you can trust, to track results and make decisions.">Información confiable para seguir tus resultados y decidir.</p>
+            <span class="badge mono" data-en="Proven experience">Experiencia comprobada</span>
+          </div>
+          <ul class="svc-items">
+            <li><b data-en="KPI development">Desarrollo de indicadores</b><span data-en="I define clear KPIs aligned with your goals.">Defino KPIs claros y alineados a tus objetivos.</span></li>
+            <li><b data-en="Dashboards">Tableros</b><span data-en="Dashboards in Power BI or Excel to see everything at a glance.">Dashboards en Power BI o Excel para ver todo de un vistazo.</span></li>
+            <li><b data-en="Automated reports">Reportes automatizados</b><span data-en="Less manual work: in my last role I cut report time by 30%.">Menos trabajo manual: en mi experiencia reduje 30% el tiempo de reportes.</span></li>
+            <li><b data-en="Custom tools">Herramientas a medida</b><span data-en="Automated spreadsheets and simple apps with Google Sheets, Apps Script or Excel.">Planillas automatizadas y apps simples con Google Sheets, Apps Script o Excel.</span></li>
+          </ul>
         </article>
       </div>
     </div>
@@ -678,8 +749,8 @@ footer a:hover{color:var(--primary)}
       </div>
       <div class="ticker" aria-hidden="true">
         <div class="ticker-track">
-          <span data-en="Administrative assistance">Asistencia administrativa</span><span>Data entry</span><span data-en="Custom tools">Herramientas a medida</span><span data-en="Reports and KPIs">Reportes e indicadores</span><span data-en="Processes">Procesos</span><span data-en="Writing">Redacción</span><span data-en="Remote work">Trabajo remoto</span>
-          <span data-en="Administrative assistance">Asistencia administrativa</span><span>Data entry</span><span data-en="Custom tools">Herramientas a medida</span><span data-en="Reports and KPIs">Reportes e indicadores</span><span data-en="Processes">Procesos</span><span data-en="Writing">Redacción</span><span data-en="Remote work">Trabajo remoto</span>
+          <span data-en="Calendar and email">Agenda y correos</span><span data-en="Personal spreadsheets">Planillas personales</span><span data-en="Content plan">Plan de contenido</span><span data-en="Videos and brochures">Videos y brochures</span><span data-en="Recruitment">Reclutamiento</span><span data-en="Processes">Procesos</span><span data-en="Document management">Gestión documental</span><span data-en="KPIs">Indicadores</span><span data-en="Remote work">Trabajo remoto</span>
+          <span data-en="Calendar and email">Agenda y correos</span><span data-en="Personal spreadsheets">Planillas personales</span><span data-en="Content plan">Plan de contenido</span><span data-en="Videos and brochures">Videos y brochures</span><span data-en="Recruitment">Reclutamiento</span><span data-en="Processes">Procesos</span><span data-en="Document management">Gestión documental</span><span data-en="KPIs">Indicadores</span><span data-en="Remote work">Trabajo remoto</span>
         </div>
       </div>
     </div>
@@ -743,7 +814,7 @@ footer a:hover{color:var(--primary)}
   var lang = 'es';
   var META = {
     es: {title: 'Alejandro Irala — Apoyo a tu gestión', desc: document.querySelector('meta[name=description]').getAttribute('content'), copy: 'Copiar', copied: 'Copiado', sel: 'Seleccioná el correo'},
-    en: {title: 'Alejandro Irala — Operations, processes and data support', desc: 'Alejandro Irala: administrative assistance, data entry, Power BI reporting, Excel/VBA automation and process improvement. Available for remote and freelance work from Paraguay (UTC−3).', copy: 'Copy', copied: 'Copied', sel: 'Select the email'}
+    en: {title: 'Alejandro Irala — Operations, processes and data support', desc: 'Alejandro Irala: personal and administrative assistance, content, recruitment, processes, document management and KPIs. Available for remote and freelance work from Paraguay (UTC−3).', copy: 'Copy', copied: 'Copied', sel: 'Select the email'}
   };
   var i18n = Array.prototype.slice.call(document.querySelectorAll('[data-en]'));
   i18n.forEach(function(el){ el.setAttribute('data-es', el.innerHTML); });
