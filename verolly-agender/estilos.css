@@ -10,7 +10,10 @@
   --marca-suave: color-mix(in srgb, var(--marca) 7%, #fff);
   --marca-media: color-mix(in srgb, var(--marca) 30%, #fff);
   --marca-oscura: color-mix(in srgb, var(--marca) 60%, #000);
+  --marca-tinte: color-mix(in srgb, var(--marca) 11%, #fff);
+  --marca-clara: color-mix(in srgb, var(--marca) 35%, #fff);   /* acentos sobre fondos oscuros */
   --navy: #1c1e54;
+  --acento: #ea2261;
   /* texto */
   --tinta: #0d253d;
   --tinta-2: #273951;
@@ -56,10 +59,29 @@ a { color: inherit; }
 /* Malla de degradé (fondo de marca en la parte de arriba) */
 .malla {
   position: absolute; left: 0; right: 0; top: 0; height: 420px; z-index: 0; pointer-events: none;
-  background: url(img/malla.svg) center top / cover no-repeat;
+  background:
+    radial-gradient(30% 55% at 8% 12%, color-mix(in srgb, var(--crema) 90%, transparent), transparent 70%),
+    radial-gradient(26% 50% at 30% 8%, color-mix(in srgb, var(--acento) 28%, transparent), transparent 70%),
+    radial-gradient(30% 55% at 53% 22%, color-mix(in srgb, var(--marca-clara) 75%, transparent), transparent 72%),
+    radial-gradient(28% 60% at 74% 6%, color-mix(in srgb, var(--marca) 62%, transparent), transparent 72%),
+    radial-gradient(24% 55% at 92% 26%, color-mix(in srgb, var(--acento) 48%, transparent), transparent 72%),
+    #fff;
+  filter: blur(18px);
   -webkit-mask-image: linear-gradient(#000 45%, transparent);
   mask-image: linear-gradient(#000 45%, transparent);
 }
+.fondo-malla {
+  background:
+    radial-gradient(40% 90% at 10% 20%, color-mix(in srgb, var(--crema) 90%, transparent), transparent 70%),
+    radial-gradient(40% 90% at 55% 30%, color-mix(in srgb, var(--marca-clara) 80%, transparent), transparent 72%),
+    radial-gradient(35% 90% at 80% 0%, color-mix(in srgb, var(--marca) 60%, transparent), transparent 72%),
+    radial-gradient(30% 90% at 100% 60%, color-mix(in srgb, var(--acento) 45%, transparent), transparent 72%),
+    #fff;
+}
+
+/* Pie de derechos */
+.copy { font-size: .72rem; color: var(--gris); text-align: center; padding: 22px 16px; line-height: 1.5; }
+.copy b { font-weight: 500; color: var(--tinta-2); }
 
 /* Logo del negocio */
 .logo {
@@ -90,16 +112,32 @@ a { color: inherit; }
 
 .tarjeta { background: var(--blanco); border: 1px solid var(--linea); border-radius: var(--r-lg); box-shadow: var(--sombra); }
 .chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: var(--pildora); font-size: .75rem; font-weight: 500; }
-.etiqueta-suave { background: #ebeafe; color: #4434d4; text-transform: uppercase; letter-spacing: .04em; font-size: .68rem; }
+.etiqueta-suave { background: var(--marca-tinte); color: var(--marca-oscura); text-transform: uppercase; letter-spacing: .04em; font-size: .68rem; }
 
 /* Campos */
 .campo { display: block; margin-bottom: 16px; }
-.campo span { display: block; font-weight: 500; font-size: .85rem; color: var(--tinta-2); margin-bottom: 6px; }
-.campo input {
+.campo > span { display: block; font-weight: 500; font-size: .85rem; color: var(--tinta-2); margin-bottom: 6px; }
+.campo input, .campo select, .campo textarea, .entrada {
   width: 100%; min-height: 48px; padding: 8px 14px; border-radius: var(--r-sm); border: 1px solid var(--linea-input);
-  background: #fff; font-size: 1.05rem; transition: border-color .15s, box-shadow .15s;
+  background: #fff; font: inherit; font-size: 1.05rem; color: var(--tinta); transition: border-color .15s, box-shadow .15s;
 }
-.campo input:focus { outline: none; border-color: var(--marca); box-shadow: 0 0 0 3px var(--marca-suave); }
+.campo input:focus, .campo select:focus, .entrada:focus { outline: none; border-color: var(--marca); box-shadow: 0 0 0 3px var(--marca-suave); }
+select { font: inherit; color: inherit; }
+
+/* Interruptor sí/no */
+.interruptor { position: relative; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; font-size: .9rem; color: var(--tinta-2); }
+.interruptor input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.interruptor i { width: 44px; height: 26px; border-radius: 13px; background: var(--linea-input); position: relative; flex: none; transition: background .15s; }
+.interruptor i::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: var(--sombra); transition: transform .15s; }
+.interruptor input:checked + i { background: var(--marca); }
+.interruptor input:checked + i::after { transform: translateX(18px); }
+.interruptor input:focus-visible + i { outline: 3px solid var(--marca-media); outline-offset: 2px; }
+
+/* Botones segmentados (Día / Semana / Mes...) */
+.segmentos { display: inline-flex; background: var(--fondo); border: 1px solid var(--linea); border-radius: var(--pildora); padding: 3px; gap: 2px; }
+.segmentos button { border: none; background: none; border-radius: var(--pildora); padding: 7px 14px; font-size: .85rem; color: var(--tinta-2); min-height: 36px; }
+.segmentos button:hover { color: var(--marca); }
+.segmentos button.on { background: #fff; color: var(--tinta); box-shadow: var(--sombra); font-weight: 500; }
 .campo small { display: block; color: var(--gris); font-size: .8rem; margin-top: 6px; }
 .error { color: var(--mal); font-weight: 500; font-size: .9rem; margin: 4px 0 12px; }
 

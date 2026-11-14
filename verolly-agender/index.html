@@ -16,11 +16,35 @@
   /* ----- Perfil del negocio ----- */
   .perfil { grid-area: perfil; position: sticky; top: 24px; }
   .perfil-card { overflow: hidden; box-shadow: var(--sombra-2); }
-  .portada { height: 76px; background: url(img/malla.svg) center / cover; }
+  .portada { height: 76px; }
   .perfil-cuerpo { padding: 0 24px 24px; margin-top: -30px; }
   .perfil .logo { width: 64px; height: 64px; border: 3px solid #fff; box-shadow: var(--sombra); }
   .perfil h1 { font-size: 1.5rem; letter-spacing: -.03em; line-height: 1.15; margin-top: 14px; }
   .perfil .dir { color: var(--gris); font-size: .9rem; margin-top: 4px; }
+  .perfil .desc { color: var(--tinta-2); font-size: .92rem; margin-top: 4px; }
+  .pie-reservas { grid-column: 1 / -1; padding-top: 8px; }
+
+  /* ----- Calendario del mes (formato opcional para elegir el día) ----- */
+  .cal-mes { max-width: 520px; }
+  .cal-tit { font-size: 1.05rem; font-weight: 500; letter-spacing: -.01em; margin-bottom: 12px; }
+  .cal-grilla { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+  .cal-grilla .sem { font-size: .66rem; font-weight: 500; color: var(--gris); text-transform: uppercase; letter-spacing: .06em; text-align: center; padding-bottom: 2px; }
+  .cdia { aspect-ratio: 1 / .92; min-height: 44px; border-radius: var(--r-md); border: 1px solid var(--linea); background: #fff;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-feature-settings: "tnum"; transition: all .15s; padding: 0; }
+  .cdia b { font-size: 1.05rem; font-weight: 400; letter-spacing: -.02em; }
+  .cdia i { width: 18px; height: 3px; border-radius: 2px; background: var(--linea); overflow: hidden; display: block; }
+  .cdia i s { display: block; height: 100%; background: var(--marca); }
+  .cdia:hover:not(:disabled) { border-color: var(--marca); }
+  .cdia:disabled { background: transparent; border-color: transparent; color: var(--gris-claro); cursor: default; }
+  .cdia:disabled i { visibility: hidden; }
+  .cdia.hoy b { color: var(--marca); font-weight: 600; }
+  .cdia.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .cdia.on b { color: #fff; }
+  .cdia.on i { background: rgba(255,255,255,.25); }
+  .cdia.on i s { background: var(--marca-clara); }
+  .cal-vacio { visibility: hidden; }
+  .bloque.modo-cal .flechas { display: flex !important; }
+  .flechas button:disabled { opacity: .3; cursor: default; }
   .estado-hoy { margin-top: 14px; }
   .estado-hoy.abierto { background: #e7f6ee; color: var(--ok); }
   .estado-hoy.cerrado { background: var(--fondo); color: var(--gris); }
@@ -89,7 +113,7 @@
   .dia.on { background: var(--navy); border-color: var(--navy); color: #fff; box-shadow: var(--sombra-2); }
   .dia.on small, .dia.on em { color: rgba(255,255,255,.7); }
   .dia.on .barra-libre { background: rgba(255,255,255,.2); }
-  .dia.on .barra-libre i { background: #b9b9f9; }
+  .dia.on .barra-libre i { background: var(--marca-clara); }
 
   .rapido {
     width: 100%; display: flex; align-items: center; gap: 14px; text-align: left; border: none; margin-bottom: 22px;
@@ -194,11 +218,12 @@
   <!-- Perfil del negocio -->
   <aside class="perfil">
     <div class="perfil-card tarjeta">
-      <div class="portada"></div>
+      <div class="portada fondo-malla"></div>
       <div class="perfil-cuerpo">
         <div class="logo" data-logo></div>
         <div>
           <h1 data-negocio>Cargando...</h1>
+          <p class="desc" id="descripcion" hidden></p>
           <p class="dir" id="direccion"></p>
           <span class="chip estado-hoy" id="estadoHoy" hidden><i></i><span></span></span>
         </div>
@@ -217,7 +242,7 @@
   <!-- Pasos -->
   <main class="flujo" id="flujo">
     <section class="bloque tarjeta" id="bServicio">
-      <header><span class="num">1</span><h2>¿Qué te hacés?</h2></header>
+      <header><span class="num">1</span><h2 id="pregunta">¿Qué te hacés?</h2></header>
       <div class="servicios" id="listaServicios"><p class="vacio">Cargando servicios...</p></div>
     </section>
 
@@ -237,6 +262,7 @@
     </section>
     <p class="firma firma-pie">Turnos con <img src="img/verolly-icono.svg" alt=""><b>Verolly</b><em>Agender</em></p>
   </main>
+  <p class="copy pie-reservas" data-copy></p>
 
   <!-- Tu turno (tablet y PC) -->
   <aside class="ticket-col">
@@ -311,8 +337,10 @@ async function iniciar() {
   const n = info.negocio;
   V.aplicarMarca(n);
   document.title = 'Reservá tu turno · ' + n.nombre;
-  document.querySelector('meta[name=theme-color]').content = n.color || '#533afd';
   $('direccion').textContent = n.direccion || '';
+  $('descripcion').textContent = n.descripcion || ''; $('descripcion').hidden = !n.descripcion;
+  $('pregunta').textContent = n.pregunta || '¿Qué te hacés?';
+  $('bDia').classList.toggle('modo-cal', n.vistaReservas === 'calendario');
   if (n.whatsapp) { $('btnConsulta').href = V.wa(n.whatsapp, 'Hola! Quería hacer una consulta.'); $('btnConsulta').hidden = false; }
   pintarEstadoHoy();
   pintarHorarios();
@@ -365,6 +393,7 @@ function elegirServicio(nombre) {
   // si el día elegido ya no tiene lugar para este servicio, se pasa al primero con lugar
   const dur = servicioSel().duracion;
   if (!sel.fecha || !V.libres(sel.fecha, dur, info).length) sel.fecha = primerDiaLibre(dur);
+  mesCal = null;
   pintarDias(); pintarHoras(); actualizarResumen();
   if (esCelular()) $('bDia').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -379,7 +408,13 @@ function primerDiaLibre(dur) {
 }
 
 /* ---------- 2. Día ---------- */
+function elegirDia(f) {
+  sel.fecha = f; sel.hora = null;
+  pintarDias(); pintarHoras(); actualizarResumen();
+  if (esCelular()) $('bHora').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 function pintarDias() {
+  if (info.negocio.vistaReservas === 'calendario') return pintarCalendario();
   const dur = servicioSel().duracion, ah = V.ahora();
   const dias = [];
   for (let i = 0; i <= info.reglas.diasAdelante; i++) {
@@ -394,16 +429,50 @@ function pintarDias() {
       '<small>' + etiqueta + '</small><b>' + Number(d.f.slice(8)) + '</b><small>' + MES[Number(d.f.slice(5, 7)) - 1] + '</small>' +
       '<span class="barra-libre"><i style="width:' + Math.round(d.n / max * 100) + '%"></i></span><em>' + txt + '</em></button>';
   }).join('');
-  $('tiraDias').querySelectorAll('.dia').forEach(b => b.onclick = () => {
-    sel.fecha = b.dataset.f; sel.hora = null;
-    pintarDias(); pintarHoras(); actualizarResumen();
-    if (esCelular()) $('bHora').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
+  $('tiraDias').querySelectorAll('.dia').forEach(b => b.onclick = () => elegirDia(b.dataset.f));
   const on = $('tiraDias').querySelector('.on');
   if (on) on.scrollIntoView({ block: 'nearest', inline: 'center' });
   $('bDia').classList.toggle('hecho', !!sel.fecha);
 }
-function moverTira(dir) { $('tiraDias').scrollBy({ left: dir * 300, behavior: 'smooth' }); }
+
+// Formato "calendario": un mes entero, con los días sin lugar apagados
+let mesCal = null;
+function pintarCalendario() {
+  const dur = servicioSel().duracion, ah = V.ahora(), hoy = ah.fecha;
+  const ultimo = V.sumarDias(hoy, info.reglas.diasAdelante);
+  if (!mesCal) mesCal = (sel.fecha || hoy).slice(0, 8) + '01';
+  const primero = mesCal, total = V.diasDelMes(primero);
+  const hueco = (V.diaSemana(primero) + 6) % 7; // la semana empieza el lunes
+  const cuenta = {};
+  let max = 1;
+  for (let i = 0; i < total; i++) {
+    const f = V.sumarDias(primero, i);
+    cuenta[f] = f >= hoy && f <= ultimo ? V.libres(f, dur, info, ah).length : 0;
+    max = Math.max(max, cuenta[f]);
+  }
+  let html = '<div class="cal-mes"><p class="cal-tit">' + V.mesAnio(primero) + '</p><div class="cal-grilla">' +
+    ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map(d => '<span class="sem">' + d + '</span>').join('') +
+    '<span class="cal-vacio"></span>'.repeat(hueco);
+  for (let i = 0; i < total; i++) {
+    const f = V.sumarDias(primero, i), n = cuenta[f];
+    html += '<button class="cdia' + (f === hoy ? ' hoy' : '') + (f === sel.fecha ? ' on' : '') + '" data-f="' + f + '"' +
+      (n ? ' aria-label="' + V.esc(V.fechaLarga(f)) + ', ' + n + ' horarios libres"' : ' disabled') + '><b>' + (i + 1) + '</b>' +
+      '<i><s style="width:' + Math.round(n / max * 100) + '%"></s></i></button>';
+  }
+  $('tiraDias').innerHTML = html + '</div></div>';
+  $('tiraDias').querySelectorAll('.cdia:not(:disabled)').forEach(b => b.onclick = () => elegirDia(b.dataset.f));
+  const [atras, adelante] = $('bDia').querySelectorAll('.flechas button');
+  atras.disabled = primero <= hoy.slice(0, 8) + '01';
+  adelante.disabled = V.sumarMeses(primero, 1) > ultimo;
+  $('bDia').classList.toggle('hecho', !!sel.fecha);
+}
+function moverTira(dir) {
+  if (info && info.negocio.vistaReservas === 'calendario') {
+    mesCal = V.sumarMeses(mesCal || V.ahora().fecha, dir);
+    return pintarCalendario();
+  }
+  $('tiraDias').scrollBy({ left: dir * 300, behavior: 'smooth' });
+}
 
 /* ---------- 3. Hora ---------- */
 function pintarHoras() {
@@ -437,7 +506,7 @@ function pintarHoras() {
 function elegirHora(f, h) {
   const cambioDia = f !== sel.fecha;
   sel.fecha = f; sel.hora = h;
-  if (cambioDia) pintarDias();
+  if (cambioDia) { mesCal = null; pintarDias(); }
   pintarHoras(); actualizarResumen();
   $('bHora').classList.add('hecho');
 }

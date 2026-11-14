@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#1c1e54">
+<title>VerollyAgender · Soporte</title>
+<link rel="icon" href="img/verolly-icono.svg" type="image/svg+xml">
+<link rel="stylesheet" href="estilos.css">
+<style>
+  body { background: var(--fondo); }
+  .marca-verolly { display: flex; align-items: center; gap: 10px; font-size: 1.1rem; letter-spacing: -.02em; }
+  .marca-verolly img { width: 32px; height: 32px; background: #fff; border-radius: var(--r-md); padding: 3px; }
+  .marca-verolly b { color: #fff; font-weight: 500; }
+  .marca-verolly em { color: #b9b9f9; font-style: normal; font-weight: 300; }
+
+  /* Ingreso */
+  .ingreso { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px 0; grid-template-rows: 1fr auto;
+    background: linear-gradient(rgba(246,249,252,0) 30%, var(--fondo) 75%), url(img/malla.svg) center top / cover no-repeat; }
+  .ingreso form { width: 100%; max-width: 380px; padding: 32px; }
+  .ingreso h1 { font-size: 1.9rem; letter-spacing: -.04em; margin: 18px 0 4px; }
+  .ingreso .sub { color: var(--gris); margin-bottom: 24px; }
+  .ingreso .logo-v { width: 48px; height: 48px; }
+
+  /* Estructura */
+  .barra { background: #1c1e54; color: #fff; padding: 14px 24px; display: flex; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 30; }
+  .barra .chip { background: rgba(255,255,255,.12); color: #fff; }
+  .barra .esp { flex: 1; }
+  .barra .quien { font-size: .85rem; color: rgba(255,255,255,.7); }
+  .barra .btn { min-height: 38px; font-size: .85rem; padding: 6px 16px; background: rgba(255,255,255,.12); }
+  .barra .btn:hover { background: rgba(255,255,255,.2); }
+  .contenido { max-width: 1240px; margin: 0 auto; padding: 32px 24px 16px; }
+  .contenido > h1 { font-size: 2.4rem; letter-spacing: -.045em; line-height: 1.05; }
+  .contenido > p.sub { color: var(--tinta-2); margin: 6px 0 24px; }
+  .cifras { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+  .cifra { padding: 18px 20px; }
+  .cifra span { color: var(--gris); font-size: .8rem; }
+  .cifra b { display: block; font-size: 2rem; font-weight: 300; letter-spacing: -.045em; margin-top: 4px; font-feature-settings: "tnum"; }
+  .grilla { display: grid; grid-template-columns: 400px minmax(0, 1fr); gap: 20px; align-items: start; }
+  .col-izq { position: sticky; top: 84px; display: grid; gap: 16px; }
+  .caja { padding: 24px; }
+  .caja h2 { font-size: 1.4rem; letter-spacing: -.03em; }
+  .caja p.sub { color: var(--gris); font-size: .9rem; margin: 4px 0 20px; }
+  .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+  .guia ol { margin: 10px 0 0; padding-left: 20px; color: var(--tinta-2); font-size: .9rem; line-height: 1.55; }
+  .guia li { margin-bottom: 6px; }
+  .guia b { color: var(--tinta); font-weight: 500; }
+
+  .lista-cab { display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: 14px; }
+  .lista-cab h2 { font-size: 1.4rem; letter-spacing: -.03em; font-weight: 300; }
+  .lista-cab input { max-width: 280px; min-height: 42px; }
+  .neg { padding: 20px; margin-bottom: 14px; }
+  .neg.pausado { opacity: .7; }
+  .neg-cab { display: flex; gap: 14px; align-items: center; }
+  .neg-cab .ini { width: 44px; height: 44px; border-radius: var(--r-md); background: #1c1e54; color: #fff; display: grid; place-items: center; font-size: 1.2rem; font-weight: 300; flex: none; }
+  .neg-cab div { flex: 1; min-width: 0; }
+  .neg-cab b { display: block; font-weight: 500; font-size: 1.05rem; }
+  .neg-cab small { color: var(--gris); font-size: .8rem; }
+  .estado-neg.on { background: #e7f6ee; color: var(--ok); }
+  .estado-neg.off { background: var(--crema); color: var(--aviso); }
+  .usuarios { margin: 14px 0; border-top: 1px solid var(--linea); }
+  .usu { display: flex; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--linea); flex-wrap: wrap; }
+  .usu .q { flex: 1; min-width: 180px; }
+  .usu .q b { font-weight: 500; }
+  .usu .q span { color: var(--gris); font-size: .82rem; }
+  .usu .acc { display: flex; gap: 6px; flex-wrap: wrap; }
+  .codigo { font-feature-settings: "tnum"; letter-spacing: .08em; font-weight: 600; color: var(--tinta); background: var(--crema); border-radius: var(--r-sm); padding: 1px 7px; }
+  .rol { background: var(--fondo); color: var(--tinta-2); }
+  .neg-acc { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn-chico { min-height: 36px; padding: 5px 14px; font-size: .84rem; }
+  .vacio { color: var(--gris); text-align: center; padding: 30px; }
+
+  /* Hojas */
+  .hoja h2 { font-size: 1.5rem; letter-spacing: -.03em; }
+  .hoja .sub { color: var(--gris); margin: 4px 0 18px; font-size: .92rem; }
+  .mensaje { white-space: pre-wrap; background: var(--fondo); border-radius: var(--r-md); padding: 14px 16px; font-size: .88rem; color: var(--tinta-2); margin-bottom: 16px; line-height: 1.5; }
+  .hoja .btn { width: 100%; margin-top: 8px; }
+  .toast { position: fixed; left: 50%; bottom: 26px; transform: translate(-50%, 30px); opacity: 0; background: #1c1e54; color: #fff;
+    padding: 11px 20px; border-radius: var(--pildora); font-size: .9rem; transition: all .25s; z-index: 120; pointer-events: none; max-width: calc(100vw - 32px); text-align: center; }
+  .toast.on { transform: translate(-50%, 0); opacity: 1; }
+
+  @media (max-width: 1000px) {
+    .grilla { grid-template-columns: 1fr; }
+    .col-izq { position: static; }
+    .cifras { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px) {
+    .contenido { padding: 22px 12px 16px; }
+    .contenido > h1 { font-size: 1.8rem; }
+    .barra { padding: 12px 14px; }
+    .barra .quien, .barra .chip { display: none; }
+    .dos { grid-template-columns: 1fr; }
+    .lista-cab input { max-width: none; }
+  }
+</style>
+</head>
+<body>
+<div class="aviso-demo">Modo demostración: soporte <b>soporte</b> · contraseña <b>demo</b>.
+  <button onclick="V.Demo.reiniciar(); location.reload()">Reiniciar datos</button></div>
+
+<!-- Ingreso -->
+<section class="ingreso" id="ingreso" hidden>
+  <form class="tarjeta" id="formIngreso" novalidate>
+    <img class="logo-v" src="img/verolly-icono.svg" alt="">
+    <h1>Soporte VerollyAgender</h1>
+    <p class="sub">Para crear negocios, usuarios y dar soporte.</p>
+    <label class="campo"><span>Usuario</span><input id="usuario" autocomplete="username" autocapitalize="none" spellcheck="false"></label>
+    <label class="campo"><span>Contraseña</span><input id="clave" type="password" autocomplete="current-password"></label>
+    <p class="error" id="errorIngreso" hidden></p>
+    <button class="btn ancho" id="btnEntrar">Entrar</button>
+    <a class="btn fantasma ancho" href="panel.html" style="margin-top:8px">¿Primera vez? Activá tu cuenta en el panel</a>
+  </form>
+  <p class="copy" data-copy></p>
+</section>
+
+<!-- App -->
+<div id="app" hidden>
+  <header class="barra">
+    <div class="marca-verolly"><img src="img/verolly-icono.svg" alt=""><span><b>Verolly</b><em>Agender</em></span></div>
+    <span class="chip">Soporte</span>
+    <span class="esp"></span>
+    <span class="quien" id="quien"></span>
+    <button class="btn" onclick="salir()">Salir</button>
+  </header>
+
+  <main class="contenido">
+    <h1 id="saludo">Hola</h1>
+    <p class="sub">Desde acá sumás negocios nuevos, les creás usuarios y entrás a configurar cualquiera.</p>
+
+    <div class="cifras">
+      <div class="cifra tarjeta"><span>Negocios activos</span><b id="cNeg">0</b></div>
+      <div class="cifra tarjeta"><span>Usuarios</span><b id="cUsu">0</b></div>
+      <div class="cifra tarjeta"><span>Sin activar</span><b id="cPend">0</b></div>
+      <div class="cifra tarjeta"><span>Pausados</span><b id="cPaus">0</b></div>
+    </div>
+
+    <div class="grilla">
+      <div class="col-izq">
+        <form class="caja tarjeta" id="formNegocio" novalidate>
+          <h2>Sumar un negocio</h2>
+          <p class="sub">Se crea su planilla, su página de reservas y el usuario del dueño.</p>
+          <label class="campo"><span>Nombre del negocio</span><input id="nNombre" maxlength="60" placeholder="Ej: Estudio Monse Nails"></label>
+          <label class="campo"><span>Modelo</span><select id="nModelo"></select>
+            <small>Trae servicios, precios y horarios de ejemplo. Después se cambian en Ajustes.</small></label>
+          <div class="dos">
+            <label class="campo"><span>Nombre del dueño</span><input id="nDueno" maxlength="40" placeholder="Ej: Monse"></label>
+            <label class="campo"><span>Usuario</span><input id="nUsuario" autocapitalize="none" spellcheck="false" maxlength="30" placeholder="Ej: monse"></label>
+          </div>
+          <label class="campo"><span>WhatsApp del negocio</span><input id="nWa" type="tel" inputmode="numeric" placeholder="0981 123 456"></label>
+          <label class="campo"><span>Correo para los turnos (opcional)</span><input id="nMail" inputmode="email" autocapitalize="none" spellcheck="false" placeholder="dueno@gmail.com"></label>
+          <p class="error" id="errorNegocio" hidden></p>
+          <button class="btn ancho" id="btnCrear">Crear negocio</button>
+        </form>
+
+        <div class="caja tarjeta guia">
+          <h2 style="font-size:1.15rem">Cómo sumar un cliente</h2>
+          <ol>
+            <li>Completá <b>Sumar un negocio</b> con el nombre, el modelo y el usuario.</li>
+            <li>Mandale el mensaje con <b>Enviar por WhatsApp</b>: lleva el link del panel, su usuario y el código.</li>
+            <li>El dueño entra, toca <b>Activar mi cuenta</b> y elige su contraseña. Vos nunca la ves.</li>
+            <li>Con <b>Administrar</b> entrás a su panel para cargarle servicios, precios, horarios y colores.</li>
+            <li>Su link de reservas va en el mensaje de bienvenida de su WhatsApp Business.</li>
+          </ol>
+        </div>
+      </div>
+
+      <section>
+        <div class="lista-cab">
+          <h2>Negocios</h2>
+          <input class="entrada" id="buscar" type="search" placeholder="Buscar negocio o usuario">
+        </div>
+        <div id="listaNeg"><p class="vacio">Cargando...</p></div>
+        <div class="caja tarjeta" style="margin-top:6px">
+          <div class="lista-cab" style="margin:0"><h2 style="font-size:1.15rem">Equipo de soporte</h2>
+            <button class="btn claro btn-chico" onclick="abrirUsuario('', 'soporte')">+ Usuario de soporte</button></div>
+          <div class="usuarios" id="listaSoporte" style="margin-bottom:0"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <p class="copy" data-copy></p>
+</div>
+
+<!-- Hoja: mensaje para el cliente -->
+<div class="velo" id="velo" onclick="cerrarHojas()"></div>
+<div class="hoja" id="hojaMensaje" role="dialog" aria-modal="true">
+  <h2 id="msgTitulo">Listo</h2>
+  <p class="sub" id="msgSub">Mandale este mensaje para que active su cuenta.</p>
+  <div class="mensaje" id="msgTexto"></div>
+  <a class="btn wa" id="msgWa" target="_blank" rel="noopener">Enviar por WhatsApp</a>
+  <button class="btn claro" onclick="copiarMensaje()">Copiar mensaje</button>
+  <button class="btn fantasma" onclick="cerrarHojas()">Cerrar</button>
+</div>
+
+<!-- Hoja: usuario nuevo -->
+<div class="hoja" id="hojaUsuario" role="dialog" aria-modal="true">
+  <form id="formUsuario" novalidate>
+    <h2 id="usuTitulo">Usuario nuevo</h2>
+    <p class="sub" id="usuSub"></p>
+    <div class="dos">
+      <label class="campo"><span>Nombre</span><input id="uNombre" maxlength="40" placeholder="Ej: Alicia"></label>
+      <label class="campo"><span>Usuario</span><input id="uUsuario" autocapitalize="none" spellcheck="false" maxlength="30" placeholder="Ej: alicia"></label>
+    </div>
+    <label class="campo" id="campoRol"><span>Qué puede hacer</span><select id="uRol">
+      <option value="dueno">Dueño: agenda y ajustes del negocio</option>
+      <option value="equipo">Equipo: solo ve la agenda</option>
+    </select></label>
+    <p class="error" id="errorUsuario" hidden></p>
+    <button class="btn" id="btnUsuario">Crear usuario</button>
+    <button class="btn fantasma" type="button" onclick="cerrarHojas()">Cancelar</button>
+  </form>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="config.js"></script>
+<script src="comun.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const ROL = { dueno: 'Dueño', equipo: 'Equipo', soporte: 'Soporte' };
+let token = localStorage.getItem('verollyToken') || sessionStorage.getItem('verollyToken') || '';
+let datos = null, usuarioTocado = false, usuNegocio = '', usuRol = 'dueno', mensajeActual = '';
+
+/* ---------- Ingreso ---------- */
+$('formIngreso').onsubmit = async ev => {
+  ev.preventDefault();
+  const err = m => { $('errorIngreso').textContent = m; $('errorIngreso').hidden = false; };
+  if (!$('usuario').value.trim() || !$('clave').value) return err('Completá usuario y contraseña.');
+  const b = $('btnEntrar'); b.disabled = true; b.innerHTML = '<span class="girando"></span>';
+  try {
+    const r = await V.api.login($('usuario').value.trim(), $('clave').value);
+    if (r.rol !== 'soporte') { err('Esta cuenta es de un negocio. Entrá por el panel.'); return; }
+    token = r.token; localStorage.setItem('verollyToken', token);
+    $('clave').value = '';
+    await cargar();
+  } catch (e) {
+    err(/^ACTIVAR:/.test(e.message) ? 'Primero activá tu cuenta en el panel con tu código.' : e.message);
+  } finally { b.disabled = false; b.textContent = 'Entrar'; }
+};
+function mostrarIngreso(msg) {
+  $('app').hidden = true; $('ingreso').hidden = false;
+  if (msg) { $('errorIngreso').textContent = msg; $('errorIngreso').hidden = false; }
+}
+function salir() {
+  localStorage.removeItem('verollyToken'); sessionStorage.removeItem('verollyToken');
+  token = ''; datos = null; mostrarIngreso();
+}
+function errorSesion(e) {
+  if (/^SESION/.test(e.message)) { salir(); mostrarIngreso(e.message.replace(/^SESION:\s*/, '')); return true; }
+  if (/solo para soporte/.test(e.message)) { token = ''; mostrarIngreso('Esta cuenta es de un negocio. Entrá por el panel.'); return true; }
+  return false;
+}
+
+/* ---------- Datos ---------- */
+async function cargar() {
+  try { datos = await V.api.soporte(token); }
+  catch (e) { if (!errorSesion(e)) aviso(e.message); return; }
+  $('ingreso').hidden = true; $('app').hidden = false;
+  pintar();
+}
+
+function pintar() {
+  const u = datos.usuario, negs = datos.negocios, usus = datos.usuarios;
+  $('saludo').textContent = V.saludo() + (u.nombre ? ', ' + u.nombre : '');
+  $('quien').textContent = u.usuario;
+  $('cNeg').textContent = negs.filter(n => n.activo).length;
+  $('cUsu').textContent = usus.length;
+  $('cPend').textContent = usus.filter(x => x.pendiente).length;
+  $('cPaus').textContent = negs.filter(n => !n.activo).length;
+
+  const elegido = $('nModelo').value;
+  $('nModelo').innerHTML = '<optgroup label="Modelos por rubro">' + datos.modelos.map(m => '<option value="' + m.id + '">' + V.esc(m.nombre) + '</option>').join('') + '</optgroup>' +
+    (negs.length ? '<optgroup label="Copiar de un negocio existente">' + negs.map(n => '<option value="n:' + V.esc(n.slug) + '">Igual que ' + V.esc(n.nombre) + '</option>').join('') + '</optgroup>' : '');
+  if (elegido) $('nModelo').value = elegido;
+
+  const q = $('buscar').value.trim().toLowerCase();
+  const visibles = negs.filter(n => !q || (n.nombre + ' ' + n.slug).toLowerCase().includes(q) ||
+    usus.some(x => x.negocio === n.slug && (x.usuario + ' ' + x.nombre).toLowerCase().includes(q)));
+  $('listaNeg').innerHTML = visibles.length ? visibles.map(tarjetaNegocio).join('') :
+    '<p class="vacio tarjeta">' + (negs.length ? 'No encontré nada con esa búsqueda.' : 'Todavía no hay negocios. Sumá el primero con el formulario.') + '</p>';
+  const sop = usus.filter(x => x.rol === 'soporte');
+  $('listaSoporte').innerHTML = sop.map(filaUsuario).join('');
+}
+
+function tarjetaNegocio(n) {
+  const usus = datos.usuarios.filter(x => x.negocio === n.slug && x.rol !== 'soporte');
+  const s = V.esc(n.slug);
+  return '<article class="neg tarjeta' + (n.activo ? '' : ' pausado') + '">' +
+    '<div class="neg-cab"><span class="ini">' + V.esc((n.nombre || '?').charAt(0).toUpperCase()) + '</span>' +
+    '<div><b>' + V.esc(n.nombre) + '</b><small>' + s + ' · ' + V.esc(n.rubro || '') + (n.creado ? ' · desde ' + V.esc(n.creado.slice(0, 10)) : '') + '</small></div>' +
+    '<span class="chip estado-neg ' + (n.activo ? 'on' : 'off') + '">' + (n.activo ? 'Activo' : 'Pausado') + '</span></div>' +
+    '<div class="usuarios">' + (usus.length ? usus.map(filaUsuario).join('') : '<p class="vacio" style="padding:12px">Sin usuarios.</p>') + '</div>' +
+    '<div class="neg-acc">' +
+      '<a class="btn btn-chico" href="panel.html?n=' + encodeURIComponent(n.slug) + '">Administrar</a>' +
+      '<a class="btn claro btn-chico" href="' + V.esc(V.urlReservas(n.slug)) + '" target="_blank" rel="noopener">Ver página</a>' +
+      (n.planilla ? '<a class="btn claro btn-chico" href="' + V.esc(n.planilla) + '" target="_blank" rel="noopener">Planilla</a>' : '') +
+      '<button class="btn claro btn-chico" onclick="abrirUsuario(\'' + s + '\', \'dueno\')">+ Usuario</button>' +
+      '<button class="btn fantasma btn-chico" onclick="usarModelo(\'' + s + '\')">Usar como modelo</button>' +
+      '<button class="btn fantasma btn-chico" onclick="pausar(\'' + s + '\', ' + !n.activo + ')">' + (n.activo ? 'Pausar' : 'Reactivar') + '</button>' +
+    '</div></article>';
+}
+
+function filaUsuario(x) {
+  const u = V.esc(x.usuario);
+  return '<div class="usu"><div class="q"><b>' + V.esc(x.nombre || x.usuario) + '</b> <span class="chip rol">' + ROL[x.rol] + '</span><br>' +
+    '<span>Usuario <b>' + u + '</b> · ' + (!x.activo ? 'Bloqueado' : x.pendiente ? 'Sin activar · código <span class="codigo">' + V.esc(x.codigo) + '</span>' : 'Cuenta activa') + '</span></div>' +
+    '<div class="acc">' +
+      (x.pendiente && x.activo ? '<button class="btn wa btn-chico" onclick="mostrarMensaje(\'' + u + '\')">Mensaje</button>' : '') +
+      '<button class="btn claro btn-chico" onclick="resetear(\'' + u + '\')">' + (x.pendiente ? 'Código nuevo' : 'Olvidó la contraseña') + '</button>' +
+      (x.usuario !== datos.usuario.usuario ? '<button class="btn fantasma btn-chico" onclick="bloquear(\'' + u + '\', ' + !x.activo + ')">' + (x.activo ? 'Bloquear' : 'Desbloquear') + '</button>' : '') +
+    '</div></div>';
+}
+
+/* ---------- Crear negocio ---------- */
+const sugerirUsuario = t => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().split(/\s+/)[0].replace(/[^a-z0-9]/g, '').slice(0, 20);
+$('nUsuario').oninput = () => { usuarioTocado = !!$('nUsuario').value; };
+$('nDueno').oninput = () => { if (!usuarioTocado) $('nUsuario').value = sugerirUsuario($('nDueno').value); };
+$('buscar').oninput = () => pintar();
+
+$('formNegocio').onsubmit = async ev => {
+  ev.preventDefault();
+  const err = m => { $('errorNegocio').textContent = m; $('errorNegocio').hidden = false; };
+  $('errorNegocio').hidden = true;
+  const nombre = $('nNombre').value.trim(), usuario = $('nUsuario').value.trim().toLowerCase();
+  if (nombre.length < 2) return err('Escribí el nombre del negocio.');
+  if (!/^[a-z0-9._-]{3,30}$/.test(usuario)) return err('El usuario va en minúsculas, sin espacios ni acentos (3 a 30 letras o números).');
+  if ($('nWa').value.trim() && !V.celular($('nWa').value)) return err('Revisá el WhatsApp (ej: 0981 123 456).');
+  const m = $('nModelo').value;
+  const b = $('btnCrear'); b.disabled = true; b.innerHTML = '<span class="girando"></span> Creando...';
+  try {
+    const r = await V.api.crearNegocio(token, {
+      nombre, usuario, nombreDueno: $('nDueno').value.trim(), whatsapp: $('nWa').value.trim(), email: $('nMail').value.trim(),
+      modelo: m.indexOf('n:') === 0 ? 'general' : m, desde: m.indexOf('n:') === 0 ? m.slice(2) : ''
+    });
+    const wa = V.celular($('nWa').value), dueno = $('nDueno').value.trim();
+    $('formNegocio').reset(); usuarioTocado = false;
+    await cargar();
+    abrirMensaje(r.negocio.nombre, dueno, r.usuario, r.codigo, r.negocio.slug, wa,
+      'Negocio creado', 'Mandale este mensaje al dueño para que active su cuenta.');
+  } catch (e) { if (!errorSesion(e)) err(e.message); }
+  finally { b.disabled = false; b.textContent = 'Crear negocio'; }
+};
+
+function textoMensaje(negocio, nombre, usuario, codigo, slug) {
+  return '¡Hola' + (nombre ? ' ' + V.primerNombre(nombre) : '') + '! Ya está lista tu agenda VerollyAgender para ' + negocio + '.\n\n' +
+    '1) Entrá a tu panel: ' + V.urlPanel() + '\n' +
+    '2) Tocá "¿Primera vez? Activar mi cuenta"\n' +
+    '3) Usuario: ' + usuario + '\n' +
+    '   Código: ' + codigo + '\n' +
+    '4) Elegí tu contraseña (solo vos la vas a saber).\n\n' +
+    'Tu link de reservas, para compartir con tus clientes:\n' + V.urlReservas(slug);
+}
+function abrirMensaje(negocio, nombre, usuario, codigo, slug, wa, titulo, sub) {
+  mensajeActual = textoMensaje(negocio, nombre, usuario, codigo, slug);
+  $('msgTitulo').textContent = titulo; $('msgSub').textContent = sub;
+  $('msgTexto').textContent = mensajeActual;
+  $('msgWa').href = wa ? V.wa(wa, mensajeActual) : 'https://wa.me/?text=' + encodeURIComponent(mensajeActual);
+  abrirHoja('hojaMensaje');
+}
+function mostrarMensaje(usuario) {
+  const x = datos.usuarios.find(u => u.usuario === usuario);
+  const n = datos.negocios.find(m => m.slug === x.negocio) || { nombre: 'VerollyAgender', slug: '' };
+  abrirMensaje(n.nombre, x.nombre, x.usuario, x.codigo, n.slug, '', 'Mensaje para ' + (x.nombre || x.usuario), 'Tiene el link, su usuario y el código de activación.');
+}
+async function copiarMensaje() {
+  try { await navigator.clipboard.writeText(mensajeActual); aviso('Mensaje copiado.'); }
+  catch (e) { prompt('Copiá el mensaje:', mensajeActual); }
+}
+function usarModelo(slug) {
+  $('nModelo').value = 'n:' + slug;
+  $('formNegocio').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  $('nNombre').focus();
+  aviso('El negocio nuevo va a tener los mismos servicios, horarios y colores.');
+}
+
+/* ---------- Usuarios ---------- */
+function abrirUsuario(negocio, rol) {
+  usuNegocio = negocio; usuRol = rol;
+  const n = datos.negocios.find(m => m.slug === negocio);
+  $('formUsuario').reset();
+  $('usuTitulo').textContent = rol === 'soporte' ? 'Usuario de soporte' : 'Usuario para ' + (n ? n.nombre : '');
+  $('usuSub').textContent = rol === 'soporte' ? 'Puede ver y configurar todos los negocios.' : 'Va a entrar al panel con su propio usuario y contraseña.';
+  $('campoRol').hidden = rol === 'soporte';
+  $('errorUsuario').hidden = true;
+  abrirHoja('hojaUsuario');
+}
+$('uNombre').oninput = () => { $('uUsuario').value = sugerirUsuario($('uNombre').value); };
+$('formUsuario').onsubmit = async ev => {
+  ev.preventDefault();
+  const err = m => { $('errorUsuario').textContent = m; $('errorUsuario').hidden = false; };
+  const usuario = $('uUsuario').value.trim().toLowerCase();
+  if (!/^[a-z0-9._-]{3,30}$/.test(usuario)) return err('El usuario va en minúsculas, sin espacios ni acentos (3 a 30 letras o números).');
+  const b = $('btnUsuario'); b.disabled = true; b.innerHTML = '<span class="girando"></span>';
+  try {
+    const rol = usuRol === 'soporte' ? 'soporte' : $('uRol').value;
+    const r = await V.api.crearUsuario(token, { usuario, nombre: $('uNombre').value.trim(), rol, negocio: usuNegocio });
+    const n = datos.negocios.find(m => m.slug === usuNegocio) || { nombre: 'VerollyAgender', slug: '' };
+    const nombre = $('uNombre').value.trim();
+    cerrarHojas();
+    await cargar();
+    abrirMensaje(n.nombre, nombre, r.usuario, r.codigo, n.slug, '', 'Usuario creado', 'Mandale este mensaje para que active su cuenta.');
+  } catch (e) { if (!errorSesion(e)) err(e.message); }
+  finally { b.disabled = false; b.textContent = 'Crear usuario'; }
+};
+async function resetear(usuario) {
+  const x = datos.usuarios.find(u => u.usuario === usuario);
+  if (!x.pendiente && !confirm('¿Borrar la contraseña de ' + (x.nombre || usuario) + ' y darle un código nuevo?\nVa a tener que activar su cuenta de nuevo.')) return;
+  try {
+    await V.api.resetUsuario(token, usuario);
+    await cargar();
+    mostrarMensaje(usuario);
+  } catch (e) { if (!errorSesion(e)) aviso(e.message); }
+}
+async function bloquear(usuario, activo) {
+  if (!activo && !confirm('¿Bloquear a ' + usuario + '? No va a poder entrar hasta que lo desbloquees.')) return;
+  try { await V.api.estadoUsuario(token, usuario, activo); await cargar(); aviso(activo ? 'Usuario desbloqueado' : 'Usuario bloqueado'); }
+  catch (e) { if (!errorSesion(e)) aviso(e.message); }
+}
+async function pausar(slug, activo) {
+  if (!activo && !confirm('¿Pausar este negocio? Su página deja de tomar turnos. Los datos no se borran.')) return;
+  try { await V.api.estadoNegocio(token, slug, activo); await cargar(); aviso(activo ? 'Negocio reactivado' : 'Negocio pausado'); }
+  catch (e) { if (!errorSesion(e)) aviso(e.message); }
+}
+
+/* ---------- Varios ---------- */
+function abrirHoja(id) { $('velo').classList.add('on'); $(id).classList.add('on'); }
+function cerrarHojas() { $('velo').classList.remove('on'); document.querySelectorAll('.hoja').forEach(h => h.classList.remove('on')); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarHojas(); });
+let tAviso;
+function aviso(m) { $('toast').textContent = m; $('toast').classList.add('on'); clearTimeout(tAviso); tAviso = setTimeout(() => $('toast').classList.remove('on'), 2800); }
+
+if (token) cargar(); else mostrarIngreso();
+</script>
+</body>
+</html>
