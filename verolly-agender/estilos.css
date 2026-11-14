@@ -1,0 +1,136 @@
+/* VerollyAgender - base visual compartida (celular, tablet y PC)
+   Sistema: tinta azul marino, primario índigo, tipografía fina con interletrado
+   negativo en títulos, botones píldora, números tabulares y malla de degradé. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+  /* marca (el negocio puede cambiar --marca desde la planilla) */
+  --marca: #533afd;
+  --marca-press: color-mix(in srgb, var(--marca) 55%, #1c1e54);
+  --marca-suave: color-mix(in srgb, var(--marca) 7%, #fff);
+  --marca-media: color-mix(in srgb, var(--marca) 30%, #fff);
+  --marca-oscura: color-mix(in srgb, var(--marca) 60%, #000);
+  --navy: #1c1e54;
+  /* texto */
+  --tinta: #0d253d;
+  --tinta-2: #273951;
+  --gris: #64748d;
+  --gris-claro: #a3b1c2;
+  /* superficies */
+  --blanco: #fff;
+  --fondo: #f6f9fc;
+  --crema: #f5e9d4;
+  --linea: #e3e8ee;
+  --linea-input: #a8c3de;
+  /* estados (solo dentro del producto) */
+  --ok: #108c5c;
+  --wa: #1a9e55;
+  --aviso: #9b6829;
+  --mal: #ea2261;
+  /* formas */
+  --r-xl: 16px;
+  --r-lg: 12px;
+  --r-md: 8px;
+  --r-sm: 6px;
+  --pildora: 9999px;
+  --sombra: 0 1px 3px rgba(0,55,112,.08);
+  --sombra-2: 0 8px 24px rgba(0,55,112,.08), 0 2px 6px rgba(0,55,112,.04);
+  --sombra-fuerte: 0 24px 60px rgba(13,37,61,.22);
+  --fuente: 'Inter', 'SF Pro Display', system-ui, -apple-system, sans-serif;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { font-size: 16px; }
+body {
+  margin: 0; background: var(--blanco); color: var(--tinta); font-family: var(--fuente);
+  font-weight: 400; line-height: 1.4; font-feature-settings: "ss01"; -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, p { margin: 0; }
+h1, h2 { font-weight: 300; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: inherit; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 3px solid var(--marca-media); outline-offset: 2px; }
+.num-tab, .tnum { font-feature-settings: "tnum", "ss01"; letter-spacing: -.02em; }
+
+/* Malla de degradé (fondo de marca en la parte de arriba) */
+.malla {
+  position: absolute; left: 0; right: 0; top: 0; height: 420px; z-index: 0; pointer-events: none;
+  background: url(img/malla.svg) center top / cover no-repeat;
+  -webkit-mask-image: linear-gradient(#000 45%, transparent);
+  mask-image: linear-gradient(#000 45%, transparent);
+}
+
+/* Logo del negocio */
+.logo {
+  width: 64px; height: 64px; border-radius: var(--r-lg); flex: none; overflow: hidden;
+  background: var(--navy); display: grid; place-items: center;
+}
+.logo img { width: 100%; height: 100%; object-fit: cover; }
+.logo span { color: #fff; font-weight: 300; font-size: 1.7rem; letter-spacing: -.02em; }
+
+/* Botones píldora */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 48px; padding: 8px 22px; border-radius: var(--pildora); border: 1px solid transparent;
+  background: var(--marca); color: #fff; font-weight: 400; font-size: 1rem; line-height: 1.15;
+  text-decoration: none; text-align: center; transition: background .15s, transform .1s;
+}
+.btn:hover { background: color-mix(in srgb, var(--marca) 88%, #000); }
+.btn:active { background: var(--marca-press); transform: scale(.99); }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn.ancho { width: 100%; }
+.btn.wa { background: var(--wa); }
+.btn.claro { background: var(--blanco); color: var(--marca); border-color: var(--marca); }
+.btn.claro:hover { background: var(--marca-suave); }
+.btn.oscuro { background: var(--navy); }
+.btn.fantasma { background: transparent; color: var(--marca); }
+.btn.fantasma:hover { background: var(--marca-suave); }
+.btn svg { width: 18px; height: 18px; flex: none; }
+
+.tarjeta { background: var(--blanco); border: 1px solid var(--linea); border-radius: var(--r-lg); box-shadow: var(--sombra); }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: var(--pildora); font-size: .75rem; font-weight: 500; }
+.etiqueta-suave { background: #ebeafe; color: #4434d4; text-transform: uppercase; letter-spacing: .04em; font-size: .68rem; }
+
+/* Campos */
+.campo { display: block; margin-bottom: 16px; }
+.campo span { display: block; font-weight: 500; font-size: .85rem; color: var(--tinta-2); margin-bottom: 6px; }
+.campo input {
+  width: 100%; min-height: 48px; padding: 8px 14px; border-radius: var(--r-sm); border: 1px solid var(--linea-input);
+  background: #fff; font-size: 1.05rem; transition: border-color .15s, box-shadow .15s;
+}
+.campo input:focus { outline: none; border-color: var(--marca); box-shadow: 0 0 0 3px var(--marca-suave); }
+.campo small { display: block; color: var(--gris); font-size: .8rem; margin-top: 6px; }
+.error { color: var(--mal); font-weight: 500; font-size: .9rem; margin: 4px 0 12px; }
+
+/* Hoja inferior (celular) / ventana centrada (tablet y PC) */
+.velo { position: fixed; inset: 0; background: rgba(13,37,61,.4); backdrop-filter: blur(3px);
+  opacity: 0; pointer-events: none; transition: opacity .25s; z-index: 80; }
+.velo.on { opacity: 1; pointer-events: auto; }
+.hoja {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 90; background: #fff;
+  border-radius: var(--r-xl) var(--r-xl) 0 0; padding: 12px 22px calc(24px + env(safe-area-inset-bottom));
+  max-height: 92vh; overflow: auto; transform: translateY(105%); transition: transform .32s cubic-bezier(.2,.8,.2,1);
+  box-shadow: var(--sombra-fuerte);
+}
+.hoja.on { transform: none; }
+.hoja::before { content: ''; display: block; width: 40px; height: 4px; border-radius: 2px; background: var(--linea); margin: 0 auto 16px; }
+@media (min-width: 760px) {
+  .hoja { left: 50%; right: auto; bottom: auto; top: 50%; width: 460px; border-radius: var(--r-xl);
+    transform: translate(-50%, -46%) scale(.97); opacity: 0; pointer-events: none; transition: transform .22s, opacity .22s; padding: 32px; }
+  .hoja.on { transform: translate(-50%, -50%); opacity: 1; pointer-events: auto; }
+  .hoja::before { display: none; }
+}
+
+/* Aviso de demostración */
+.aviso-demo { display: none; }
+.modo-demo .aviso-demo {
+  display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; position: relative; z-index: 5;
+  background: var(--navy); color: #fff; font-size: .76rem; padding: 7px 12px; text-align: center;
+}
+.aviso-demo button { background: rgba(255,255,255,.14); border: none; color: #fff; border-radius: var(--pildora); padding: 3px 12px; font-size: .76rem; }
+
+.girando { width: 20px; height: 20px; border-radius: 50%; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; animation: girar .8s linear infinite; }
+@keyframes girar { to { transform: rotate(360deg); } }
+@keyframes aparecer { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

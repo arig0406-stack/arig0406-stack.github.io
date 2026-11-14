@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#1c1e54">
+<title>VerollyAgender · Panel</title>
+<link rel="icon" href="img/verolly-icono.svg" type="image/svg+xml">
+<link rel="stylesheet" href="estilos.css">
+<style>
+  :root { --hora-px: 72px; --logo-fondo: #fef9fa; }
+  .tnum { font-feature-settings: "tnum", "ss01"; }
+  .marca-verolly { display: flex; align-items: center; gap: 10px; font-size: 1.1rem; letter-spacing: -.02em; }
+  .marca-verolly img { width: 32px; height: 32px; }
+  .marca-verolly b { color: var(--tinta); font-weight: 500; }
+  .marca-verolly em { color: var(--marca); font-style: normal; font-weight: 300; }
+  .marca-verolly.en-oscuro b { color: #fff; }
+  .marca-verolly.en-oscuro em { color: #b9b9f9; }
+  .marca-verolly.en-oscuro img { background: #fff; border-radius: var(--r-md); padding: 3px; }
+
+  /* ---------- Ingreso ---------- */
+  .ingreso { min-height: 100vh; display: grid; grid-template-columns: 1.1fr 1fr; }
+  .ingreso-arte {
+    position: relative; overflow: hidden; padding: 48px; display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center; background: linear-gradient(rgba(255,255,255,0) 30%, #fff 82%), url(img/malla.svg) center top / cover no-repeat, #fff;
+  }
+  .ingreso-arte .logo-caja { background: var(--logo-fondo); border-radius: var(--r-lg); padding: 10px 26px; box-shadow: var(--sombra-2); }
+  .ingreso-arte .logo-grande { display: block; width: min(360px, 62vw); aspect-ratio: 2 / 1; object-fit: cover; object-position: 50% 49%; }
+  .ingreso-arte h1 { font-size: clamp(2rem, 3.3vw, 3.4rem); letter-spacing: -.045em; line-height: 1.04; margin-top: 34px; color: var(--tinta); max-width: 520px; }
+  .ingreso-arte p { color: var(--tinta-2); margin: 14px auto 0; max-width: 420px; font-size: 1.02rem; }
+  .ingreso-arte .muestra { width: 100%; max-width: 340px; margin-top: 30px; text-align: left; background: #fff; border-radius: var(--r-lg); box-shadow: var(--sombra-2); padding: 6px 18px; }
+  .ingreso-arte .muestra div { display: flex; gap: 14px; align-items: center; font-size: .9rem; padding: 11px 0; border-bottom: 1px solid var(--linea); color: var(--tinta-2); }
+  .ingreso-arte .muestra div:last-child { border-bottom: none; }
+  .ingreso-arte .muestra b { font-weight: 400; min-width: 46px; color: var(--marca); font-feature-settings: "tnum"; }
+  .ingreso-form { display: grid; place-items: center; padding: 32px 24px; background: #fff; }
+  .ingreso-form form { width: 100%; max-width: 360px; }
+  .ingreso-form h2 { font-size: 2rem; letter-spacing: -.04em; margin: 22px 0 6px; }
+  .ingreso-form .sub { color: var(--gris); margin-bottom: 28px; }
+  .recordar { display: flex; gap: 10px; align-items: center; font-size: .9rem; margin: 4px 0 20px; cursor: pointer; color: var(--tinta-2); }
+  .recordar input { width: 18px; height: 18px; accent-color: var(--marca); }
+  .pista { margin-top: 18px; font-size: .8rem; color: var(--gris); background: var(--fondo); border-radius: var(--r-md); padding: 10px 14px; }
+  .ver-clave { position: relative; }
+  .ver-clave button { position: absolute; right: 6px; bottom: 6px; height: 36px; padding: 0 12px; border: none; border-radius: var(--pildora); background: none; color: var(--marca); font-weight: 500; font-size: .8rem; }
+  @media (max-width: 860px) {
+    .ingreso { grid-template-columns: 1fr; }
+    .ingreso-arte { padding: 26px 20px 30px; }
+    .ingreso-arte .muestra, .ingreso-arte p { display: none; }
+    .ingreso-arte .logo-grande { width: 220px; }
+    .ingreso-arte h1 { font-size: 1.7rem; margin-top: 20px; }
+    .ingreso-form { place-items: start center; padding-top: 24px; }
+    .ingreso-form h2 { margin-top: 0; font-size: 1.6rem; }
+  }
+
+  /* ---------- Estructura: barra lateral oscura + contenido ---------- */
+  .app { display: grid; grid-template-columns: 248px minmax(0, 1fr); min-height: 100vh; }
+  .lateral { background: var(--navy); color: #fff; padding: 22px 14px; display: flex; flex-direction: column; gap: 4px; position: sticky; top: 0; height: 100vh; }
+  .lateral .negocio { display: flex; gap: 12px; align-items: center; padding: 18px 8px 22px; border-bottom: 1px solid rgba(255,255,255,.1); margin-bottom: 12px; }
+  .lateral .negocio .logo { width: 40px; height: 40px; border-radius: var(--r-md); background: rgba(255,255,255,.12); }
+  .lateral .negocio .logo span { font-size: 1.1rem; }
+  .lateral .negocio b { font-size: .92rem; font-weight: 500; display: block; line-height: 1.25; }
+  .lateral .negocio small { color: rgba(255,255,255,.55); font-size: .78rem; }
+  .nav { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: var(--r-md); color: rgba(255,255,255,.7);
+    text-decoration: none; font-weight: 400; font-size: .92rem; border: none; background: none; width: 100%; text-align: left; }
+  .nav:hover { background: rgba(255,255,255,.07); color: #fff; }
+  .nav.on { background: rgba(185,185,249,.16); color: #fff; }
+  .nav svg { width: 18px; height: 18px; flex: none; }
+  .lateral .abajo { margin-top: auto; }
+
+  .principal { position: relative; padding: 32px 32px 48px; min-width: 0; }
+  .principal > *:not(.malla) { position: relative; z-index: 1; }
+  .principal .malla { height: 300px; opacity: .55; }
+  .arriba { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 28px; }
+  .arriba h1 { font-size: 2.6rem; letter-spacing: -.045em; line-height: 1.05; }
+  .arriba p { color: var(--tinta-2); margin-top: 6px; }
+  .arriba .acciones { display: flex; gap: 8px; align-items: center; }
+  .arriba .btn { min-height: 40px; font-size: .9rem; padding: 8px 16px; }
+  .actualizado { font-size: .76rem; color: var(--gris); margin-right: 4px; font-feature-settings: "tnum"; }
+
+  .cifras { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+  .cifra { padding: 18px 20px; }
+  .cifra span { color: var(--gris); font-size: .8rem; }
+  .cifra b { display: block; font-size: 2rem; font-weight: 300; letter-spacing: -.045em; margin-top: 4px; font-feature-settings: "tnum"; }
+  .cifra .barrita { height: 3px; background: var(--linea); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+  .cifra .barrita i { display: block; height: 100%; background: var(--marca); transition: width .4s; }
+
+  .cuerpo { display: grid; grid-template-columns: minmax(300px, 390px) minmax(0, 1fr); gap: 20px; align-items: start; }
+
+  /* ---------- Siguiente (tarjeta destacada oscura) ---------- */
+  .siguiente { padding: 26px; position: relative; overflow: hidden; color: #fff; border: none; box-shadow: var(--sombra-2);
+    background: radial-gradient(ellipse at 100% 0, rgba(83,58,253,.75), transparent 55%),
+                radial-gradient(ellipse at 85% 10%, rgba(234,34,97,.35), transparent 45%), var(--navy); }
+  .siguiente .etiqueta { display: inline-flex; align-items: center; gap: 8px; font-size: .66rem; font-weight: 500; text-transform: uppercase; letter-spacing: .1em;
+    background: rgba(255,255,255,.12); padding: 5px 11px; border-radius: var(--pildora); }
+  .siguiente .etiqueta i { width: 6px; height: 6px; border-radius: 50%; background: #b9b9f9; animation: latir 1.4s infinite; }
+  @keyframes latir { 50% { opacity: .25; } }
+  .siguiente .cuando { font-size: 3.4rem; font-weight: 300; letter-spacing: -.05em; margin-top: 16px; line-height: 1; font-feature-settings: "tnum"; }
+  .siguiente .falta { color: rgba(255,255,255,.7); margin-top: 8px; font-size: .92rem; }
+  .siguiente h2 { font-size: 1.6rem; letter-spacing: -.03em; margin-top: 22px; }
+  .siguiente .serv { color: rgba(255,255,255,.75); font-feature-settings: "tnum"; margin-top: 2px; }
+  .siguiente .progreso { height: 3px; background: rgba(255,255,255,.2); border-radius: 2px; margin-top: 18px; overflow: hidden; }
+  .siguiente .progreso i { display: block; height: 100%; background: #b9b9f9; }
+  .siguiente .botones { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 24px; }
+  .siguiente .botones .btn { min-height: 44px; font-size: .88rem; padding: 8px 12px; }
+  .siguiente .btn.blanco { background: #fff; color: var(--navy); }
+  .siguiente .btn.blanco:hover { background: #ebeafe; }
+  .siguiente .btn.vidrio { background: rgba(255,255,255,.12); color: #fff; }
+  .siguiente .btn.vidrio:hover { background: rgba(255,255,255,.2); }
+  .siguiente.vacio-sig { background: #fff; color: var(--tinta); text-align: center; padding: 36px 24px; border: 1px solid var(--linea); }
+  .siguiente.vacio-sig h2 { margin: 0; }
+  .siguiente.vacio-sig p { color: var(--gris); margin-top: 6px; }
+
+  .cola { padding: 20px 20px 8px; margin-top: 16px; }
+  .cola h3, .agenda h3 { font-size: 1.2rem; font-weight: 300; letter-spacing: -.02em; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: baseline; }
+  .cola h3 small { color: var(--gris); font-size: .78rem; letter-spacing: 0; }
+  .item { display: flex; gap: 14px; align-items: center; padding: 12px 6px; border: none; border-top: 1px solid var(--linea); width: 100%; background: none; text-align: left; }
+  .item:hover { background: var(--fondo); }
+  .item .h { font-weight: 400; min-width: 52px; font-feature-settings: "tnum"; letter-spacing: -.02em; }
+  .item .h small { display: block; color: var(--gris); font-size: .7rem; letter-spacing: 0; }
+  .item .q { flex: 1; min-width: 0; }
+  .item .q b { display: block; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .item .q span { color: var(--gris); font-size: .83rem; }
+  .punto { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+
+  /* ---------- Agenda del día ---------- */
+  .agenda { padding: 20px; min-width: 0; }
+  .dias { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; margin-bottom: 18px; }
+  .dias::-webkit-scrollbar { display: none; }
+  .dias button { flex: none; min-width: 62px; padding: 8px 6px; border-radius: var(--r-lg); border: 1px solid var(--linea); background: #fff; display: flex; flex-direction: column; align-items: center; }
+  .dias button:hover { border-color: var(--marca-media); }
+  .dias button small { font-size: .62rem; font-weight: 500; color: var(--gris); text-transform: uppercase; letter-spacing: .06em; }
+  .dias button b { font-size: 1.4rem; font-weight: 300; letter-spacing: -.04em; font-feature-settings: "tnum"; }
+  .dias button em { font-style: normal; font-size: .66rem; color: var(--gris); }
+  .dias button.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .dias button.on small, .dias button.on em { color: rgba(255,255,255,.65); }
+  .dias label { flex: none; display: flex; align-items: center; border: 1px dashed var(--linea-input); border-radius: var(--r-lg); padding: 0 10px; cursor: pointer; }
+  .dias input { border: none; background: none; font-size: .82rem; width: 128px; color: var(--tinta-2); }
+
+  .linea-tiempo { position: relative; margin-left: 56px; }
+  .linea-tiempo .marca-h { position: absolute; left: -56px; right: 0; border-top: 1px solid var(--linea); }
+  .linea-tiempo .marca-h span { position: absolute; top: -9px; left: 0; font-size: .72rem; color: var(--gris); background: #fff; padding-right: 6px; font-feature-settings: "tnum"; }
+  .linea-tiempo .descanso { position: absolute; left: 0; right: 0; border-radius: var(--r-md);
+    background: repeating-linear-gradient(45deg, #f1f4f8, #f1f4f8 6px, #f8fafc 6px, #f8fafc 12px); display: grid; place-items: center; color: var(--gris-claro); font-size: .74rem; }
+  .bloque-t {
+    position: absolute; border-radius: var(--r-md); padding: 8px 12px; text-align: left; border: none; overflow: hidden;
+    background: #efeefe; border-left: 3px solid var(--marca); display: flex; flex-direction: column; justify-content: flex-start;
+    transition: transform .12s, box-shadow .12s; animation: aparecer .3s ease both; color: var(--tinta);
+  }
+  .bloque-t:hover { transform: translateY(-1px); box-shadow: var(--sombra-2); z-index: 3; }
+  .bloque-t b { font-size: .9rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bloque-t span { font-size: .76rem; color: var(--gris); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-feature-settings: "tnum"; }
+  .bloque-t.corto { flex-direction: row; align-items: center; gap: 8px; padding-top: 4px; padding-bottom: 4px; }
+  .bloque-t.Confirmado { background: #e8e9f5; border-left-color: var(--navy); }
+  .bloque-t.Atendido { background: #e7f6ee; border-left-color: var(--ok); }
+  .bloque-t.No-vino { background: var(--crema); border-left-color: var(--aviso); }
+  .bloque-t.Cancelado { background: var(--fondo); border-left-color: var(--gris-claro); opacity: .65; }
+  .bloque-t.Cancelado b { text-decoration: line-through; }
+  .ahora-linea { position: absolute; left: -8px; right: 0; height: 1.5px; background: var(--mal); z-index: 4; pointer-events: none; }
+  .ahora-linea::before { content: ''; position: absolute; left: -3px; top: -3.5px; width: 8px; height: 8px; border-radius: 50%; background: var(--mal); }
+  .sin-turnos { text-align: center; color: var(--gris); padding: 40px 10px; }
+
+  /* colores de estado */
+  .e-Pendiente { background: var(--marca); }
+  .e-Confirmado { background: var(--navy); }
+  .e-Atendido { background: var(--ok); }
+  .e-No-vino { background: var(--aviso); }
+  .e-Cancelado { background: var(--gris-claro); }
+  .leyenda { display: flex; gap: 14px; flex-wrap: wrap; font-size: .74rem; color: var(--gris); margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--linea); }
+  .leyenda span { display: flex; align-items: center; gap: 6px; }
+
+  /* ---------- Detalle ---------- */
+  .det-cab { display: flex; gap: 14px; align-items: center; margin-bottom: 20px; }
+  .det-cab .avatar { width: 52px; height: 52px; border-radius: 50%; background: #ebeafe; color: #4434d4; font-weight: 400; font-size: 1.3rem; display: grid; place-items: center; flex: none; }
+  .det-cab h2 { font-size: 1.6rem; letter-spacing: -.03em; }
+  .det-cab p { color: var(--gris); font-feature-settings: "tnum"; }
+  .det-datos { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; margin-bottom: 18px; background: var(--linea); border: 1px solid var(--linea); border-radius: var(--r-lg); overflow: hidden; }
+  .det-datos div { background: #fff; padding: 12px 14px; }
+  .det-datos span { display: block; font-size: .68rem; color: var(--gris); text-transform: uppercase; letter-spacing: .06em; }
+  .det-datos b { font-size: .98rem; font-weight: 500; font-feature-settings: "tnum"; }
+  .det-estados { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+  .det-estados button { min-height: 44px; border-radius: var(--pildora); border: 1px solid var(--linea); background: #fff; font-weight: 400; font-size: .9rem; display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--tinta); }
+  .det-estados button:hover { border-color: var(--marca-media); }
+  .det-estados button.on { border-color: var(--navy); background: var(--navy); color: #fff; }
+  .det-estados button.peligro { color: var(--mal); }
+  .det-acciones { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .det-acciones .btn { min-height: 46px; font-size: .9rem; padding: 8px 12px; }
+  .det-acciones .gcal { grid-column: 1 / -1; }
+
+  .toast { position: fixed; left: 50%; bottom: 26px; transform: translate(-50%, 30px); opacity: 0; background: var(--navy); color: #fff;
+    padding: 11px 20px; border-radius: var(--pildora); font-size: .9rem; transition: all .25s; z-index: 120; pointer-events: none; box-shadow: var(--sombra-2); }
+  .toast.on { transform: translate(-50%, 0); opacity: 1; }
+
+  .barra-inf { display: none; }
+
+  /* ---------- Tablet ---------- */
+  @media (max-width: 1100px) {
+    .app { grid-template-columns: 1fr; }
+    .lateral { display: none; }
+    .principal { padding: 24px 20px 110px; }
+    .barra-inf { display: grid; grid-template-columns: repeat(5, 1fr); position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+      background: var(--navy); padding: 8px 8px calc(8px + env(safe-area-inset-bottom)); }
+    .barra-inf a, .barra-inf button { display: flex; flex-direction: column; align-items: center; gap: 4px; color: rgba(255,255,255,.65); font-size: .7rem;
+      text-decoration: none; background: none; border: none; padding: 6px 0; border-radius: var(--r-md); }
+    .barra-inf svg { width: 21px; height: 21px; }
+    .barra-inf .on { color: #fff; }
+    .arriba .acciones .ocultable { display: none; }
+  }
+  @media (max-width: 900px) {
+    .cuerpo { grid-template-columns: 1fr; }
+    .cifras { grid-template-columns: 1fr 1fr; }
+  }
+  /* ---------- Celular ---------- */
+  @media (max-width: 560px) {
+    .principal { padding: 20px 12px 100px; }
+    .arriba { margin-bottom: 20px; }
+    .arriba h1 { font-size: 1.9rem; }
+    .arriba .acciones { display: none; }
+    .cifras { gap: 8px; margin-bottom: 14px; }
+    .cifra { padding: 14px; }
+    .cifra b { font-size: 1.6rem; }
+    .siguiente .cuando { font-size: 2.8rem; }
+    :root { --hora-px: 64px; }
+    .linea-tiempo { margin-left: 46px; }
+    .linea-tiempo .marca-h { left: -46px; }
+  }
+</style>
+</head>
+<body>
+<div class="aviso-demo">Modo demostración: usuario <b>vero</b> · contraseña <b>demo</b>.
+  <button onclick="V.Demo.reiniciar(); location.reload()">Reiniciar datos</button></div>
+
+<!-- ================= INGRESO ================= -->
+<section class="ingreso" id="ingreso" hidden>
+  <div class="ingreso-arte">
+    <div class="logo-caja"><img class="logo-grande" src="img/verolly-agender-logo.webp" alt="VerollyAgender"></div>
+    <h1>Tu agenda, siempre en orden.</h1>
+    <p>Mirá quién viene, avisá por WhatsApp con un toque y tené todo sincronizado con Google Calendar.</p>
+    <div class="muestra">
+      <div><b>09:00</b> Lucía · Kapping</div>
+      <div><b>10:30</b> Rosa · Esmaltado</div>
+      <div><b>11:30</b> Carla · Brushing</div>
+    </div>
+  </div>
+  <div class="ingreso-form">
+    <form id="formIngreso" novalidate>
+      <h2 id="ingTitulo">Hola de nuevo</h2>
+      <p class="sub" id="ingSub">Entrá con el usuario que te dimos.</p>
+      <label class="campo"><span>Usuario</span>
+        <input id="usuario" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Ej: vero"></label>
+      <label class="campo" id="campoCodigo" hidden><span>Código de activación</span>
+        <input id="codigo" inputmode="numeric" autocomplete="one-time-code" placeholder="Ej: 482913"></label>
+      <label class="campo ver-clave"><span id="claveLabel">Contraseña</span>
+        <input id="clave" type="password" autocomplete="current-password" placeholder="••••••">
+        <button type="button" id="btnVer">Ver</button></label>
+      <label class="campo" id="campoClave2" hidden><span>Repetí la contraseña</span>
+        <input id="clave2" type="password" autocomplete="new-password" placeholder="••••••"></label>
+      <label class="recordar"><input type="checkbox" id="mantener" checked> Mantener la sesión en este dispositivo</label>
+      <p class="error" id="errorIngreso" hidden></p>
+      <button class="btn ancho" id="btnEntrar">Entrar</button>
+      <button class="btn fantasma ancho" type="button" id="btnModo" style="margin-top:8px">¿Primera vez? Activar mi cuenta</button>
+      <p class="pista" id="pista" hidden>Demostración: usuario <b>vero</b>, contraseña <b>demo</b>.</p>
+    </form>
+  </div>
+</section>
+
+<!-- ================= APP ================= -->
+<div class="app" id="app" hidden>
+  <aside class="lateral">
+    <div class="marca-verolly en-oscuro"><img src="img/verolly-icono.svg" alt=""><span><b>Verolly</b><em>Agender</em></span></div>
+    <div class="negocio"><div class="logo" data-logo></div><div><b data-negocio></b><small id="usuarioNombre"></small></div></div>
+    <button class="nav on" onclick="irHoy()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Agenda</button>
+    <a class="nav" id="navReservas" href="index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Nuevo turno</a>
+    <button class="nav" onclick="copiarLink()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>Copiar link de reservas</button>
+    <a class="nav" id="navGcal" href="https://calendar.google.com/calendar/r/day" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Google Calendar</a>
+    <button class="nav" onclick="abrirAjustes()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>Ajustes</button>
+    <div class="abajo"><button class="nav" onclick="salir()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>Salir</button></div>
+  </aside>
+
+  <main class="principal">
+    <div class="malla"></div>
+    <div class="arriba">
+      <div><h1 id="saludo">Hola</h1><p id="fechaHoy"></p></div>
+      <div class="acciones">
+        <span class="actualizado" id="actualizado"></span>
+        <button class="btn claro" onclick="cargar()">Actualizar</button>
+        <a class="btn ocultable" href="index.html" target="_blank" rel="noopener">+ Nuevo turno</a>
+      </div>
+    </div>
+
+    <div class="cifras">
+      <div class="cifra tarjeta"><span>Turnos hoy</span><b id="cTotal">0</b></div>
+      <div class="cifra tarjeta"><span>Atendidas</span><b id="cAtendidas">0</b><div class="barrita"><i id="cBarra" style="width:0"></i></div></div>
+      <div class="cifra tarjeta"><span>Por atender</span><b id="cFaltan">0</b></div>
+      <div class="cifra tarjeta"><span>Estimado del día</span><b id="cPlata">Gs. 0</b></div>
+    </div>
+
+    <div class="cuerpo">
+      <div>
+        <div class="siguiente tarjeta" id="siguiente"></div>
+        <div class="cola tarjeta" id="cola"></div>
+      </div>
+      <section class="agenda tarjeta">
+        <h3 id="tituloAgenda">Agenda</h3>
+        <div class="dias" id="dias"></div>
+        <div id="lineaTiempo"></div>
+        <div class="leyenda">
+          <span><i class="punto e-Pendiente"></i>Pendiente</span><span><i class="punto e-Confirmado"></i>Confirmado</span>
+          <span><i class="punto e-Atendido"></i>Atendida</span><span><i class="punto e-No-vino"></i>No vino</span>
+          <span><i class="punto e-Cancelado"></i>Cancelado</span>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<nav class="barra-inf" id="barraInf" hidden>
+  <button class="on" onclick="irHoy()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Hoy</button>
+  <a href="index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Nuevo</a>
+  <a href="https://calendar.google.com/calendar/r/day" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Calendar</a>
+  <button onclick="abrirAjustes()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>Ajustes</button>
+  <button onclick="salir()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>Salir</button>
+</nav>
+
+<!-- Detalle de un turno -->
+<div class="velo" id="velo" onclick="cerrarDetalle()"></div>
+<div class="hoja" id="detalle" role="dialog" aria-modal="true"></div>
+
+<!-- Ajustes -->
+<div class="hoja" id="hojaAjustes" role="dialog" aria-modal="true" aria-labelledby="tituloAjustes">
+  <h2 id="tituloAjustes" style="font-size:1.6rem;letter-spacing:-.03em">Ajustes</h2>
+  <p style="color:var(--gris);margin:4px 0 22px">Cambios que aplican a los turnos nuevos.</p>
+  <form id="formAjustes" novalidate>
+    <label class="campo"><span>¿A qué correo enviamos cada turno?</span>
+      <input id="emailCal" type="text" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="tucorreo@gmail.com">
+      <small>Cada reserva te llega como invitación y aparece sola en tu Google Calendar. Podés poner varios separados por coma (hasta 5).</small></label>
+    <p class="error" id="errorAjustes" hidden></p>
+    <button class="btn ancho" id="btnAjustes">Guardar</button>
+    <button class="btn fantasma ancho" type="button" onclick="cerrarDetalle()" style="margin-top:6px">Cerrar</button>
+  </form>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="config.js"></script>
+<script src="comun.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const MES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const abiertoE = t => t.estado === 'Pendiente' || t.estado === 'Confirmado';
+let token = localStorage.getItem('verollyToken') || sessionStorage.getItem('verollyToken') || '';
+let datos = null, diaSel = V.ahora().fecha, abiertoId = null;
+
+/* ================= Ingreso ================= */
+if (V.demo) $('pista').hidden = false;
+$('btnVer').onclick = () => {
+  const c = $('clave'); c.type = c.type === 'password' ? 'text' : 'password';
+  $('btnVer').textContent = c.type === 'password' ? 'Ver' : 'Ocultar';
+};
+let modoActivar = false;
+function ponerModo(activar) {
+  modoActivar = activar;
+  $('ingTitulo').textContent = activar ? 'Activá tu cuenta' : 'Hola de nuevo';
+  $('ingSub').textContent = activar ? 'Poné el código que te dimos y elegí tu contraseña.' : 'Entrá con el usuario que te dimos.';
+  $('campoCodigo').hidden = !activar; $('campoClave2').hidden = !activar;
+  $('claveLabel').textContent = activar ? 'Elegí tu contraseña (mínimo 6)' : 'Contraseña';
+  $('clave').autocomplete = activar ? 'new-password' : 'current-password';
+  $('btnEntrar').textContent = activar ? 'Activar y entrar' : 'Entrar';
+  $('btnModo').textContent = activar ? 'Ya tengo contraseña' : '¿Primera vez? Activar mi cuenta';
+  $('errorIngreso').hidden = true;
+}
+$('btnModo').onclick = () => ponerModo(!modoActivar);
+$('formIngreso').onsubmit = async ev => {
+  ev.preventDefault();
+  const err = m => { $('errorIngreso').textContent = m; $('errorIngreso').hidden = false; };
+  const usuario = $('usuario').value.trim(), clave = $('clave').value;
+  if (!usuario || !clave) return err('Completá usuario y contraseña.');
+  if (modoActivar) {
+    if (!$('codigo').value.trim()) return err('Poné el código de activación.');
+    if (clave.length < 6) return err('La contraseña tiene que tener al menos 6 caracteres.');
+    if (clave !== $('clave2').value) return err('Las contraseñas no coinciden.');
+  }
+  const b = $('btnEntrar'), texto = b.textContent; b.disabled = true; b.innerHTML = '<span class="girando"></span>';
+  try {
+    const r = modoActivar ? await V.api.activar(usuario, $('codigo').value.trim(), clave) : await V.api.login(usuario, clave);
+    token = r.token;
+    ($('mantener').checked ? localStorage : sessionStorage).setItem('verollyToken', token);
+    $('clave').value = $('clave2').value = $('codigo').value = '';
+    ponerModo(false);
+    await cargar();
+  } catch (e) {
+    if (/^ACTIVAR:/.test(e.message)) { ponerModo(true); err(e.message.replace(/^ACTIVAR:\s*/, '')); }
+    else err(e.message);
+  } finally { b.disabled = false; if (b.querySelector('.girando')) b.textContent = texto; }
+};
+function mostrarIngreso(msg) {
+  $('app').hidden = true; $('barraInf').hidden = true; $('ingreso').hidden = false;
+  if (msg) { $('errorIngreso').textContent = msg; $('errorIngreso').hidden = false; }
+}
+function salir() {
+  localStorage.removeItem('verollyToken'); sessionStorage.removeItem('verollyToken');
+  token = ''; datos = null; cerrarDetalle(); mostrarIngreso();
+}
+
+/* ================= Datos ================= */
+async function cargar() {
+  const hoy = V.ahora().fecha, fin = V.sumarDias(hoy, 6);
+  try {
+    const r = await V.api.panel(token, diaSel < hoy ? diaSel : hoy, diaSel > fin ? diaSel : fin);
+    datos = r;
+  } catch (e) {
+    if (/^SESION|sesi[oó]n/i.test(e.message)) { salir(); mostrarIngreso(e.message.replace(/^SESION:\s*/, '')); return; }
+    aviso(e.message); return;
+  }
+  $('ingreso').hidden = true; $('app').hidden = false; $('barraInf').hidden = false;
+  V.aplicarMarca(datos.negocio);
+  pintar();
+  $('actualizado').textContent = 'Actualizado ' + V.hhmm(V.ahora().min);
+}
+
+/* ================= Pintar ================= */
+function pintar() {
+  if (!datos) return;
+  const ah = V.ahora(), n = datos.negocio, nombre = (datos.usuario && datos.usuario.nombre) || '';
+  $('saludo').textContent = V.saludo() + (nombre ? ', ' + nombre : '');
+  $('fechaHoy').textContent = cap(V.fechaLarga(ah.fecha)) + ' · ' + n.nombre;
+  $('usuarioNombre').textContent = nombre;
+  document.title = 'Agenda · ' + n.nombre;
+
+  const hoyT = datos.turnos.filter(t => t.fecha === ah.fecha && t.estado !== 'Cancelado');
+  const atendidas = hoyT.filter(t => t.estado === 'Atendido').length;
+  $('cTotal').textContent = hoyT.length;
+  $('cAtendidas').textContent = atendidas;
+  $('cBarra').style.width = (hoyT.length ? Math.round(atendidas / hoyT.length * 100) : 0) + '%';
+  $('cFaltan').textContent = hoyT.filter(abiertoE).length;
+  $('cPlata').textContent = V.gs(hoyT.filter(t => t.estado !== 'No vino').reduce((s, t) => s + Number(t.precio || 0), 0));
+
+  pintarSiguiente(ah);
+  pintarDias(ah);
+  pintarLinea(ah);
+  if (abiertoId) pintarDetalle();
+}
+
+function minutosHasta(t, ah) { return V.diasEntre(ah.fecha, t.fecha) * 1440 + V.min(t.hora) - ah.min; }
+function faltaTexto(m) {
+  if (m <= 0) return 'ahora';
+  if (m < 60) return 'en ' + m + ' min';
+  if (m < 1440) { const h = Math.floor(m / 60), r = m % 60; return 'en ' + h + ' h' + (r ? ' ' + r + ' min' : ''); }
+  return '';
+}
+
+function pintarSiguiente(ah) {
+  const abiertos = datos.turnos.filter(abiertoE)
+    .filter(t => t.fecha > ah.fecha || (t.fecha === ah.fecha && V.min(t.fin) > ah.min))
+    .sort((a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora));
+  const s = abiertos[0];
+  const box = $('siguiente');
+  if (!s) {
+    box.className = 'siguiente tarjeta vacio-sig';
+    box.innerHTML = '<h2 style="margin:0">Sin turnos pendientes</h2><p>Cuando alguien reserve, aparece acá.</p>' +
+      '<button class="btn" style="margin-top:16px" onclick="copiarLink()">Copiar link de reservas</button>';
+    $('cola').innerHTML = '';
+    return;
+  }
+  const m = minutosHasta(s, ah);
+  const enCurso = s.fecha === ah.fecha && V.min(s.hora) <= ah.min;
+  const dur = V.min(s.fin) - V.min(s.hora);
+  const avance = enCurso ? Math.min(100, Math.round((ah.min - V.min(s.hora)) / dur * 100)) : 0;
+  const cuando = [s.fecha === ah.fecha ? '' : cap(V.cuando(s.fecha)), enCurso ? 'termina ' + s.fin : faltaTexto(m)]
+    .filter(Boolean).join(' · ');
+  box.className = 'siguiente tarjeta';
+  box.innerHTML =
+    '<span class="etiqueta"><i></i>' + (enCurso ? 'Atendiendo ahora' : 'Sigue') + '</span>' +
+    '<div class="cuando">' + s.hora + '</div>' +
+    '<div class="falta">' + cuando + '</div>' +
+    '<h2>' + V.esc(s.nombre) + '</h2><div class="serv">' + V.esc(s.servicio) + ' · ' + V.gs(s.precio) + '</div>' +
+    (enCurso ? '<div class="progreso"><i style="width:' + avance + '%"></i></div>' : '') +
+    '<div class="botones">' +
+      (s.fecha === ah.fecha
+        ? '<button class="btn blanco" onclick="cambiar(\'' + s.id + '\',\'Atendido\')">Ya la atendí</button>' +
+          '<a class="btn vidrio" target="_blank" rel="noopener" href="' + V.wa(s.celular, mensajeRecordatorio(s)) + '">WhatsApp</a>'
+        : '<a class="btn blanco" target="_blank" rel="noopener" href="' + V.wa(s.celular, mensajeRecordatorio(s)) + '">Recordar por WhatsApp</a>' +
+          (s.estado === 'Confirmado'
+            ? '<span class="btn vidrio" style="cursor:default">Confirmado</span>'
+            : '<button class="btn vidrio" onclick="cambiar(\'' + s.id + '\',\'Confirmado\')">Confirmó</button>')) +
+      '<a class="btn vidrio" href="tel:+' + s.celular + '">Llamar</a>' +
+      '<button class="btn vidrio" onclick="abrirDetalle(\'' + s.id + '\')">Más opciones</button>' +
+    '</div>';
+
+  const resto = abiertos.slice(1, 6);
+  $('cola').innerHTML = '<h3>Después <small>' + (abiertos.length - 1) + ' en espera</small></h3>' +
+    (resto.length ? resto.map(t => itemHtml(t, ah)).join('') : '<p class="nota" style="padding:8px 0 14px">No hay más turnos en los próximos días.</p>');
+}
+
+function itemHtml(t, ah) {
+  const otroDia = t.fecha !== ah.fecha;
+  return '<button class="item" onclick="abrirDetalle(\'' + t.id + '\')">' +
+    '<span class="h">' + t.hora + (otroDia ? '<small>' + cap(V.etiquetaDia(t.fecha)) + ' ' + Number(t.fecha.slice(8)) + '</small>' : '') + '</span>' +
+    '<span class="q"><b>' + V.esc(t.nombre) + '</b><span>' + V.esc(t.servicio) + '</span></span>' +
+    '<i class="punto e-' + t.estado.replace(' ', '-') + '"></i></button>';
+}
+
+function pintarDias(ah) {
+  let html = '';
+  for (let i = 0; i < 7; i++) {
+    const f = V.sumarDias(ah.fecha, i);
+    const n = datos.turnos.filter(t => t.fecha === f && t.estado !== 'Cancelado').length;
+    html += '<button class="' + (f === diaSel ? 'on' : '') + '" data-f="' + f + '"><small>' + V.etiquetaDia(f) + '</small><b>' +
+      Number(f.slice(8)) + '</b><em>' + (n ? n + (n === 1 ? ' turno' : ' turnos') : 'libre') + '</em></button>';
+  }
+  html += '<label title="Otra fecha"><input type="date" id="otraFecha" value="' + diaSel + '"></label>';
+  $('dias').innerHTML = html;
+  $('dias').querySelectorAll('button').forEach(b => b.onclick = () => elegirDia(b.dataset.f));
+  $('otraFecha').onchange = e => e.target.value && elegirDia(e.target.value);
+  const dif = V.diasEntre(ah.fecha, diaSel);
+  $('tituloAgenda').textContent = dif === 0 ? 'Agenda de hoy' : dif === 1 ? 'Agenda de mañana' : cap(V.fechaLarga(diaSel));
+}
+
+function pintarLinea(ah) {
+  const px = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hora-px')) || 72;
+  const turnos = datos.turnos.filter(t => t.fecha === diaSel);
+  const h = datos.horarios && datos.horarios[V.diaSemana(diaSel)];
+  if (!turnos.length && !h) { $('lineaTiempo').innerHTML = '<p class="sin-turnos">Este día el local está cerrado.</p>'; return; }
+  let ini = h ? h.abre : 480, fin = h ? h.cierra : 1080;
+  turnos.forEach(t => { ini = Math.min(ini, V.min(t.hora)); fin = Math.max(fin, V.min(t.fin)); });
+  ini = Math.floor(ini / 60) * 60; fin = Math.ceil(fin / 60) * 60;
+  const y = m => (m - ini) / 60 * px;
+  let html = '';
+  for (let m = ini; m <= fin; m += 60) html += '<div class="marca-h" style="top:' + y(m) + 'px"><span>' + V.hhmm(m) + '</span></div>';
+  if (h && h.dIni != null && h.dFin != null) html += '<div class="descanso" style="top:' + y(h.dIni) + 'px;height:' + (y(h.dFin) - y(h.dIni)) + 'px">Descanso</div>';
+
+  // columnas para turnos que se superponen (varias clientas a la vez)
+  const orden = turnos.slice().sort((a, b) => a.hora.localeCompare(b.hora));
+  const cols = [];
+  orden.forEach(t => {
+    let c = cols.findIndex(fc => fc <= V.min(t.hora));
+    if (c === -1) { c = cols.length; cols.push(0); }
+    cols[c] = V.min(t.fin); t._col = c;
+  });
+  const nCols = Math.max(1, cols.length);
+  orden.forEach(t => {
+    const alto = Math.max(28, y(V.min(t.fin)) - y(V.min(t.hora)) - 4);
+    const corto = alto < 52;
+    html += '<button class="bloque-t ' + t.estado.replace(' ', '-') + (corto ? ' corto' : '') + '" onclick="abrirDetalle(\'' + t.id + '\')" style="top:' +
+      (y(V.min(t.hora)) + 2) + 'px;height:' + alto + 'px;left:calc(' + (t._col / nCols * 100) + '% + 4px);width:calc(' + (100 / nCols) + '% - 8px)">' +
+      '<b>' + V.esc(t.nombre) + '</b><span>' + t.hora + '–' + t.fin + ' · ' + V.esc(t.servicio) + '</span></button>';
+  });
+  if (diaSel === ah.fecha && ah.min >= ini && ah.min <= fin) html += '<div class="ahora-linea" style="top:' + y(ah.min) + 'px"></div>';
+  if (!turnos.length) html += '<p class="sin-turnos" style="position:absolute;left:0;right:0;top:' + (y(ini) + 30) + 'px">Sin turnos este día</p>';
+  $('lineaTiempo').innerHTML = '<div class="linea-tiempo" style="height:' + (y(fin) + 10) + 'px">' + html + '</div>';
+}
+
+function elegirDia(f) {
+  diaSel = f;
+  const hoy = V.ahora().fecha;
+  if (f < hoy || f > V.sumarDias(hoy, 6)) cargar(); else pintar();
+}
+function irHoy() { diaSel = V.ahora().fecha; pintar(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+/* ================= Detalle ================= */
+function mensajeRecordatorio(t) {
+  return 'Hola ' + V.primerNombre(t.nombre) + '! Te recuerdo tu turno de ' + t.servicio + ' ' + V.cuando(t.fecha) +
+    ' a las ' + t.hora + ' en ' + datos.negocio.nombre + '. Te esperamos!';
+}
+function abrirDetalle(id) { abiertoId = id; pintarDetalle(); $('velo').classList.add('on'); $('detalle').classList.add('on'); }
+function cerrarDetalle() {
+  abiertoId = null; $('velo').classList.remove('on');
+  document.querySelectorAll('.hoja').forEach(h => h.classList.remove('on'));
+}
+
+/* ================= Ajustes ================= */
+function abrirAjustes() {
+  if (!datos) return;
+  cerrarDetalle();
+  $('emailCal').value = (datos.ajustes && datos.ajustes.emailCalendario) || '';
+  $('errorAjustes').hidden = true;
+  $('velo').classList.add('on'); $('hojaAjustes').classList.add('on');
+}
+$('formAjustes').onsubmit = async ev => {
+  ev.preventDefault();
+  const b = $('btnAjustes'); b.disabled = true; b.innerHTML = '<span class="girando"></span>';
+  try {
+    const r = await V.api.ajustes(token, $('emailCal').value);
+    datos.ajustes = r.ajustes;
+    cerrarDetalle();
+    aviso(r.ajustes.emailCalendario ? 'Listo. Los turnos nuevos llegan a ' + r.ajustes.emailCalendario : 'Correo borrado');
+  } catch (e) {
+    if (/^SESION/.test(e.message)) { salir(); mostrarIngreso(e.message.replace(/^SESION:\s*/, '')); return; }
+    $('errorAjustes').textContent = e.message; $('errorAjustes').hidden = false;
+  } finally { b.disabled = false; b.textContent = 'Guardar'; }
+};
+document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarDetalle(); });
+
+function pintarDetalle() {
+  const t = datos.turnos.find(x => x.id === abiertoId);
+  if (!t) return cerrarDetalle();
+  const [y, m, d] = t.fecha.split('-').map(Number);
+  const msg = t.estado === 'Cancelado'
+    ? 'Hola ' + V.primerNombre(t.nombre) + ', te aviso que tu turno de ' + t.servicio + ' de ' + V.cuando(t.fecha) + ' a las ' + t.hora + ' quedó cancelado. Escribime y lo reprogramamos.'
+    : mensajeRecordatorio(t);
+  const est = (e, txt, cls) => '<button class="' + (t.estado === e ? 'on ' : '') + (cls || '') + '" onclick="cambiar(\'' + t.id + '\',\'' + e + '\')">' +
+    '<i class="punto e-' + e.replace(' ', '-') + '"></i>' + txt + '</button>';
+  $('detalle').innerHTML =
+    '<div class="det-cab"><div class="avatar">' + V.esc(t.nombre.charAt(0).toUpperCase()) + '</div><div><h2>' + V.esc(t.nombre) + '</h2><p>' + V.celularLindo(t.celular) + '</p></div></div>' +
+    '<div class="det-datos">' +
+      '<div><span>Servicio</span><b>' + V.esc(t.servicio) + '</b></div>' +
+      '<div><span>Precio</span><b>' + V.gs(t.precio) + '</b></div>' +
+      '<div><span>Día</span><b>' + cap(V.etiquetaDia(t.fecha)) + ' ' + d + ' ' + MES[m - 1] + '</b></div>' +
+      '<div><span>Horario</span><b>' + t.hora + ' – ' + t.fin + '</b></div>' +
+    '</div>' +
+    '<div class="det-estados">' + est('Confirmado', 'Confirmó') + est('Atendido', 'Atendida') + est('No vino', 'No vino') +
+      (t.estado === 'Cancelado' ? '<button class="on" disabled>Cancelado</button>' : est('Cancelado', 'Cancelar', 'peligro')) + '</div>' +
+    '<div class="det-acciones">' +
+      '<a class="btn wa" target="_blank" rel="noopener" href="' + V.wa(t.celular, msg) + '">' + (t.estado === 'Cancelado' ? 'Avisar' : 'Recordar') + ' por WhatsApp</a>' +
+      '<a class="btn claro" href="tel:+' + t.celular + '">Llamar</a>' +
+      '<a class="btn claro gcal" target="_blank" rel="noopener" href="https://calendar.google.com/calendar/r/day/' + y + '/' + m + '/' + d + '">Ver el día en Google Calendar</a>' +
+      '<button class="btn fantasma gcal" onclick="cerrarDetalle()">Cerrar</button>' +
+    '</div>';
+}
+
+async function cambiar(id, estado) {
+  const t = datos.turnos.find(x => x.id === id);
+  if (!t || t.estado === estado) return;
+  if (t.estado === 'Cancelado') return aviso('Este turno ya está cancelado.');
+  if (estado === 'Cancelado' && !confirm('¿Cancelar el turno de ' + t.nombre + ' (' + t.hora + ')?\nEl horario queda libre y se borra de Google Calendar.')) return;
+  const antes = t.estado;
+  t.estado = estado; pintar();
+  try {
+    await V.api.estado(token, id, estado);
+    aviso(estado === 'Atendido' ? 'Listo, marcada como atendida' : estado === 'Cancelado' ? 'Turno cancelado' : 'Guardado: ' + estado);
+  } catch (e) { t.estado = antes; pintar(); aviso(e.message); }
+}
+
+/* ================= Varios ================= */
+let tAviso;
+function aviso(m) { $('toast').textContent = m; $('toast').classList.add('on'); clearTimeout(tAviso); tAviso = setTimeout(() => $('toast').classList.remove('on'), 2600); }
+function linkReservas() { return new URL('index.html', location.href).href; }
+async function copiarLink() {
+  try { await navigator.clipboard.writeText(linkReservas()); aviso('Link copiado. Pegalo en tu WhatsApp Business.'); }
+  catch (e) { prompt('Copiá este link:', linkReservas()); }
+}
+
+/* ================= Inicio ================= */
+if (token) cargar(); else mostrarIngreso();
+setInterval(() => { if (datos && !$('app').hidden) cargar(); }, 60000);   // datos nuevos cada minuto
+setInterval(() => { if (datos && !$('app').hidden) pintar(); }, 20000);   // reloj y cuenta regresiva
+</script>
+</body>
+</html>

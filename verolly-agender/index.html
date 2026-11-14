@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#533afd">
+<title>Reservá tu turno</title>
+<link rel="icon" href="img/verolly-icono.svg" type="image/svg+xml">
+<link rel="stylesheet" href="estilos.css">
+<style>
+  .layout {
+    position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 48px 24px 40px; display: grid; gap: 24px; align-items: start;
+    grid-template-columns: 300px minmax(0, 1fr) 330px; grid-template-areas: "perfil flujo ticket";
+  }
+
+  /* ----- Perfil del negocio ----- */
+  .perfil { grid-area: perfil; position: sticky; top: 24px; }
+  .perfil-card { overflow: hidden; box-shadow: var(--sombra-2); }
+  .portada { height: 76px; background: url(img/malla.svg) center / cover; }
+  .perfil-cuerpo { padding: 0 24px 24px; margin-top: -30px; }
+  .perfil .logo { width: 64px; height: 64px; border: 3px solid #fff; box-shadow: var(--sombra); }
+  .perfil h1 { font-size: 1.5rem; letter-spacing: -.03em; line-height: 1.15; margin-top: 14px; }
+  .perfil .dir { color: var(--gris); font-size: .9rem; margin-top: 4px; }
+  .estado-hoy { margin-top: 14px; }
+  .estado-hoy.abierto { background: #e7f6ee; color: var(--ok); }
+  .estado-hoy.cerrado { background: var(--fondo); color: var(--gris); }
+  .estado-hoy i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .estado-hoy.abierto i { animation: latir 1.6s infinite; }
+  @keyframes latir { 50% { opacity: .3; } }
+  .horarios { margin-top: 18px; border-top: 1px solid var(--linea); padding-top: 12px; }
+  .horarios summary { cursor: pointer; font-weight: 500; font-size: .88rem; list-style: none; display: flex; justify-content: space-between; padding: 6px 0; }
+  .horarios summary::after { content: '+'; color: var(--marca); font-size: 1.15rem; line-height: 1; font-weight: 300; }
+  .horarios[open] summary::after { content: '−'; }
+  .horarios ul { list-style: none; padding: 0; margin: 6px 0 0; font-size: .85rem; font-feature-settings: "tnum"; }
+  .horarios li { display: flex; justify-content: space-between; padding: 5px 0; color: var(--gris); }
+  .horarios li.hoy { color: var(--tinta); font-weight: 500; }
+  .perfil .btn { margin-top: 18px; width: 100%; font-size: .95rem; }
+  .firma { display: flex; align-items: center; justify-content: center; gap: 5px; color: var(--gris-claro); font-size: .76rem; margin-top: 16px; }
+  .firma img { width: 18px; height: 18px; margin-left: 2px; }
+  .firma b { color: var(--tinta-2); font-weight: 500; }
+  .firma em { color: var(--gris); font-style: normal; font-weight: 400; margin-left: -5px; }
+  .firma-pie { display: none; }
+
+  /* ----- Pasos ----- */
+  .flujo { grid-area: flujo; display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; min-width: 0; }
+  .bloque { min-width: 0; padding: 28px; box-shadow: var(--sombra-2); transition: opacity .25s; animation: aparecer .35s ease both; }
+  .bloque.bloqueado { opacity: .45; pointer-events: none; box-shadow: var(--sombra); }
+  .bloque > header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .bloque h2 { font-size: 1.45rem; letter-spacing: -.03em; flex: 1; line-height: 1.1; }
+  .num { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--marca-media); color: var(--marca);
+    font-size: .85rem; font-weight: 500; display: grid; place-items: center; flex: none; transition: all .2s; font-feature-settings: "tnum"; }
+  .bloque.hecho .num { background: var(--marca); border-color: var(--marca); color: #fff; }
+  .nota { color: var(--gris); font-size: .9rem; }
+
+  .servicios { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+  .servicio {
+    position: relative; text-align: left; background: #fff; border: 1px solid var(--linea); border-radius: var(--r-lg);
+    padding: 16px; display: flex; flex-direction: column; gap: 10px; min-height: 120px; transition: border-color .15s, box-shadow .15s, background .15s;
+  }
+  .servicio:hover { border-color: var(--marca-media); box-shadow: var(--sombra); }
+  .servicio strong { font-size: 1.05rem; font-weight: 500; padding-right: 26px; letter-spacing: -.01em; }
+  .servicio .det { font-size: .8rem; color: var(--gris); margin-top: -6px; }
+  .servicio .pie { margin-top: auto; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .servicio .dur { background: var(--fondo); color: var(--gris); font-feature-settings: "tnum"; }
+  .servicio .precio { font-weight: 500; color: var(--tinta); font-feature-settings: "tnum"; letter-spacing: -.02em; }
+  .servicio .tilde { position: absolute; top: 16px; right: 16px; width: 20px; height: 20px; border-radius: 50%;
+    border: 1px solid var(--linea-input); background: #fff; display: grid; place-items: center; }
+  .servicio.on { border-color: var(--marca); background: var(--marca-suave); box-shadow: 0 0 0 1px var(--marca); }
+  .servicio.on .tilde { background: var(--marca); border-color: var(--marca); }
+  .servicio.on .tilde::after { content: ''; width: 8px; height: 4px; border: solid #fff; border-width: 0 0 2px 2px; transform: rotate(-45deg) translate(1px, -1px); }
+
+  .flechas { display: flex; gap: 6px; }
+  .flechas button { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--linea); background: #fff; display: grid; place-items: center; color: var(--tinta-2); }
+  .flechas button:hover { border-color: var(--marca); color: var(--marca); }
+  .tira { display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 2px 2px 6px; }
+  .tira::-webkit-scrollbar { display: none; }
+  .dia {
+    flex: none; width: 78px; scroll-snap-align: start; border-radius: var(--r-lg); border: 1px solid var(--linea); background: #fff;
+    padding: 12px 6px 10px; display: flex; flex-direction: column; align-items: center; gap: 1px; transition: all .15s;
+  }
+  .dia small { font-size: .66rem; font-weight: 500; color: var(--gris); text-transform: uppercase; letter-spacing: .06em; }
+  .dia b { font-size: 1.75rem; font-weight: 300; line-height: 1.1; letter-spacing: -.04em; font-feature-settings: "tnum"; }
+  .dia .barra-libre { width: 40px; height: 3px; border-radius: 2px; background: var(--linea); margin-top: 7px; overflow: hidden; }
+  .dia .barra-libre i { display: block; height: 100%; background: var(--marca); }
+  .dia em { font-style: normal; font-size: .68rem; color: var(--gris); margin-top: 4px; font-feature-settings: "tnum"; }
+  .dia:hover:not(:disabled) { border-color: var(--marca-media); }
+  .dia:disabled { background: var(--fondo); border-color: transparent; cursor: default; }
+  .dia:disabled b, .dia:disabled small { color: var(--gris-claro); }
+  .dia.on { background: var(--navy); border-color: var(--navy); color: #fff; box-shadow: var(--sombra-2); }
+  .dia.on small, .dia.on em { color: rgba(255,255,255,.7); }
+  .dia.on .barra-libre { background: rgba(255,255,255,.2); }
+  .dia.on .barra-libre i { background: #b9b9f9; }
+
+  .rapido {
+    width: 100%; display: flex; align-items: center; gap: 14px; text-align: left; border: none; margin-bottom: 22px;
+    padding: 14px 18px; border-radius: var(--r-lg); background: var(--crema); color: var(--tinta);
+  }
+  .rapido .rayo { width: 38px; height: 38px; border-radius: 50%; background: var(--navy); color: #fff; display: grid; place-items: center; flex: none; }
+  .rapido span { flex: 1; font-size: .88rem; color: var(--tinta-2); font-feature-settings: "tnum"; }
+  .rapido span b { display: block; color: var(--tinta); font-size: 1rem; font-weight: 500; }
+  .rapido .ir { flex: none; font-weight: 500; color: var(--marca); font-size: .9rem; }
+  .grupo { margin-bottom: 20px; }
+  .grupo h3 { font-size: .68rem; text-transform: uppercase; letter-spacing: .08em; color: var(--gris); font-weight: 500; margin-bottom: 10px; }
+  .horas { display: grid; grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: 8px; }
+  .hora { min-height: 46px; border-radius: var(--pildora); border: 1px solid var(--linea); background: #fff; font-weight: 400; font-size: 1rem;
+    font-feature-settings: "tnum"; letter-spacing: -.01em; transition: all .15s; color: var(--tinta); }
+  .hora:hover { border-color: var(--marca); color: var(--marca); }
+  .hora.on { background: var(--marca); border-color: var(--marca); color: #fff; }
+  .vacio { text-align: center; color: var(--gris); padding: 26px 10px; background: var(--fondo); border-radius: var(--r-lg); }
+
+  /* ----- Ticket (tu turno) ----- */
+  .ticket-col { grid-area: ticket; position: sticky; top: 24px; }
+  .ticket { padding: 28px; box-shadow: var(--sombra-2); }
+  .ticket h2 { font-size: 1.3rem; letter-spacing: -.02em; margin-bottom: 14px; }
+  .fila-t { display: flex; justify-content: space-between; gap: 12px; padding: 11px 0; font-size: .9rem; border-bottom: 1px solid var(--linea); }
+  .fila-t span { color: var(--gris); }
+  .fila-t b { text-align: right; font-weight: 500; font-feature-settings: "tnum"; }
+  .fila-t b.falta { color: var(--gris-claro); font-weight: 400; }
+  .corte { height: 8px; }
+  .total { display: flex; justify-content: space-between; align-items: baseline; margin: 10px 0 18px; }
+  .total b { font-size: 2rem; font-weight: 300; letter-spacing: -.04em; font-feature-settings: "tnum"; }
+
+  /* ----- Barra de celular ----- */
+  .barra-movil {
+    display: none; position: fixed; left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom)); z-index: 60;
+    background: var(--navy); color: #fff; border-radius: var(--r-xl); padding: 10px 10px 10px 18px; align-items: center; gap: 12px;
+    box-shadow: var(--sombra-fuerte); transform: translateY(140%); transition: transform .3s cubic-bezier(.2,.8,.2,1);
+  }
+  .barra-movil.on { transform: none; }
+  .barra-movil div { flex: 1; min-width: 0; font-size: .8rem; color: rgba(255,255,255,.7); font-feature-settings: "tnum"; }
+  .barra-movil div b { display: block; font-size: .98rem; font-weight: 500; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* ----- Hojas ----- */
+  .hoja h2 { font-size: 1.6rem; letter-spacing: -.03em; margin-bottom: 6px; }
+  .hoja .sub { color: var(--gris); margin-bottom: 20px; font-size: .93rem; }
+  .mini { background: var(--fondo); border-radius: var(--r-lg); padding: 14px 16px; margin-bottom: 20px; display: flex; gap: 14px; align-items: center; }
+  .mini .cal { width: 52px; text-align: center; background: #fff; border: 1px solid var(--linea); border-radius: var(--r-md); padding: 5px 0; flex: none; }
+  .mini .cal small { display: block; font-size: .62rem; font-weight: 500; color: var(--marca); text-transform: uppercase; letter-spacing: .06em; }
+  .mini .cal b { font-size: 1.45rem; font-weight: 300; letter-spacing: -.04em; font-feature-settings: "tnum"; }
+  .mini p { font-size: .88rem; color: var(--gris); font-feature-settings: "tnum"; }
+  .mini p b { color: var(--tinta); display: block; font-size: 1rem; font-weight: 500; }
+  .hoja form .btn { margin-top: 4px; }
+  .listo { text-align: center; }
+  .listo .check { width: 72px; height: 72px; margin: 8px auto 18px; border-radius: 50%; background: var(--ok); color: #fff; display: grid; place-items: center;
+    animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; }
+  .listo .check path { stroke-dasharray: 30; stroke-dashoffset: 30; animation: trazo .4s .25s ease forwards; }
+  @keyframes pop { from { transform: scale(.3); opacity: 0; } }
+  @keyframes trazo { to { stroke-dashoffset: 0; } }
+  .listo .mini { text-align: left; margin-top: 20px; }
+  .listo .btn { width: 100%; margin-top: 10px; }
+
+  /* ----- Tablet ----- */
+  @media (max-width: 1180px) {
+    .layout { grid-template-columns: minmax(0, 1fr) 310px; grid-template-areas: "perfil perfil" "flujo ticket"; padding-top: 32px; }
+    .perfil { position: static; }
+    .perfil-card { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 0 18px; padding: 20px 24px; }
+    .portada, .horarios, .firma { display: none; }
+    .perfil-cuerpo { display: contents; }
+    .perfil .logo { border: none; box-shadow: none; }
+    .perfil h1 { margin-top: 0; }
+    .perfil .btn { margin-top: 0; width: auto; }
+    .perfil .estado-hoy { margin-top: 8px; }
+    .flujo .firma-pie { display: flex; margin-top: 0; }
+  }
+  /* ----- Celular ----- */
+  @media (max-width: 760px) {
+    .layout { grid-template-columns: 1fr; grid-template-areas: "perfil" "flujo"; padding: 20px 12px 120px; gap: 12px; }
+    .ticket-col { display: none; }
+    .barra-movil { display: flex; }
+    .perfil-card { grid-template-columns: auto 1fr; padding: 16px; }
+    .perfil .btn { grid-column: 1 / -1; margin-top: 14px; width: 100%; }
+    .perfil .logo { width: 56px; height: 56px; }
+    .perfil h1 { font-size: 1.3rem; }
+    .bloque { padding: 20px 16px; }
+    .bloque h2 { font-size: 1.3rem; }
+    .servicios { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .servicio { min-height: 112px; padding: 14px 12px 12px; }
+    .servicio .pie { flex-direction: column; align-items: flex-start; gap: 6px; }
+    .servicio .dur, .servicio .precio { white-space: nowrap; }
+    .flechas { display: none; }
+    .horas { grid-template-columns: repeat(3, 1fr); }
+    .malla { height: 300px; }
+  }
+  @media (max-width: 370px) { .servicios { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="aviso-demo">Modo demostración: las reservas se guardan solo en este navegador.
+  <button onclick="V.Demo.reiniciar(); location.reload()">Reiniciar</button></div>
+
+<div style="position:relative">
+<div class="malla"></div>
+<div class="layout">
+  <!-- Perfil del negocio -->
+  <aside class="perfil">
+    <div class="perfil-card tarjeta">
+      <div class="portada"></div>
+      <div class="perfil-cuerpo">
+        <div class="logo" data-logo></div>
+        <div>
+          <h1 data-negocio>Cargando...</h1>
+          <p class="dir" id="direccion"></p>
+          <span class="chip estado-hoy" id="estadoHoy" hidden><i></i><span></span></span>
+        </div>
+        <details class="horarios">
+          <summary>Horarios de atención</summary>
+          <ul id="listaHorarios"></ul>
+        </details>
+        <a class="btn wa" id="btnConsulta" target="_blank" rel="noopener" hidden>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-1.7-.1a15 15 0 0 1-6.1-5.3c-.5-.7-1-1.7-1-2.7 0-1 .6-1.6.8-1.8.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.4.6-.3.4c-.1.1-.2.3 0 .5.5.8 1 1.4 1.7 2 .7.6 1.4 1 2.2 1.3.2.1.4.1.5-.1l.8-.9c.2-.2.3-.2.5-.1l1.9.9c.3.1.4.2.5.3.1.2.1.7-.1 1.2Z"/></svg>
+          Consultar por WhatsApp</a>
+      </div>
+    </div>
+    <p class="firma">Turnos con <img src="img/verolly-icono.svg" alt=""><b>Verolly</b><em>Agender</em></p>
+  </aside>
+
+  <!-- Pasos -->
+  <main class="flujo" id="flujo">
+    <section class="bloque tarjeta" id="bServicio">
+      <header><span class="num">1</span><h2>¿Qué te hacés?</h2></header>
+      <div class="servicios" id="listaServicios"><p class="vacio">Cargando servicios...</p></div>
+    </section>
+
+    <section class="bloque tarjeta bloqueado" id="bDia">
+      <header><span class="num">2</span><h2>Elegí el día</h2>
+        <div class="flechas">
+          <button aria-label="Días anteriores" onclick="moverTira(-1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <button aria-label="Días siguientes" onclick="moverTira(1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div>
+      </header>
+      <div class="tira" id="tiraDias"><p class="nota">Primero elegí un servicio.</p></div>
+    </section>
+
+    <section class="bloque tarjeta bloqueado" id="bHora">
+      <header><span class="num">3</span><h2>Elegí el horario</h2></header>
+      <div id="zonaHoras"><p class="nota">Los horarios libres aparecen acá.</p></div>
+    </section>
+    <p class="firma firma-pie">Turnos con <img src="img/verolly-icono.svg" alt=""><b>Verolly</b><em>Agender</em></p>
+  </main>
+
+  <!-- Tu turno (tablet y PC) -->
+  <aside class="ticket-col">
+    <div class="ticket tarjeta">
+      <h2>Tu turno</h2>
+      <div class="fila-t"><span>Servicio</span><b id="tServicio" class="falta">Sin elegir</b></div>
+      <div class="fila-t"><span>Día</span><b id="tDia" class="falta">Sin elegir</b></div>
+      <div class="fila-t"><span>Horario</span><b id="tHora" class="falta">Sin elegir</b></div>
+      <div class="fila-t"><span>Duración</span><b id="tDur" class="falta">—</b></div>
+      <div class="corte"></div>
+      <div class="total"><span class="nota">Total</span><b id="tTotal">Gs. 0</b></div>
+      <button class="btn ancho" id="btnContinuar" disabled onclick="abrirDatos()">Continuar</button>
+    </div>
+  </aside>
+</div>
+</div>
+
+<!-- Barra de celular -->
+<div class="barra-movil" id="barraMovil">
+  <div><b id="bmTitulo">Elegí un horario</b><span id="bmSub"></span></div>
+  <button class="btn" id="bmBtn" onclick="abrirDatos()">Continuar</button>
+</div>
+
+<!-- Hoja: datos -->
+<div class="velo" id="velo" onclick="cerrarHojas()"></div>
+<div class="hoja" id="hojaDatos" role="dialog" aria-modal="true" aria-labelledby="tituloDatos">
+  <h2 id="tituloDatos">Último paso</h2>
+  <p class="sub">Solo necesitamos tu nombre y tu celular.</p>
+  <div class="mini" id="miniDatos"></div>
+  <form id="form" novalidate>
+    <label class="campo"><span>Tu nombre</span>
+      <input id="nombre" autocomplete="name" placeholder="Ej: Ana Benítez" maxlength="60"></label>
+    <label class="campo"><span>Tu celular</span>
+      <input id="cel" type="tel" inputmode="numeric" autocomplete="tel" placeholder="0981 123 456">
+      <small>Te avisamos por WhatsApp si hay algún cambio.</small></label>
+    <p class="error" id="errorForm" hidden></p>
+    <button class="btn ancho" id="btnConfirmar" type="submit">Confirmar turno</button>
+    <button class="btn fantasma ancho" type="button" onclick="cerrarHojas()">Volver</button>
+  </form>
+</div>
+
+<!-- Hoja: listo -->
+<div class="hoja listo" id="hojaListo" role="dialog" aria-modal="true" aria-labelledby="listoTitulo">
+  <div class="check"><svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+  <h2 id="listoTitulo">¡Listo!</h2>
+  <p class="sub">Tu turno quedó reservado. Te esperamos.</p>
+  <div class="mini" id="miniListo"></div>
+  <a class="btn wa" id="btnWa" target="_blank" rel="noopener">Avisar al local por WhatsApp</a>
+  <a class="btn claro" id="btnCal" target="_blank" rel="noopener">Guardar en Google Calendar</a>
+  <button class="btn fantasma" onclick="nuevo()">Reservar otro turno</button>
+</div>
+
+<script src="config.js"></script>
+<script src="comun.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const MES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+const NOMBRES_DIA = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+let info = null;
+const sel = { servicio: null, fecha: null, hora: null };
+const esCelular = () => matchMedia('(max-width: 760px)').matches;
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+
+async function iniciar() {
+  try {
+    info = await V.api.info();
+  } catch (e) {
+    $('listaServicios').innerHTML = '<div class="vacio">' + V.esc(e.message) +
+      '<br><br><button class="btn" onclick="iniciar()">Probar de nuevo</button></div>';
+    return;
+  }
+  const n = info.negocio;
+  V.aplicarMarca(n);
+  document.title = 'Reservá tu turno · ' + n.nombre;
+  document.querySelector('meta[name=theme-color]').content = n.color || '#533afd';
+  $('direccion').textContent = n.direccion || '';
+  if (n.whatsapp) { $('btnConsulta').href = V.wa(n.whatsapp, 'Hola! Quería hacer una consulta.'); $('btnConsulta').hidden = false; }
+  pintarEstadoHoy();
+  pintarHorarios();
+  pintarServicios();
+  const g = JSON.parse(localStorage.getItem('verollyCliente') || '{}');
+  if (g.nombre) $('nombre').value = g.nombre;
+  if (g.celular) $('cel').value = V.celularLindo(g.celular);
+}
+
+/* ---------- Perfil ---------- */
+function pintarEstadoHoy() {
+  const ah = V.ahora(), h = info.horarios[V.diaSemana(ah.fecha)];
+  const abierto = h && ah.min >= h.abre && ah.min < h.cierra && !(h.dIni != null && ah.min >= h.dIni && ah.min < h.dFin);
+  let txt;
+  if (abierto) txt = 'Abierto ahora · hasta ' + V.hhmm(h.cierra);
+  else if (h && ah.min < h.abre) txt = 'Cerrado · abre hoy ' + V.hhmm(h.abre);
+  else txt = 'Cerrado ahora';
+  const e = $('estadoHoy');
+  e.className = 'chip estado-hoy ' + (abierto ? 'abierto' : 'cerrado');
+  e.querySelector('span').textContent = txt;
+  e.hidden = false;
+}
+function pintarHorarios() {
+  const hoy = V.diaSemana(V.ahora().fecha);
+  $('listaHorarios').innerHTML = [1, 2, 3, 4, 5, 6, 0].map(d => {
+    const h = info.horarios[d];
+    const t = !h ? 'Cerrado' : V.hhmm(h.abre) + ' – ' + V.hhmm(h.cierra);
+    return '<li class="' + (d === hoy ? 'hoy' : '') + '"><span>' + NOMBRES_DIA[d] + '</span><span>' + t + '</span></li>';
+  }).join('');
+}
+
+/* ---------- 1. Servicio ---------- */
+function pintarServicios() {
+  if (!info.servicios.length) { $('listaServicios').innerHTML = '<p class="vacio">Todavía no hay servicios cargados.</p>'; return; }
+  $('listaServicios').innerHTML = info.servicios.map((s, i) =>
+    '<button class="servicio' + (s.nombre === sel.servicio ? ' on' : '') + '" data-i="' + i + '">' +
+    '<span class="tilde"></span><strong>' + V.esc(s.nombre) + '</strong>' +
+    (s.detalle ? '<span class="det">' + V.esc(s.detalle) + '</span>' : '') +
+    '<span class="pie"><span class="chip dur">' + V.duracion(s.duracion) + '</span><span class="precio">' + V.gs(s.precio) + '</span></span></button>'
+  ).join('');
+  $('listaServicios').querySelectorAll('.servicio').forEach(b => b.onclick = () => elegirServicio(info.servicios[b.dataset.i].nombre));
+}
+function servicioSel() { return info.servicios.find(s => s.nombre === sel.servicio); }
+
+function elegirServicio(nombre) {
+  sel.servicio = nombre; sel.hora = null;
+  pintarServicios();
+  $('bServicio').classList.add('hecho');
+  $('bDia').classList.remove('bloqueado');
+  // si el día elegido ya no tiene lugar para este servicio, se pasa al primero con lugar
+  const dur = servicioSel().duracion;
+  if (!sel.fecha || !V.libres(sel.fecha, dur, info).length) sel.fecha = primerDiaLibre(dur);
+  pintarDias(); pintarHoras(); actualizarResumen();
+  if (esCelular()) $('bDia').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function primerDiaLibre(dur) {
+  const hoy = V.ahora().fecha;
+  for (let i = 0; i <= info.reglas.diasAdelante; i++) {
+    const f = V.sumarDias(hoy, i);
+    if (V.libres(f, dur, info).length) return f;
+  }
+  return null;
+}
+
+/* ---------- 2. Día ---------- */
+function pintarDias() {
+  const dur = servicioSel().duracion, ah = V.ahora();
+  const dias = [];
+  for (let i = 0; i <= info.reglas.diasAdelante; i++) {
+    const f = V.sumarDias(ah.fecha, i);
+    dias.push({ f, abierto: !!info.horarios[V.diaSemana(f)], n: V.libres(f, dur, info, ah).length });
+  }
+  const max = Math.max(1, ...dias.map(d => d.n));
+  $('tiraDias').innerHTML = dias.map(d => {
+    const etiqueta = V.etiquetaDia(d.f);
+    const txt = !d.abierto ? 'Cerrado' : d.n ? d.n + ' libres' : 'Completo';
+    return '<button class="dia' + (d.f === sel.fecha ? ' on' : '') + '" data-f="' + d.f + '"' + (d.n ? '' : ' disabled') + '>' +
+      '<small>' + etiqueta + '</small><b>' + Number(d.f.slice(8)) + '</b><small>' + MES[Number(d.f.slice(5, 7)) - 1] + '</small>' +
+      '<span class="barra-libre"><i style="width:' + Math.round(d.n / max * 100) + '%"></i></span><em>' + txt + '</em></button>';
+  }).join('');
+  $('tiraDias').querySelectorAll('.dia').forEach(b => b.onclick = () => {
+    sel.fecha = b.dataset.f; sel.hora = null;
+    pintarDias(); pintarHoras(); actualizarResumen();
+    if (esCelular()) $('bHora').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  const on = $('tiraDias').querySelector('.on');
+  if (on) on.scrollIntoView({ block: 'nearest', inline: 'center' });
+  $('bDia').classList.toggle('hecho', !!sel.fecha);
+}
+function moverTira(dir) { $('tiraDias').scrollBy({ left: dir * 300, behavior: 'smooth' }); }
+
+/* ---------- 3. Hora ---------- */
+function pintarHoras() {
+  const z = $('zonaHoras');
+  $('bHora').classList.toggle('bloqueado', !sel.fecha);
+  if (!sel.fecha) { z.innerHTML = '<p class="vacio">No hay horarios libres en los próximos días. Escribinos por WhatsApp.</p>'; return; }
+  const dur = servicioSel().duracion;
+  const libres = V.libres(sel.fecha, dur, info);
+  let html = '';
+  // atajo: el primer horario libre de todos
+  const f0 = primerDiaLibre(dur);
+  if (f0) {
+    const h0 = V.libres(f0, dur, info)[0];
+    if (!(f0 === sel.fecha && V.hhmm(h0) === sel.hora)) {
+      html += '<button class="rapido" data-f="' + f0 + '" data-h="' + V.hhmm(h0) + '">' +
+        '<span class="rayo"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg></span>' +
+        '<span><b>Lo antes posible</b>' + cap(V.etiquetaDia(f0) === 'Hoy' || V.etiquetaDia(f0) === 'Mañana' ? V.etiquetaDia(f0) : V.fechaLarga(f0)) +
+        ' a las ' + V.hhmm(h0) + '</span><span class="ir">Elegir</span></button>';
+    }
+  }
+  const grupos = [['Mañana', libres.filter(m => m < 720)], ['Tarde', libres.filter(m => m >= 720 && m < 1140)], ['Noche', libres.filter(m => m >= 1140)]];
+  html += grupos.filter(g => g[1].length).map(g =>
+    '<div class="grupo"><h3>' + g[0] + ' · ' + g[1].length + (g[1].length === 1 ? ' horario' : ' horarios') + '</h3><div class="horas">' +
+    g[1].map(m => '<button class="hora' + (V.hhmm(m) === sel.hora ? ' on' : '') + '" data-h="' + V.hhmm(m) + '">' + V.hhmm(m) + '</button>').join('') +
+    '</div></div>').join('') || '<p class="vacio">Este día ya no tiene horarios libres.</p>';
+  z.innerHTML = html;
+  z.querySelectorAll('.hora').forEach(b => b.onclick = () => elegirHora(sel.fecha, b.dataset.h));
+  const r = z.querySelector('.rapido');
+  if (r) r.onclick = () => elegirHora(r.dataset.f, r.dataset.h);
+}
+function elegirHora(f, h) {
+  const cambioDia = f !== sel.fecha;
+  sel.fecha = f; sel.hora = h;
+  if (cambioDia) pintarDias();
+  pintarHoras(); actualizarResumen();
+  $('bHora').classList.add('hecho');
+}
+
+/* ---------- Resumen ---------- */
+function actualizarResumen() {
+  const s = servicioSel();
+  const pon = (id, v) => { $(id).textContent = v || 'Sin elegir'; $(id).classList.toggle('falta', !v); };
+  pon('tServicio', s && s.nombre);
+  pon('tDia', sel.fecha && cap(V.fechaLarga(sel.fecha)));
+  pon('tHora', sel.hora && sel.hora + ' a ' + V.hhmm(V.min(sel.hora) + s.duracion));
+  $('tDur').textContent = s ? V.duracion(s.duracion) : '—';
+  $('tTotal').textContent = V.gs(s ? s.precio : 0);
+  const listo = !!(s && sel.fecha && sel.hora);
+  $('btnContinuar').disabled = !listo;
+  $('barraMovil').classList.toggle('on', listo);
+  if (listo) {
+    $('bmTitulo').textContent = s.nombre;
+    $('bmSub').textContent = cap(V.etiquetaDia(sel.fecha)) + ' ' + Number(sel.fecha.slice(8)) + ' · ' + sel.hora + ' · ' + V.gs(s.precio);
+  }
+}
+
+function miniHtml(fecha, hora, servicio, extra) {
+  return '<div class="cal"><small>' + MES[Number(fecha.slice(5, 7)) - 1] + '</small><b>' + Number(fecha.slice(8)) + '</b></div>' +
+    '<p><b>' + V.esc(servicio) + '</b>' + cap(V.fechaLarga(fecha)) + ' · ' + hora + (extra ? '<br>' + extra : '') + '</p>';
+}
+
+/* ---------- Hojas ---------- */
+function abrirHoja(id) { $('velo').classList.add('on'); $(id).classList.add('on'); }
+function cerrarHojas() { $('velo').classList.remove('on'); document.querySelectorAll('.hoja').forEach(h => h.classList.remove('on')); }
+function abrirDatos() {
+  const s = servicioSel();
+  if (!s || !sel.fecha || !sel.hora) return;
+  $('miniDatos').innerHTML = miniHtml(sel.fecha, sel.hora, s.nombre, V.gs(s.precio));
+  $('errorForm').hidden = true;
+  abrirHoja('hojaDatos');
+  if (!esCelular()) setTimeout(() => $($('nombre').value ? 'cel' : 'nombre').focus(), 250);
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarHojas(); });
+
+$('form').onsubmit = async ev => {
+  ev.preventDefault();
+  const nombre = $('nombre').value.replace(/\s+/g, ' ').trim();
+  const cel = V.celular($('cel').value);
+  const err = m => { $('errorForm').textContent = m; $('errorForm').hidden = false; };
+  if (nombre.length < 2) return err('Escribí tu nombre, por favor.');
+  if (!cel) return err('Revisá tu celular. Tiene que ser como 0981 123 456.');
+  const btn = $('btnConfirmar');
+  btn.disabled = true; btn.innerHTML = '<span class="girando"></span> Reservando...';
+  try {
+    const r = await V.api.reservar({ servicio: sel.servicio, fecha: sel.fecha, hora: sel.hora, nombre, celular: cel });
+    localStorage.setItem('verollyCliente', JSON.stringify({ nombre, celular: cel }));
+    mostrarListo(r.turno);
+  } catch (e) {
+    err(e.message);
+    if (/ocup/i.test(e.message)) {
+      info = await V.api.info().catch(() => info);
+      sel.hora = null; pintarDias(); pintarHoras(); actualizarResumen();
+    }
+  } finally {
+    btn.disabled = false; btn.textContent = 'Confirmar turno';
+  }
+};
+
+function mostrarListo(t) {
+  const n = info.negocio;
+  cerrarHojas();
+  $('listoTitulo').textContent = '¡Listo, ' + V.primerNombre(t.nombre) + '!';
+  $('miniListo').innerHTML = miniHtml(t.fecha, t.hora, t.servicio, V.esc(n.nombre) + (n.direccion ? ' · ' + V.esc(n.direccion) : ''));
+  $('btnWa').href = V.wa(n.whatsapp, 'Hola! Soy ' + t.nombre + '. Reservé ' + t.servicio + ' para ' + V.cuando(t.fecha) + ' a las ' + t.hora + '.');
+  $('btnWa').hidden = !n.whatsapp;
+  const f = t.fecha.replace(/-/g, '');
+  $('btnCal').href = 'https://calendar.google.com/calendar/render?action=TEMPLATE' +
+    '&text=' + encodeURIComponent(t.servicio + ' · ' + n.nombre) +
+    '&dates=' + f + 'T' + t.hora.replace(':', '') + '00/' + f + 'T' + t.fin.replace(':', '') + '00' +
+    '&ctz=' + encodeURIComponent(V.TZ) + '&location=' + encodeURIComponent(n.direccion || '');
+  setTimeout(() => abrirHoja('hojaListo'), 120);
+  V.api.info().then(i => { info = i; }).catch(() => {});
+}
+
+function nuevo() {
+  cerrarHojas();
+  sel.servicio = sel.fecha = sel.hora = null;
+  ['bServicio', 'bDia', 'bHora'].forEach(id => $(id).classList.remove('hecho'));
+  $('bDia').classList.add('bloqueado'); $('bHora').classList.add('bloqueado');
+  $('tiraDias').innerHTML = '<p class="nota">Primero elegí un servicio.</p>';
+  $('zonaHoras').innerHTML = '<p class="nota">Los horarios libres aparecen acá.</p>';
+  pintarServicios(); actualizarResumen();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+iniciar();
+</script>
+</body>
+</html>
