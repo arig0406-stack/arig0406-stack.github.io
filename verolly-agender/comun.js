@@ -195,33 +195,43 @@
         await espera();
         if (String(usuario).trim().toLowerCase() !== 'vero' || clave !== 'demo')
           throw new Error('Usuario o contraseña incorrectos');
-        return { ok: true, token: 'demo', nombre: 'Vero' };
+        return { ok: true, token: 'demo', nombre: cargar().nombre || 'Vero' };
       },
-      async activar(usuario, codigo, clave) {
+      async activar(usuario, codigo, clave, nombre) {
         await espera();
         if (String(usuario).trim().toLowerCase() !== 'vero' || String(codigo).trim() !== '123456')
           throw new Error('Usuario o código de activación incorrectos');
-        return { ok: true, token: 'demo', nombre: 'Vero' };
+        const d = cargar();
+        if (String(nombre || '').trim()) { d.nombre = String(nombre).trim().slice(0, 40); guardar(d); }
+        return { ok: true, token: 'demo', nombre: d.nombre || 'Vero' };
       },
       async panel(token, desde, hasta) {
         await espera();
         if (token !== 'demo') throw new Error('SESION: Tu sesión terminó. Entrá de nuevo.');
-        const turnos = cargar().turnos.filter(t => t.fecha >= desde && t.fecha <= hasta)
+        const d = cargar();
+        const turnos = d.turnos.filter(t => t.fecha >= desde && t.fecha <= hasta)
           .sort((a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora));
         const pub = Object.assign({}, negocio); delete pub.duena;
-        return { ok: true, negocio: pub, usuario: { nombre: 'Vero' }, horarios,
-          ajustes: { emailCalendario: cargar().emailCalendario || '' }, turnos };
+        return { ok: true, negocio: pub, usuario: { nombre: d.nombre || 'Vero' }, horarios,
+          ajustes: { emailCalendario: d.emailCalendario || '' }, turnos };
       },
-      async ajustes(token, emailCalendario) {
+      async ajustes(token, cambios) {
         await espera();
         const d = cargar();
-        const correos = String(emailCalendario || '').split(/[,;\s]+/).map(c => c.trim().toLowerCase()).filter(Boolean);
-        if (correos.length > 5) throw new Error('Podés poner hasta 5 correos.');
-        const malo = correos.find(c => !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(c));
-        if (malo) throw new Error('Revisá este correo: ' + malo);
-        d.emailCalendario = correos.join(', ');
+        if (cambios.nombre !== undefined) {
+          const n = String(cambios.nombre || '').replace(/\s+/g, ' ').trim().slice(0, 40);
+          if (!n) throw new Error('Escribí tu nombre para el saludo.');
+          d.nombre = n;
+        }
+        if (cambios.emailCalendario !== undefined) {
+          const correos = String(cambios.emailCalendario || '').split(/[,;\s]+/).map(c => c.trim().toLowerCase()).filter(Boolean);
+          if (correos.length > 5) throw new Error('Podés poner hasta 5 correos.');
+          const malo = correos.find(c => !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(c));
+          if (malo) throw new Error('Revisá este correo: ' + malo);
+          d.emailCalendario = correos.join(', ');
+        }
         guardar(d);
-        return { ok: true, ajustes: { emailCalendario: d.emailCalendario } };
+        return { ok: true, ajustes: { emailCalendario: d.emailCalendario || '' }, usuario: { nombre: d.nombre || 'Vero' } };
       },
       async estado(pin, id, estado) {
         await espera();
@@ -241,10 +251,10 @@
     info: () => demo ? Demo.info() : get({ accion: 'info' }),
     reservar: d => demo ? Demo.reservar(d) : post(Object.assign({ accion: 'reservar' }, d)),
     login: (usuario, clave) => demo ? Demo.login(usuario, clave) : post({ accion: 'login', usuario, clave }),
-    activar: (usuario, codigo, clave) => demo ? Demo.activar(usuario, codigo, clave) : post({ accion: 'activar', usuario, codigo, clave }),
+    activar: (usuario, codigo, clave, nombre) => demo ? Demo.activar(usuario, codigo, clave, nombre) : post({ accion: 'activar', usuario, codigo, clave, nombre }),
     panel: (token, desde, hasta) => demo ? Demo.panel(token, desde, hasta) : post({ accion: 'panel', token, desde, hasta }),
     estado: (token, id, estado) => demo ? Demo.estado(token, id, estado) : post({ accion: 'estado', token, id, estado }),
-    ajustes: (token, emailCalendario) => demo ? Demo.ajustes(token, emailCalendario) : post({ accion: 'ajustes', token, emailCalendario })
+    ajustes: (token, cambios) => demo ? Demo.ajustes(token, cambios) : post(Object.assign({ accion: 'ajustes', token }, cambios))
   };
 
   function aplicarMarca(n) {

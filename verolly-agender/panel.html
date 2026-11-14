@@ -249,6 +249,9 @@
         <input id="usuario" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Ej: vero"></label>
       <label class="campo" id="campoCodigo" hidden><span>Código de activación</span>
         <input id="codigo" inputmode="numeric" autocomplete="one-time-code" placeholder="Ej: 482913"></label>
+      <label class="campo" id="campoNombre" hidden><span>¿Cómo te llamás?</span>
+        <input id="nombreAct" autocomplete="given-name" maxlength="40" placeholder="Ej: Monse">
+        <small>Lo usamos para saludarte: "Buenas tardes, Monse".</small></label>
       <label class="campo ver-clave"><span id="claveLabel">Contraseña</span>
         <input id="clave" type="password" autocomplete="current-password" placeholder="••••••">
         <button type="button" id="btnVer">Ver</button></label>
@@ -330,6 +333,9 @@
   <h2 id="tituloAjustes" style="font-size:1.6rem;letter-spacing:-.03em">Ajustes</h2>
   <p style="color:var(--gris);margin:4px 0 22px">Cambios que aplican a los turnos nuevos.</p>
   <form id="formAjustes" novalidate>
+    <label class="campo"><span>Tu nombre</span>
+      <input id="nombreAj" autocomplete="given-name" maxlength="40" placeholder="Ej: Monse">
+      <small>Es el que aparece en el saludo del panel. Cada persona que entra con su usuario tiene el suyo.</small></label>
     <label class="campo"><span>¿A qué correo enviamos cada turno?</span>
       <input id="emailCal" type="text" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="tucorreo@gmail.com">
       <small>Cada reserva te llega como invitación y aparece sola en tu Google Calendar. Podés poner varios separados por coma (hasta 5).</small></label>
@@ -361,7 +367,7 @@ function ponerModo(activar) {
   modoActivar = activar;
   $('ingTitulo').textContent = activar ? 'Activá tu cuenta' : 'Hola de nuevo';
   $('ingSub').textContent = activar ? 'Poné el código que te dimos y elegí tu contraseña.' : 'Entrá con el usuario que te dimos.';
-  $('campoCodigo').hidden = !activar; $('campoClave2').hidden = !activar;
+  $('campoCodigo').hidden = !activar; $('campoClave2').hidden = !activar; $('campoNombre').hidden = !activar;
   $('claveLabel').textContent = activar ? 'Elegí tu contraseña (mínimo 6)' : 'Contraseña';
   $('clave').autocomplete = activar ? 'new-password' : 'current-password';
   $('btnEntrar').textContent = activar ? 'Activar y entrar' : 'Entrar';
@@ -376,12 +382,13 @@ $('formIngreso').onsubmit = async ev => {
   if (!usuario || !clave) return err('Completá usuario y contraseña.');
   if (modoActivar) {
     if (!$('codigo').value.trim()) return err('Poné el código de activación.');
+    if (!$('nombreAct').value.trim()) return err('Escribí tu nombre.');
     if (clave.length < 6) return err('La contraseña tiene que tener al menos 6 caracteres.');
     if (clave !== $('clave2').value) return err('Las contraseñas no coinciden.');
   }
   const b = $('btnEntrar'), texto = b.textContent; b.disabled = true; b.innerHTML = '<span class="girando"></span>';
   try {
-    const r = modoActivar ? await V.api.activar(usuario, $('codigo').value.trim(), clave) : await V.api.login(usuario, clave);
+    const r = modoActivar ? await V.api.activar(usuario, $('codigo').value.trim(), clave, $('nombreAct').value.trim()) : await V.api.login(usuario, clave);
     token = r.token;
     ($('mantener').checked ? localStorage : sessionStorage).setItem('verollyToken', token);
     $('clave').value = $('clave2').value = $('codigo').value = '';
@@ -572,6 +579,7 @@ function abrirAjustes() {
   if (!datos) return;
   cerrarDetalle();
   $('emailCal').value = (datos.ajustes && datos.ajustes.emailCalendario) || '';
+  $('nombreAj').value = (datos.usuario && datos.usuario.nombre) || '';
   $('errorAjustes').hidden = true;
   $('velo').classList.add('on'); $('hojaAjustes').classList.add('on');
 }
@@ -579,10 +587,12 @@ $('formAjustes').onsubmit = async ev => {
   ev.preventDefault();
   const b = $('btnAjustes'); b.disabled = true; b.innerHTML = '<span class="girando"></span>';
   try {
-    const r = await V.api.ajustes(token, $('emailCal').value);
+    const r = await V.api.ajustes(token, { nombre: $('nombreAj').value, emailCalendario: $('emailCal').value });
     datos.ajustes = r.ajustes;
+    datos.usuario = r.usuario;
     cerrarDetalle();
-    aviso(r.ajustes.emailCalendario ? 'Listo. Los turnos nuevos llegan a ' + r.ajustes.emailCalendario : 'Correo borrado');
+    pintar();
+    aviso('Guardado' + (r.ajustes.emailCalendario ? '. Los turnos nuevos llegan a ' + r.ajustes.emailCalendario : ''));
   } catch (e) {
     if (/^SESION/.test(e.message)) { salir(); mostrarIngreso(e.message.replace(/^SESION:\s*/, '')); return; }
     $('errorAjustes').textContent = e.message; $('errorAjustes').hidden = false;
