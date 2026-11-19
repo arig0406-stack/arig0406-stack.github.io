@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VerollyTemp</title>
+<meta name="description" content="Vencimientos de IVA, timbrados y cobro de honorarios para estudios contables de Paraguay.">
+<link rel="icon" href="img/verolly-temp-logo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="estilos.css?v=0.1">
+<script>
+  // tema guardado (claro / oscuro) antes de pintar, para que no parpadee
+  try { var t = localStorage.getItem('verollytemp_tema'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
+</head>
+<body>
+
+<header class="barra">
+  <div class="barra-in">
+    <a class="marca" href="#inicio" aria-label="VerollyTemp, inicio">
+      <svg class="marca-v" viewBox="0 0 64 52" aria-hidden="true">
+        <defs><linearGradient id="gv" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14a4ff"/><stop offset="1" stop-color="#0a2fc8"/></linearGradient></defs>
+        <path d="M2 2h12c4 0 7 2 9 5l14 24-6 11c-2 3-5 5-9 5h-1c-3 0-6-2-8-5L2 2z" fill="currentColor"/>
+        <path d="M62 1L41 40c-2 3-4 4-7 4h-3l17-32c3-6 7-11 14-11z" fill="url(#gv)"/>
+      </svg>
+      <span class="marca-txt">Verolly<b>Temp</b></span>
+    </a>
+    <nav class="menu" id="menu">
+      <a href="#inicio" data-vista="inicio">Inicio</a>
+      <a href="#clientes" data-vista="clientes">Clientes</a>
+      <a href="#cobros" data-vista="cobros">Cobros</a>
+      <a href="#vencimientos" data-vista="vencimientos">IVA y timbrados</a>
+      <a href="#historial" data-vista="historial">Historial</a>
+      <a href="#ajustes" data-vista="ajustes">Ajustes</a>
+    </nav>
+    <div class="barra-der">
+      <div class="reloj" id="reloj" aria-live="off"></div>
+      <button class="btn-icono" id="btnTema" type="button" aria-label="Cambiar a modo oscuro o claro" title="Modo claro / oscuro">
+        <svg class="i-sol" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"/></svg>
+        <svg class="i-luna" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="aviso-prueba" id="avisoPrueba">
+  Versión de prueba: los datos se guardan solo en este navegador. Hacé una copia desde <a href="#ajustes">Ajustes</a> de vez en cuando.
+</div>
+
+<main class="contenido" id="app"></main>
+
+<footer class="pie">© VerollyTemp. All rights reserved. Developed by ArigService.</footer>
+
+<dialog id="dlg" class="dlg"><div id="dlgIn"></div></dialog>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="app.js?v=0.1"></script>
+</body>
+</html>
