@@ -13,7 +13,15 @@ const LS = {
 const BASE = location.href.replace(/[^/]*([?#].*)?$/, ''); // carpeta donde está la página
 const ROLES = { admin: 'Dueño/a del estudio', equipo: 'Equipo', soporte: 'Soporte' };
 
-let sesion = JSON.parse(LS.get('verollytemp_sesion') || 'null');
+// sesión propia de soporte (no se comparte con la de los estudios); sin "mantener" vive solo en esta pestaña
+const KSES = 'verollytemp_sop';
+const SES = {
+  leer() { for (const st of ['sessionStorage', 'localStorage']) { try { const s = JSON.parse(window[st].getItem(KSES) || 'null'); if (s && s.token && (st === 'sessionStorage' || s.recordar)) return s; } catch (e) {} } return null; },
+  guardar(s) { SES.borrar(); try { (s.recordar ? localStorage : sessionStorage).setItem(KSES, JSON.stringify(s)); } catch (e) {} },
+  borrar() { ['sessionStorage', 'localStorage'].forEach(st => { try { window[st].removeItem(KSES); } catch (e) {} }); }
+};
+LS.set('verollytemp_sesion', null);
+let sesion = SES.leer();
 let datos = { estudios: [], usuarios: [] }, filtro = '';
 
 function toast(t) { const el = $('#toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('on'), 2800); }
@@ -41,6 +49,7 @@ function pantallaLogin(activar, msg) {
       <div class="campo full"><label for="l_c">Código de activación</label><input id="l_c" name="codigo" autocapitalize="none" placeholder="abcd-1234" required></div>
       <div class="campo full"><label for="l_p">Elegí tu contraseña (8 o más)</label><input id="l_p" name="clave" type="password" autocomplete="new-password" required></div>
       <div class="campo full"><label for="l_p2">Repetila</label><input id="l_p2" name="clave2" type="password" autocomplete="new-password" required></div>
+      <div class="campo full"><label class="recordar"><input type="checkbox" name="recordar" value="1"> Mantener la sesión iniciada en este dispositivo</label></div>
       <div class="campo full"><button class="btn pri ancho" type="submit">Activar y entrar</button></div>
     </form>
     <p class="chico"><a href="#" data-act="verLogin">Ya tengo contraseña</a></p>`
@@ -48,6 +57,7 @@ function pantallaLogin(activar, msg) {
     <form id="fLogin" class="campos">
       <div class="campo full"><label for="l_u">Usuario</label><input id="l_u" name="usuario" autocomplete="username" autocapitalize="none" required></div>
       <div class="campo full"><label for="l_p">Contraseña</label><input id="l_p" name="clave" type="password" autocomplete="current-password" required></div>
+      <div class="campo full"><label class="recordar"><input type="checkbox" name="recordar" value="1"> Mantener la sesión iniciada en este dispositivo</label></div>
       <div class="campo full"><button class="btn pri ancho" type="submit">Entrar</button></div>
     </form>
     <p class="chico"><a href="#" data-act="verActivar">Es mi primera vez: tengo un código de activación</a></p>`}
@@ -63,16 +73,17 @@ async function entrar(form) {
   }
   btn.disabled = true; $('#loginMsg').textContent = 'Entrando…';
   try {
-    const r = await api(form.id === 'fActivar' ? 'activar' : 'login', { usuario: f.usuario, clave: f.clave, codigo: f.codigo });
+    const recordar = !!f.recordar;
+    const r = await api(form.id === 'fActivar' ? 'activar' : 'login', { usuario: f.usuario, clave: f.clave, codigo: f.codigo, recordar });
     if (!r.ok) { $('#loginMsg').textContent = r.msg || 'No se pudo entrar.'; btn.disabled = false; return; }
-    if (r.usuario.rol !== 'soporte') { $('#loginMsg').textContent = 'Este usuario no es de soporte. Entrá a la herramienta desde index.html.'; btn.disabled = false; return; }
-    sesion = { token: r.token, usuario: r.usuario }; LS.set('verollytemp_sesion', JSON.stringify(sesion));
+    if (r.usuario.rol !== 'soporte') { api('salir', { token: r.token }).catch(() => {}); $('#loginMsg').textContent = 'Este usuario no es de soporte. Entrá a la herramienta desde la página principal.'; btn.disabled = false; return; }
+    sesion = { token: r.token, usuario: r.usuario, recordar }; SES.guardar(sesion);
     await cargar();
   } catch (e) { $('#loginMsg').textContent = 'Sin conexión. Probá de nuevo.'; btn.disabled = false; }
 }
 function salir(vencida, msg) {
   if (sesion && !vencida && !msg) api('salir').catch(() => {});
-  sesion = null; LS.set('verollytemp_sesion', null); cerrarDlg();
+  sesion = null; SES.borrar(); cerrarDlg();
   pantallaLogin(false, msg || (vencida ? 'Tu sesión venció. Volvé a entrar.' : ''));
 }
 
@@ -137,7 +148,7 @@ function pintar() {
       <div class="panel-cab"><div><h2>${esc(e.nombre)} ${e.activo ? '<span class="badge b-ok">Activo</span>' : '<span class="badge b-mal">Pausado</span>'}</h2>
         <div class="muted chico">${esc(e.contacto || '—')} · ${esc(e.correo || 'sin correo')} · ${esc(e.whatsapp || 'sin WhatsApp')} · alta ${fmtD(e.creado)} · código ${esc(e.slug)}</div></div>
         <div class="acciones">
-          <a class="btn sm pri" href="index.html?e=${encodeURIComponent(e.slug)}" target="_blank" rel="noopener">Administrar</a>
+          <a class="btn sm pri" href="index.html?e=${encodeURIComponent(e.slug)}">Administrar</a>
           <a class="btn sm" href="${esc(e.planilla)}" target="_blank" rel="noopener">Planilla</a>
           <button class="btn sm" data-act="nuevoU" data-e="${esc(e.slug)}">+ Usuario</button>
           <button class="btn sm" data-act="editarE" data-e="${esc(e.slug)}">Editar</button>
@@ -267,9 +278,10 @@ document.addEventListener('submit', async e => {
       }
     } else if (form.id === 'fClave') {
       if (String(f.nueva).length < 8) { toast('La contraseña nueva necesita 8 caracteres o más'); return; }
-      const r = await api('clave', f);
+      const recordar = !!sesion.recordar;
+      const r = await api('clave', { ...f, recordar });
       if (!r.ok) { toast(r.msg); return; }
-      sesion = { token: r.token, usuario: r.usuario }; LS.set('verollytemp_sesion', JSON.stringify(sesion));
+      sesion = { token: r.token, usuario: r.usuario, recordar }; SES.guardar(sesion);
       cerrarDlg(); toast('Contraseña cambiada');
     }
   } catch (err) { toast(err.message || 'Sin conexión'); }

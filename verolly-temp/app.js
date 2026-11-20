@@ -87,10 +87,28 @@ const LS = {
   get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } },
   set: (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} }
 };
-let sesion = API ? JSON.parse(LS.get('verollytemp_sesion') || 'null') : null;
+/* Sesión: sin "mantener la sesión iniciada" vive solo en esta pestaña (sessionStorage) y se pide usuario y
+   contraseña cada vez que se abre la página. Con la casilla marcada queda en el dispositivo (localStorage).
+   Soporte usa otra sesión distinta y solo entra a un estudio desde soporte.html (index.html?e=...). */
+const ESTUDIO = new URLSearchParams(location.search).get('e') || ''; // soporte entra a un estudio con ?e=
+const KSES = ESTUDIO ? 'verollytemp_sop' : 'verollytemp_cli';
+const SES = {
+  leer(k) {
+    for (const st of ['sessionStorage', 'localStorage']) {
+      try { const s = JSON.parse(window[st].getItem(k) || 'null'); if (s && s.token && (st === 'sessionStorage' || s.recordar)) return s; } catch (e) {}
+    }
+    return null;
+  },
+  guardar(k, s) {
+    SES.borrar(k);
+    try { (s.recordar ? localStorage : sessionStorage).setItem(k, JSON.stringify(s)); } catch (e) {}
+  },
+  borrar(k) { ['sessionStorage', 'localStorage'].forEach(st => { try { window[st].removeItem(k); } catch (e) {} }); }
+};
+LS.set('verollytemp_sesion', null); // sesión de versiones anteriores (se compartía entre páginas)
+let sesion = API ? SES.leer(KSES) : null;
 let rev = '0', sucio = false, guardando = false, tGuardar = null, listo = !API;
 
-const ESTUDIO = new URLSearchParams(location.search).get('e') || ''; // soporte entra a un estudio con ?e=
 async function api(accion, datos) {
   const r = await fetch(API, { method: 'POST', body: JSON.stringify({ accion, token: sesion && sesion.token, estudio: ESTUDIO, ...(datos || {}) }) });
   const j = await r.json();
@@ -790,9 +808,10 @@ document.addEventListener('submit', e => {
   if (e.target.id === 'fClave') {
     const f = Object.fromEntries(new FormData(e.target));
     if (String(f.nueva).length < 8) { toast('La contraseña nueva necesita 8 caracteres o más'); return; }
-    api('clave', { actual: f.actual, nueva: f.nueva }).then(r => {
+    const recordar = !!sesion.recordar;
+    api('clave', { actual: f.actual, nueva: f.nueva, recordar }).then(r => {
       if (!r.ok) { toast(r.msg); return; }
-      sesion = { token: r.token, usuario: r.usuario }; LS.set('verollytemp_sesion', JSON.stringify(sesion));
+      sesion = { token: r.token, usuario: r.usuario, recordar }; SES.guardar(KSES, sesion);
       e.target.reset(); toast('Contraseña cambiada');
     }).catch(err => toast(err.message));
     return;
@@ -921,6 +940,7 @@ function pantallaLogin(activar, msg) {
       <div class="campo full"><label for="l_c">Código de activación</label><input id="l_c" name="codigo" autocapitalize="none" placeholder="abcd-1234" required></div>
       <div class="campo full"><label for="l_p">Elegí tu contraseña (8 o más)</label><input id="l_p" name="clave" type="password" autocomplete="new-password" required></div>
       <div class="campo full"><label for="l_p2">Repetila</label><input id="l_p2" name="clave2" type="password" autocomplete="new-password" required></div>
+      <div class="campo full"><label class="recordar"><input type="checkbox" name="recordar" value="1"> Mantener la sesión iniciada en este dispositivo</label><div class="ayuda">Marcalo solo en tu celular o tu computadora. Si no, al cerrar la página se vuelve a pedir la contraseña.</div></div>
       <div class="campo full"><button class="btn pri" style="width:100%;justify-content:center" type="submit">Activar y entrar</button></div>
     </form>
     <p class="chico"><a href="#" data-act="verLogin">Ya tengo contraseña</a></p>`
@@ -928,6 +948,7 @@ function pantallaLogin(activar, msg) {
     <form id="fLogin" class="campos">
       <div class="campo full"><label for="l_u">Usuario</label><input id="l_u" name="usuario" autocomplete="username" autocapitalize="none" required></div>
       <div class="campo full"><label for="l_p">Contraseña</label><input id="l_p" name="clave" type="password" autocomplete="current-password" required></div>
+      <div class="campo full"><label class="recordar"><input type="checkbox" name="recordar" value="1"> Mantener la sesión iniciada en este dispositivo</label><div class="ayuda">Marcalo solo en tu celular o tu computadora. Si no, al cerrar la página se vuelve a pedir la contraseña.</div></div>
       <div class="campo full"><button class="btn pri" style="width:100%;justify-content:center" type="submit">Entrar</button></div>
     </form>
     <p class="chico"><a href="#" data-act="verActivar">Es mi primera vez: tengo un código de activación</a></p>`}
@@ -943,15 +964,19 @@ async function entrar(form) {
   }
   btn.disabled = true; $('#loginMsg').textContent = 'Entrando…';
   try {
-    const r = await api(form.id === 'fActivar' ? 'activar' : 'login', { usuario: f.usuario, clave: f.clave, codigo: f.codigo });
+    const recordar = !!f.recordar;
+    const r = await api(form.id === 'fActivar' ? 'activar' : 'login', { usuario: f.usuario, clave: f.clave, codigo: f.codigo, recordar });
     if (!r.ok) { $('#loginMsg').textContent = r.msg || 'No se pudo entrar.'; btn.disabled = false; return; }
-    sesion = { token: r.token, usuario: r.usuario }; LS.set('verollytemp_sesion', JSON.stringify(sesion));
+    sesion = { token: r.token, usuario: r.usuario, recordar };
+    if (r.usuario.rol === 'soporte' && !ESTUDIO) { SES.guardar('verollytemp_sop', sesion); location.href = 'soporte.html'; return; }
+    SES.guardar(KSES, sesion);
     await iniciarConServidor();
   } catch (e) { $('#loginMsg').textContent = 'Sin conexión. Probá de nuevo.'; btn.disabled = false; }
 }
 function salir(vencida, msg) {
   if (sesion && !vencida) api('salir').catch(() => {});
-  sesion = null; LS.set('verollytemp_sesion', null); sucio = false;
+  sesion = null; SES.borrar(KSES); sucio = false;
+  pintarUsuario();
   db = dbNueva(); cerrarDlg();
   const av = $('#avisoSoporte'); if (av) av.remove();
   pantallaLogin(false, msg || (vencida ? 'Tu sesión venció. Volvé a entrar.' : ''));
@@ -961,10 +986,17 @@ async function iniciarConServidor() {
   try { await traerDatos(); }
   catch (e) { if (sesion) $('#app').innerHTML = '<div class="panel bienvenida"><h2>No se pudieron cargar los datos</h2><p>' + esc(e.message) + '</p><button class="btn pri" onclick="location.reload()">Reintentar</button></div>'; return; }
   document.body.classList.remove('sin-sesion');
+  pintarUsuario();
   if (sesion.usuario.rol === 'soporte' && !$('#avisoSoporte')) {
     $('#avisoPrueba').insertAdjacentHTML('afterend', `<div class="aviso-soporte" id="avisoSoporte">Soporte: estás administrando <b>${esc(sesion.usuario.estudioNombre || sesion.usuario.estudio)}</b>. <a href="soporte.html">Volver a Soporte</a></div>`);
   }
   listo = true; generarAlertas(); irA();
+}
+
+function pintarUsuario() {
+  const b = $('#btnSalir'); if (!b) return;
+  b.hidden = !(API && sesion && listo !== null && sesion.usuario);
+  if (!b.hidden) { b.title = 'Cerrar sesión de ' + (sesion.usuario.nombre || sesion.usuario.usuario); $('#quienSoy').textContent = sesion.usuario.nombre || sesion.usuario.usuario; }
 }
 
 /* ---------------- arranque ---------------- */
