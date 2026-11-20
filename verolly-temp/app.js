@@ -90,12 +90,15 @@ const LS = {
 let sesion = API ? JSON.parse(LS.get('verollytemp_sesion') || 'null') : null;
 let rev = '0', sucio = false, guardando = false, tGuardar = null, listo = !API;
 
+const ESTUDIO = new URLSearchParams(location.search).get('e') || ''; // soporte entra a un estudio con ?e=
 async function api(accion, datos) {
-  const r = await fetch(API, { method: 'POST', body: JSON.stringify({ accion, token: sesion && sesion.token, ...(datos || {}) }) });
+  const r = await fetch(API, { method: 'POST', body: JSON.stringify({ accion, token: sesion && sesion.token, estudio: ESTUDIO, ...(datos || {}) }) });
   const j = await r.json();
   if (j.error === 'sesion') { salir(true); throw new Error(j.msg); }
+  if (j.error === 'pausado') { salir(true, j.msg); throw new Error(j.msg); }
   return j;
 }
+const esEquipo = () => sesion && sesion.usuario && sesion.usuario.rol === 'equipo';
 function estadoSync(t, cls) { const el = $('#sync'); if (el) { el.textContent = t; el.className = 'sync ' + (cls || ''); } }
 
 let db = cargar();
@@ -522,7 +525,7 @@ VISTAS.ajustes = () => {
   const a = db.ajustes, p = a.plantillas;
   return `
   <div class="titulo"><div><h1>Ajustes</h1><p>Datos de la consultoría, avisos y copias de seguridad.</p></div></div>
-  <form id="fAjustes" class="panel">
+  ${esEquipo() ? '' : `<form id="fAjustes" class="panel">
     <div class="campos">
       <div class="seccion">La consultoría</div>
       <div class="campo"><label for="a_consultoria">Nombre de la consultoría</label><input id="a_consultoria" name="consultoria" value="${esc(a.consultoria)}"></div>
@@ -544,7 +547,7 @@ VISTAS.ajustes = () => {
         <div class="ayuda">Palabras que se reemplazan solas: {nombre} {cliente} {mes} {monto} {vence} {contadora} {consultoria} {datos_pago}</div></div>
     </div>
     <div class="acciones" style="margin-top:16px"><button class="btn pri" type="submit">Guardar ajustes</button><button class="btn" type="button" data-act="plantillasOrig">Volver a los mensajes originales</button></div>
-  </form>
+  </form>`}
   ${API ? `<form id="fClave" class="panel">
     <h2>Mi cuenta</h2>
     <p class="muted chico">Entraste como <b>${esc(sesion.usuario.nombre)}</b> (usuario ${esc(sesion.usuario.usuario)}).</p>
@@ -946,17 +949,21 @@ async function entrar(form) {
     await iniciarConServidor();
   } catch (e) { $('#loginMsg').textContent = 'Sin conexión. Probá de nuevo.'; btn.disabled = false; }
 }
-function salir(vencida) {
+function salir(vencida, msg) {
   if (sesion && !vencida) api('salir').catch(() => {});
   sesion = null; LS.set('verollytemp_sesion', null); sucio = false;
   db = dbNueva(); cerrarDlg();
-  pantallaLogin(false, vencida ? 'Tu sesión venció. Volvé a entrar.' : '');
+  const av = $('#avisoSoporte'); if (av) av.remove();
+  pantallaLogin(false, msg || (vencida ? 'Tu sesión venció. Volvé a entrar.' : ''));
 }
 async function iniciarConServidor() {
   $('#app').innerHTML = '<p class="vacio" style="text-align:center;padding:60px 0">Cargando datos…</p>';
   try { await traerDatos(); }
   catch (e) { if (sesion) $('#app').innerHTML = '<div class="panel bienvenida"><h2>No se pudieron cargar los datos</h2><p>' + esc(e.message) + '</p><button class="btn pri" onclick="location.reload()">Reintentar</button></div>'; return; }
   document.body.classList.remove('sin-sesion');
+  if (sesion.usuario.rol === 'soporte' && !$('#avisoSoporte')) {
+    $('#avisoPrueba').insertAdjacentHTML('afterend', `<div class="aviso-soporte" id="avisoSoporte">Soporte: estás administrando <b>${esc(sesion.usuario.estudioNombre || sesion.usuario.estudio)}</b>. <a href="soporte.html">Volver a Soporte</a></div>`);
+  }
   listo = true; generarAlertas(); irA();
 }
 
