@@ -8,7 +8,7 @@
 <link rel="icon" href="img/verolly-temp-logo.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="estilos.css?v=0.1">
+<link rel="stylesheet" href="estilos.css?v=0.2">
 <script>
   // tema guardado (claro / oscuro) antes de pintar, para que no parpadee
   try { var t = localStorage.getItem('verollytemp_tema'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
@@ -35,6 +35,7 @@
       <a href="#ajustes" data-vista="ajustes">Ajustes</a>
     </nav>
     <div class="barra-der">
+      <span class="sync" id="sync" aria-live="polite"></span>
       <div class="reloj" id="reloj" aria-live="off"></div>
       <button class="btn-icono" id="btnTema" type="button" aria-label="Cambiar a modo oscuro o claro" title="Modo claro / oscuro">
         <svg class="i-sol" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"/></svg>
@@ -55,6 +56,7 @@
 <dialog id="dlg" class="dlg"><div id="dlgIn"></div></dialog>
 <div class="toast" id="toast" role="status"></div>
 
-<script src="app.js?v=0.1"></script>
+<script src="config.js?v=0.2"></script>
+<script src="app.js?v=0.2"></script>
 </body>
 </html>

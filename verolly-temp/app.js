@@ -67,18 +67,79 @@ function dbNueva() {
     clientes: [], historial: [], correos: []
   };
 }
-function cargar() {
-  try {
-    const d = JSON.parse(localStorage.getItem(CLAVE));
-    if (d && d.clientes) { d.ajustes = { ...dbNueva().ajustes, ...d.ajustes }; d.ajustes.plantillas = { ...PLANTILLAS, ...d.ajustes.plantillas }; d.correos = d.correos || []; return d; }
-  } catch (e) {}
-  return dbNueva();
+function normalizar(d) {
+  if (!d || !Array.isArray(d.clientes)) return dbNueva();
+  const base = dbNueva();
+  d.ajustes = { ...base.ajustes, ...(d.ajustes || {}) };
+  d.ajustes.plantillas = { ...PLANTILLAS, ...(d.ajustes.plantillas || {}) };
+  d.correos = d.correos || []; d.historial = d.historial || [];
+  d.clientes.forEach(c => { c.pagos = c.pagos || {}; c.ivaPresentado = c.ivaPresentado || {}; c.avisos = c.avisos || {}; });
+  return d;
 }
+function cargar() {
+  if (API) return dbNueva();
+  try { return normalizar(JSON.parse(localStorage.getItem(CLAVE))); } catch (e) { return dbNueva(); }
+}
+
+/* ---------------- servidor (si config.js tiene la dirección) ---------------- */
+const API = (window.VT_API || '').trim();
+const LS = {
+  get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set: (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} }
+};
+let sesion = API ? JSON.parse(LS.get('verollytemp_sesion') || 'null') : null;
+let rev = '0', sucio = false, guardando = false, tGuardar = null, listo = !API;
+
+async function api(accion, datos) {
+  const r = await fetch(API, { method: 'POST', body: JSON.stringify({ accion, token: sesion && sesion.token, ...(datos || {}) }) });
+  const j = await r.json();
+  if (j.error === 'sesion') { salir(true); throw new Error(j.msg); }
+  return j;
+}
+function estadoSync(t, cls) { const el = $('#sync'); if (el) { el.textContent = t; el.className = 'sync ' + (cls || ''); } }
+
 let db = cargar();
-function guardar() { try { localStorage.setItem(CLAVE, JSON.stringify(db)); } catch (e) { toast('No se pudo guardar en este navegador'); } }
+function guardar() {
+  if (!API) { try { localStorage.setItem(CLAVE, JSON.stringify(db)); } catch (e) { toast('No se pudo guardar en este navegador'); } return; }
+  sucio = true; estadoSync('Guardando…', 'pend');
+  clearTimeout(tGuardar); tGuardar = setTimeout(sincronizar, 700);
+}
+async function sincronizar() {
+  if (guardando) { clearTimeout(tGuardar); tGuardar = setTimeout(sincronizar, 500); return; }
+  if (!sucio) return;
+  guardando = true; sucio = false;
+  try {
+    const r = await api('guardar', { db, rev });
+    if (r.ok) {
+      rev = r.rev; db.correos = r.correos || db.correos;
+      if (r.histExtra && r.histExtra.length) db.historial = db.historial.concat(r.histExtra).sort((a, b) => b.ts - a.ts);
+      estadoSync(sucio ? 'Guardando…' : 'Guardado ✓', sucio ? 'pend' : 'ok');
+      if (sucio) { clearTimeout(tGuardar); tGuardar = setTimeout(sincronizar, 300); }
+    } else if (r.error === 'conflicto') {
+      toast('Hubo cambios desde otro dispositivo. Se recargaron los datos.');
+      await traerDatos(); pintar();
+    } else { sucio = true; estadoSync('Error al guardar', 'mal'); toast(r.msg || 'No se pudo guardar'); }
+  } catch (e) {
+    sucio = true; estadoSync('Sin conexión, reintentando…', 'mal');
+    clearTimeout(tGuardar); tGuardar = setTimeout(sincronizar, 8000);
+  } finally { guardando = false; }
+}
+async function traerDatos() {
+  const r = await api('cargar');
+  if (!r.ok) throw new Error(r.msg || 'No se pudo cargar');
+  db = normalizar(r.db); rev = r.rev; sesion.usuario = r.usuario;
+  estadoSync('Guardado ✓', 'ok');
+}
+// cada 5 minutos, si no hay nada sin guardar, trae lo nuevo (por ej. correos automáticos)
+setInterval(async () => {
+  if (!API || !sesion || !listo || sucio || guardando || dlg.open) return;
+  try { const r = await api('rev'); if (r.ok && r.rev !== rev) { await traerDatos(); generarAlertas(); pintar(); } } catch (e) {}
+}, 300000);
+window.addEventListener('beforeunload', e => { if (sucio || guardando) { e.preventDefault(); e.returnValue = ''; } });
+
 const cli = id => db.clientes.find(c => c.id === id);
 const nuevoId = () => 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-const quien = () => db.ajustes.contadora || 'Usuario';
+const quien = () => (sesion && sesion.usuario && sesion.usuario.nombre) || db.ajustes.contadora || 'Usuario';
 
 function registrar(c, accion, detalle, cambios) {
   db.historial.unshift({ ts: Date.now(), quien: quien(), cid: c ? c.id : '', cnom: c ? c.nombre : '', accion, detalle: detalle || '', cambios: cambios || null });
@@ -182,6 +243,7 @@ function abrirWhatsApp(cid, k, tipo) {
 function abrirCorreo(cid, k) {
   const c = cli(cid); if (!c) return;
   if (!c.correo) { toast('Este cliente no tiene correo cargado'); return; }
+  if (API) { correoServidor(c, k); return; }
   const p = db.ajustes.plantillas;
   location.href = 'mailto:' + encodeURIComponent(c.correo) + '?subject=' + encodeURIComponent(rellenar(p.mailAsunto, c, k)) + '&body=' + encodeURIComponent(rellenar(p.mailCuerpo, c, k));
   marcarAviso(c, k, 'mail');
@@ -189,6 +251,22 @@ function abrirCorreo(cid, k) {
   if (al) { al.estado = 'enviado'; al.enviado = Date.now(); al.manual = true; }
   registrar(c, 'Correo enviado', 'Aviso de vencimiento de ' + mesNombre(k) + ' a ' + c.correo);
   guardar(); pintar();
+}
+async function correoServidor(c, k) {
+  if (!confirm('Enviar ahora el aviso de ' + mesNombre(k) + ' a ' + c.correo + '?')) return;
+  toast('Enviando correo…');
+  try {
+    if (sucio || guardando) { clearTimeout(tGuardar); await sincronizar(); }
+    const r = await api('correo', { cid: c.id, mes: k });
+    if (!r.ok) { toast(r.msg || 'No se pudo enviar'); return; }
+    marcarAviso(c, k, 'mail');
+    const al = db.correos.find(x => x.cid === c.id && x.mes === k);
+    if (al) Object.assign(al, { estado: 'enviado', enviado: Date.now(), manual: true, para: c.correo });
+    else db.correos.unshift({ id: nuevoId(), ts: Date.now(), cid: c.id, mes: k, para: c.correo, estado: 'enviado', enviado: Date.now(), manual: true });
+    registrar(c, 'Correo enviado', 'Aviso de vencimiento de ' + mesNombre(k) + ' a ' + c.correo);
+    guardar(); toast('Correo enviado a ' + c.correo); pintar();
+    if (dlg.open && fichaAbierta === c.id) ficha(c.id);
+  } catch (e) { toast('No se pudo enviar: ' + e.message); }
 }
 function marcarAviso(c, k, tipo) { c.avisos = c.avisos || {}; c.avisos[k] = c.avisos[k] || {}; c.avisos[k][tipo] = Date.now(); }
 const aviso = (c, k, tipo) => ((c.avisos || {})[k] || {})[tipo];
@@ -225,7 +303,7 @@ function reloj() {
 let ultimoDia = ymd(hoy());
 setInterval(() => {
   reloj();
-  if (ymd(hoy()) !== ultimoDia) { ultimoDia = ymd(hoy()); generarAlertas(); pintar(); } // cambió el día: recalcular
+  if (listo && ymd(hoy()) !== ultimoDia) { ultimoDia = ymd(hoy()); generarAlertas(); pintar(); } // cambió el día: recalcular
 }, 15000);
 
 function tema() {
@@ -260,7 +338,7 @@ VISTAS.inicio = () => {
       <p>Acá vas a ver los vencimientos de IVA de cada cliente, sus timbrados y el cobro de tus honorarios, con avisos por WhatsApp y correo.</p>
       <div class="acciones">
         <button class="btn pri" data-act="nuevo">+ Nuevo cliente</button>
-        <button class="btn" data-act="ejemplo">Ver con datos de ejemplo</button>
+        ${API ? '' : '<button class="btn" data-act="ejemplo">Ver con datos de ejemplo</button>'}
         <a class="btn" href="#ajustes">Datos de la consultoría</a>
       </div>
     </div>`;
@@ -274,7 +352,7 @@ VISTAS.inicio = () => {
   const per = periodoIVAActual();
   const iva = act.map(c => ({ c, e: estadoIVA(c, per) })).filter(x => ['venc', 'pronto', 'pend'].includes(x.e.cod) && x.e.n <= 10).sort((a, b) => a.e.v - b.e.v);
   const tim = act.map(c => ({ c, e: estadoTimbrado(c) })).filter(x => x.e.cod === 'venc' || x.e.cod === 'pronto').sort((a, b) => a.e.n - b.e.n);
-  const cola = db.correos.filter(x => x.estado === 'pendiente' || x.estado === 'sin correo');
+  const cola = db.correos.filter(x => ['pendiente', 'sin correo', 'error'].includes(x.estado));
   const nom = db.ajustes.contadora ? ', ' + esc(db.ajustes.contadora.split(' ')[0]) : '';
 
   return `
@@ -319,8 +397,8 @@ VISTAS.inicio = () => {
     </section>
   </div>
   ${cola.length ? `<section class="panel" style="margin-top:16px"><div class="panel-cab"><h2>Alertas automáticas de correo</h2>${badge('b-info', cola.length + ' en cola')}</div>
-    <p class="muted chico" style="margin-top:0">Se generan solas apenas vence un pago. Cuando conectemos el correo de la consultoría se van a enviar automáticamente; mientras tanto podés enviarlas con un toque.</p>
-    <ul class="lista">${cola.slice(0, 20).map(x => { const c = cli(x.cid); return c ? `<li><div class="quien">${nombreLink(c)}<div class="det">Generada ${fmtTs(x.ts)} · ${mesNombre(x.mes)} · ${x.para ? esc(x.para) : 'sin correo cargado'}</div></div>
+    <p class="muted chico" style="margin-top:0">${API ? 'Se generan solas apenas vence un pago y se envían automáticamente todos los días a las 8:00. Si querés, podés enviarlas ya.' : 'Se generan solas apenas vence un pago. Cuando conectemos el correo de la consultoría se van a enviar automáticamente; mientras tanto podés enviarlas con un toque.'}</p>
+    <ul class="lista">${cola.slice(0, 20).map(x => { const c = cli(x.cid); return c ? `<li><div class="quien">${nombreLink(c)}<div class="det">Generada ${fmtTs(x.ts)} · ${mesNombre(x.mes)} · ${x.para ? esc(x.para) : 'sin correo cargado'}${x.estado === 'error' ? ' · <b style="color:var(--mal)">no se pudo enviar</b>' : ''}</div></div>
       ${x.para ? `<button class="btn sm" data-act="mail" data-id="${c.id}" data-mes="${x.mes}">Enviar ahora</button>` : `<button class="btn sm" data-act="editar" data-id="${c.id}">Cargar correo</button>`}</li>` : ''; }).join('')}</ul></section>` : ''}`;
 };
 
@@ -467,16 +545,25 @@ VISTAS.ajustes = () => {
     </div>
     <div class="acciones" style="margin-top:16px"><button class="btn pri" type="submit">Guardar ajustes</button><button class="btn" type="button" data-act="plantillasOrig">Volver a los mensajes originales</button></div>
   </form>
+  ${API ? `<form id="fClave" class="panel">
+    <h2>Mi cuenta</h2>
+    <p class="muted chico">Entraste como <b>${esc(sesion.usuario.nombre)}</b> (usuario ${esc(sesion.usuario.usuario)}).</p>
+    <div class="campos">
+      <div class="campo"><label for="k_act">Contraseña actual</label><input id="k_act" name="actual" type="password" autocomplete="current-password"></div>
+      <div class="campo"><label for="k_new">Contraseña nueva (8 o más)</label><input id="k_new" name="nueva" type="password" autocomplete="new-password" minlength="8"></div>
+    </div>
+    <div class="acciones" style="margin-top:12px"><button class="btn" type="submit">Cambiar contraseña</button><button class="btn" type="button" data-act="salir">Cerrar sesión</button></div>
+  </form>` : ''}
   <section class="panel">
     <h2>Datos</h2>
-    <p class="muted chico">Mientras sea versión de prueba, los datos viven en este navegador. Descargá una copia de seguridad de vez en cuando.</p>
+    <p class="muted chico">${API ? 'Los datos se guardan en la planilla de Google de VerollyTemp. Igual podés descargar una copia cuando quieras.' : 'Mientras sea versión de prueba, los datos viven en este navegador. Descargá una copia de seguridad de vez en cuando.'}</p>
     <div class="acciones">
       <button class="btn" data-act="exportar">Descargar copia de seguridad</button>
       <label class="btn" style="margin:0">Restaurar copia<input type="file" id="impJson" accept=".json,application/json" hidden></label>
       <label class="btn" style="margin:0">Importar clientes (planilla CSV)<input type="file" id="impCsv" accept=".csv,text/csv" hidden></label>
       <button class="btn" data-act="plantillaCsv">Descargar planilla vacía</button>
-      <button class="btn" data-act="ejemplo">Cargar datos de ejemplo</button>
-      <button class="btn peligro" data-act="borrarTodo">Borrar todo</button>
+      ${API ? '' : `<button class="btn" data-act="ejemplo">Cargar datos de ejemplo</button>
+      <button class="btn peligro" data-act="borrarTodo">Borrar todo</button>`}
     </div>
   </section>`;
 };
@@ -654,6 +741,9 @@ document.addEventListener('click', e => {
   const c = id ? cli(id) : null;
   switch (act) {
     case 'cerrar': cerrarDlg(); break;
+    case 'salir': if (confirm('¿Cerrar sesión en este dispositivo?')) salir(); break;
+    case 'verActivar': pantallaLogin(true); break;
+    case 'verLogin': pantallaLogin(false); break;
     case 'nuevo': formCliente(); break;
     case 'ficha': ficha(id); break;
     case 'editar': formCliente(id); break;
@@ -693,6 +783,17 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('submit', e => {
   e.preventDefault();
+  if (e.target.id === 'fLogin' || e.target.id === 'fActivar') { entrar(e.target); return; }
+  if (e.target.id === 'fClave') {
+    const f = Object.fromEntries(new FormData(e.target));
+    if (String(f.nueva).length < 8) { toast('La contraseña nueva necesita 8 caracteres o más'); return; }
+    api('clave', { actual: f.actual, nueva: f.nueva }).then(r => {
+      if (!r.ok) { toast(r.msg); return; }
+      sesion = { token: r.token, usuario: r.usuario }; LS.set('verollytemp_sesion', JSON.stringify(sesion));
+      e.target.reset(); toast('Contraseña cambiada');
+    }).catch(err => toast(err.message));
+    return;
+  }
   if (e.target.id === 'fCliente') guardarCliente(e.target);
   else if (e.target.id === 'fPago') guardarPago(e.target);
   else if (e.target.id === 'fAjustes') {
@@ -731,7 +832,7 @@ function importarJson(file) {
     const d = JSON.parse(t);
     if (!d || !Array.isArray(d.clientes)) throw new Error();
     if (!confirm('Restaurar la copia del ' + fmtTs(d.creado || Date.now()) + ' con ' + d.clientes.length + ' clientes. Reemplaza los datos actuales. ¿Seguir?')) return;
-    localStorage.setItem(CLAVE, t); db = cargar(); registrar(null, 'Copia de seguridad restaurada', file.name); guardar(); toast('Copia restaurada'); pintar();
+    db = normalizar(d); registrar(null, 'Copia de seguridad restaurada', file.name); guardar(); toast('Copia restaurada'); pintar();
   }).catch(() => toast('Ese archivo no es una copia de VerollyTemp'));
 }
 
@@ -804,10 +905,71 @@ function cargarEjemplo() {
   generarAlertas(); guardar(); toast('Datos de ejemplo cargados'); location.hash = '#inicio'; pintar();
 }
 
+/* ---------------- ingreso ---------------- */
+function pantallaLogin(activar, msg) {
+  listo = false;
+  document.body.classList.add('sin-sesion');
+  $('#app').innerHTML = `
+  <div class="login panel">
+    <img src="img/verolly-temp-logo.webp" alt="VerollyTemp">
+    ${activar ? `<h1>Activar usuario</h1><p class="muted">Poné el código que te pasaron y elegí tu contraseña.</p>
+    <form id="fActivar" class="campos">
+      <div class="campo full"><label for="l_u">Usuario</label><input id="l_u" name="usuario" autocomplete="username" autocapitalize="none" required></div>
+      <div class="campo full"><label for="l_c">Código de activación</label><input id="l_c" name="codigo" autocapitalize="none" placeholder="abcd-1234" required></div>
+      <div class="campo full"><label for="l_p">Elegí tu contraseña (8 o más)</label><input id="l_p" name="clave" type="password" autocomplete="new-password" required></div>
+      <div class="campo full"><label for="l_p2">Repetila</label><input id="l_p2" name="clave2" type="password" autocomplete="new-password" required></div>
+      <div class="campo full"><button class="btn pri" style="width:100%;justify-content:center" type="submit">Activar y entrar</button></div>
+    </form>
+    <p class="chico"><a href="#" data-act="verLogin">Ya tengo contraseña</a></p>`
+    : `<h1>Ingresar</h1><p class="muted">Vencimientos, timbrados y cobros de tu consultoría.</p>
+    <form id="fLogin" class="campos">
+      <div class="campo full"><label for="l_u">Usuario</label><input id="l_u" name="usuario" autocomplete="username" autocapitalize="none" required></div>
+      <div class="campo full"><label for="l_p">Contraseña</label><input id="l_p" name="clave" type="password" autocomplete="current-password" required></div>
+      <div class="campo full"><button class="btn pri" style="width:100%;justify-content:center" type="submit">Entrar</button></div>
+    </form>
+    <p class="chico"><a href="#" data-act="verActivar">Es mi primera vez: tengo un código de activación</a></p>`}
+    <p class="login-msg" id="loginMsg">${esc(msg || '')}</p>
+  </div>`;
+  $('#l_u').focus();
+}
+async function entrar(form) {
+  const f = Object.fromEntries(new FormData(form)), btn = form.querySelector('button[type=submit]');
+  if (form.id === 'fActivar') {
+    if (String(f.clave).length < 8) { $('#loginMsg').textContent = 'La contraseña necesita 8 caracteres o más.'; return; }
+    if (f.clave !== f.clave2) { $('#loginMsg').textContent = 'Las dos contraseñas no coinciden.'; return; }
+  }
+  btn.disabled = true; $('#loginMsg').textContent = 'Entrando…';
+  try {
+    const r = await api(form.id === 'fActivar' ? 'activar' : 'login', { usuario: f.usuario, clave: f.clave, codigo: f.codigo });
+    if (!r.ok) { $('#loginMsg').textContent = r.msg || 'No se pudo entrar.'; btn.disabled = false; return; }
+    sesion = { token: r.token, usuario: r.usuario }; LS.set('verollytemp_sesion', JSON.stringify(sesion));
+    await iniciarConServidor();
+  } catch (e) { $('#loginMsg').textContent = 'Sin conexión. Probá de nuevo.'; btn.disabled = false; }
+}
+function salir(vencida) {
+  if (sesion && !vencida) api('salir').catch(() => {});
+  sesion = null; LS.set('verollytemp_sesion', null); sucio = false;
+  db = dbNueva(); cerrarDlg();
+  pantallaLogin(false, vencida ? 'Tu sesión venció. Volvé a entrar.' : '');
+}
+async function iniciarConServidor() {
+  $('#app').innerHTML = '<p class="vacio" style="text-align:center;padding:60px 0">Cargando datos…</p>';
+  try { await traerDatos(); }
+  catch (e) { if (sesion) $('#app').innerHTML = '<div class="panel bienvenida"><h2>No se pudieron cargar los datos</h2><p>' + esc(e.message) + '</p><button class="btn pri" onclick="location.reload()">Reintentar</button></div>'; return; }
+  document.body.classList.remove('sin-sesion');
+  listo = true; generarAlertas(); irA();
+}
+
 /* ---------------- arranque ---------------- */
 $('#btnTema').addEventListener('click', tema);
-window.addEventListener('hashchange', irA);
+window.addEventListener('hashchange', () => { if (listo) irA(); });
 dlg.addEventListener('close', () => { fichaAbierta = null; });
 reloj();
-generarAlertas();
-irA();
+if (API) {
+  $('#avisoPrueba').hidden = true;
+  if (sesion && sesion.token) iniciarConServidor(); else pantallaLogin(false);
+} else {
+  estadoSync('', '');
+  generarAlertas();
+  irA();
+}
